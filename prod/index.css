@@ -1,0 +1,21 @@
+html,
+body {
+  margin:0;
+  padding:0;
+  line-height:1.2;
+  height:100%;
+  width:100%;
+}
+
+body {
+  background-image: url(../images/background.jpg);
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+.App {
+  height:100%;
+  width:100%;
+}
