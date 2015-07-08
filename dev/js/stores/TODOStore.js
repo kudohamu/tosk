@@ -11,34 +11,29 @@ var sampleTODO = {
   id: 1,
   content: 'Webアプリ作成',
   checked: false,
-  progress: 0,
   children: [
     {
       id: 12,
       content: 'デザイン決め',
       checked: false,
-      progress: 0,
       children: [],
     },
     {
       id: 2,
       content: 'モデル設計',
-      checked: false,
-      progress: 0,
+      checked: true,
       children: [],
     },
     {
       id: 3,
       content: 'API設計',
       checked: false,
-      progress: 0,
       open:false,
       children: [
         {
           id: 11,
           content: 'huga',
           checked: false,
-          progress: 0,
           children: [],
         }
       ],
@@ -47,35 +42,30 @@ var sampleTODO = {
       id: 4,
       content: 'モデル作成',
       checked: false,
-      progress: 0,
       open:false,
       children: [
         {
           id: 6,
           content: 'モデル生成',
           checked: false,
-          progress: 0,
           children: [],
         },
         {
           id: 7,
           content: 'テスト作成',
           checked: false,
-          progress: 0,
           children: [],
         },
         {
           id: 8,
           content: 'マイグレーション作成',
           checked: false,
-          progress: 0,
           open:false,
           children: [
             {
               id: 10,
               content: 'hoge',
               checked: false,
-              progress: 0,
               children: [],
             }
           ],
@@ -84,7 +74,6 @@ var sampleTODO = {
           id: 9,
           content: 'バリデーション作成',
           checked: false,
-          progress: 0,
           children: [],
         }
       ]
@@ -93,7 +82,6 @@ var sampleTODO = {
       id: 5,
       content: 'コントローラ作成',
       checked: false,
-      progress: 0,
       children: [],
     }
   ]
