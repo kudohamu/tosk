@@ -6,22 +6,17 @@ import APIUtils from './APIUtils';
 
 export default {
   signUp: (user) => {
-    request
-      .post(`${Constants.RootUrl.SERVER}/user`)
-      .send({
+    APIUtils.post(
+      'user',
+      {
         user: user
-      })
-      .end((err, res) => {
-        if (err != null) {
-          //TODO 500または404ページに飛ばす
-          console.log(err);
+      },
+      (res) => {
+        if (res["body"]["result"] == "ok") {
+          SignUpActionCreator.signUpSuccess(res["body"]["id"], res["body"]["token"]);
+          location.href = "/#/account/dashboard/actives";
         }else {
-          if (res["body"]["result"] == "ok") {
-            location.href = "/#/user/todoboard";
-            SignUpActionCreator.signUpSuccess(res["body"]["id"], res["body"]["token"]);
-          }else {
-            SignUpActionCreator.signUpErr(res["body"]["msg"]);
-          }
+          SignUpActionCreator.signUpErr(res["body"]["msg"]);
         }
       }
     );
