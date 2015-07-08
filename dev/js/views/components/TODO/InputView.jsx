@@ -1,5 +1,4 @@
 import React from 'react/addons';
-import ReactMixin from 'react-mixin';
 import Radium from 'radium';
 import Vendor from 'react-vendor-prefix';
 
@@ -100,7 +99,5 @@ InputView.propTypes = {
 InputView.defaultProps = {
   trashable: true,
 };
-
-ReactMixin(InputView.prototype, React.addons.LinkedStateMixin);
 
 export default Radium(InputView);
