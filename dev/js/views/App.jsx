@@ -1,9 +1,10 @@
-var React = require('react'),
-    Route = require('react-router'),
-    RouteHandler = Route.RouteHandler
-;
+import React from 'react';
+import Router from 'react-router';
 
-var App = React.createClass({
+var Route = Router.Route;
+var RouteHandler = Router.RouteHandler;
+
+export default class App extends React.Component {
   render() {
     return (
       <div className="App">
@@ -11,6 +12,4 @@ var App = React.createClass({
       </div>
     );
   }
-});
-
-module.exports = App;
+}

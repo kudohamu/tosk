@@ -1,12 +1,13 @@
-var Constants = require('../constants/Constants'),
-    AppDispatcher = require('../dispatcher/Dispatcher')
-;
+import Constants from '../constants/Constants';
+import AppDispatcher from '../dispatcher/Dispatcher';
 
-module.exports = {
-  hoge: function(content) {
+const HogeActionCreator {
+  hoge: (content) => {
     AppDispatcher.handleViewAction({
       type: Constants.ActionTypes.HOGE,
       content: content
     });
   }
 };
+
+export default HogeActionCreator;

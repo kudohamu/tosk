@@ -1,19 +1,18 @@
-var request = require('superagent'),
-    Constants = require('../constants/Constants'),
-    AppDispatcher = require('../dispatcher/Dispatcher')
-;
+import request from 'superagent';
+import Constants from '../constants/Constants';
+import AppDispatcher from '../dispatcher/Dispatcher';
 
-module.exports = {
-  hoge: function(param) {
+export default HogeAPIUtils = {
+  hoge: (param) => {
     request
       .post(Constants.RootUrl.SERVER + 'hoge')
       .send({
         param: param
       })
-      .end(function(err, res) {
+      .end((err, res) => {
         console.log(err);
         console.log(res);
-      }.bind(this)
+      }
     );
   }
-};
+}

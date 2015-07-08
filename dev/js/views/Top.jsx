@@ -1,10 +1,10 @@
-var React = require('react/addons'),
-    Vendor = require('react-vendor-prefix'),
-    Styler = require('../styler'),
-    Button = require('react-bootstrap').Button
-;
+import React from 'react/addons';
+import Radium from 'radium';
+import Vendor from 'react-vendor-prefix';
+import FormStyle from '../styles/form';
+import { Button } from 'react-bootstrap';
 
-var style = Vendor.prefix({
+var styles = Vendor.prefix({
   top: {
     display:"table",
     height:"100%",
@@ -33,13 +33,13 @@ var style = Vendor.prefix({
   }
 });
 
-var Top = React.createClass({
+class Top extends React.Component {
   render() {
     return (
-      <div className="top" style={style.top}>
-        <div style={style.padding}></div>
-        <div style={style.formContainer}>
-          <div className="form" style={Styler.form}>
+      <div className="top" style={styles.top}>
+        <div style={styles.padding}></div>
+        <div style={styles.formContainer}>
+          <div className="form" style={FormStyle.container}>
             <div className="form-group">
               <label className="sr-only" htmlFor="mail">Mail Address</label>
               <input type="text" className="form-control input-lg" placeholder="mail" />
@@ -48,18 +48,18 @@ var Top = React.createClass({
               <label className="sr-only" htmlFor="password">Password</label>
               <input type="password" className="form-control input-lg" placeholder="password" />
             </div>
-            <Button bsStyle="success" style={style.submit}>ログイン</Button>
+            <Button bsStyle="success" style={styles.submit}>ログイン</Button>
             <a href="/#/user/sign_up">アカウントを作成</a>
             <br />
             <br />
             <br />
-            <a href="" style={style.twitter}><img src="../images/twitter_button.png" style={style.twitter_icon} /></a>
+            <a href="" style={styles.twitter}><img src="../images/twitter_button.png" style={styles.twitter_icon} /></a>
           </div>
         </div>
-        <div style={style.padding}></div>
+        <div style={styles.padding}></div>
       </div>
     );
   }
-});
+}
 
-module.exports = Top;
+export default Radium(Top);

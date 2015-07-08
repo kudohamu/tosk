@@ -1,25 +1,26 @@
-var request = require('superagent'),
-    Constants = require('../constants/Constants'),
-    AppDispatcher = require('../dispatcher/Dispatcher'),
-    SignUpActionCreator = require('../action_creators/users/SignUpActionCreator')
-;
+import request from 'superagent';
+import Constants from '../constants/Constants';
+import AppDispatcher from '../dispatcher/Dispatcher';
+import SignUpActionCreator from '../action_creators/users/SignUpActionCreator';
 
-module.exports = {
-  submit: function(user) {
+export default {
+  submit: (user) => {
     request
       .post(Constants.RootUrl.SERVER + 'user')
       .send({
         user: user
       })
-      .end(function(err, res) {
+      .end((err, res) => {
         if (err != null) {
         }else {
-          if (res["result"] == "ok") {
+          if (res["body"]["result"] == "ok") {
+            location.href = "/#/user/todoboard";
+            SignUpActionCreator.signUpSuccess(res["body"]["id"], res["body"]["token"]);
           }else {
             SignUpActionCreator.signUpErr(res["body"]["msg"]);
           }
         }
-      }.bind(this)
+      }
     );
   }
-};
+}

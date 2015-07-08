@@ -1,10 +1,10 @@
-var React = require('react/addons'),
-    Vendor = require('react-vendor-prefix'),
+import React from 'react/addons';
+import Radium from 'radium';
+import Vendor from 'react-vendor-prefix';
 
-    Alert = require('react-bootstrap').Alert
-;
+import { Alert } from 'react-bootstrap';
 
-var style = Vendor.prefix({
+var styles = Vendor.prefix({
   alertContainer: {
     position:"absolute",
     top:"20px",
@@ -18,28 +18,31 @@ var style = Vendor.prefix({
   },
 });
 
-var AlertBox = React.createClass({
-  propTypes: {
-    msg: React.PropTypes.string.isRequired,
-    alertVisible: React.PropTypes.bool.isRequired,
-    handleAlertDismiss: React.PropTypes.func.isRequired
-  },
+class AlertBox extends React.Component {
+
   _handleAlertDismiss() {
     this.props.handleAlertDismiss();
-  },
+  }
+
   render() {
     if (this.props.alertVisible) {
       return (
-        <div style={style.alertContainer}>
-          <Alert bsStyle="danger" style={style.alert} onDismiss={this._handleAlertDismiss}>
+        <div style={styles.alertContainer}>
+          <Alert bsStyle="danger" style={styles.alert} onDismiss={this._handleAlertDismiss}>
             <p>{this.props.msg}</p>
           </Alert>
         </div>
       );
     }else {
-      return(<div style={style.alertContainer} ></div>);
+      return(<div style={styles.alertContainer} ></div>);
     }
   }
-});
+}
 
-module.exports = AlertBox;
+AlertBox.propTypes = {
+  msg: React.PropTypes.string.isRequired,
+  alertVisible: React.PropTypes.bool.isRequired,
+  handleAlertDismiss: React.PropTypes.func.isRequired
+};
+
+export default Radium(AlertBox);

@@ -1,13 +1,13 @@
-var AppDispatcher = require('../dispatcher/Dispatcher'),
-    Constants = require('../constants/Constants'),
-    EventEmitter = require('events').EventEmitter,
-    assign = require('object-assign')
-;
+import AppDispatcher from '../dispatcher/Dispatcher';
+import Constants from '../constants/Constants';
+import { EventEmitter } from 'events';
 
-var ActionTypes = Constants.ActionTypes;
-var CHANGE_EVENT = 'change';
+let ActionTypes = Constants.ActionTypes;
+let CHANGE_EVENT = 'change';
 
-var account = {
+let account = {
+  id: '',
+  token: '',
   icon: {
     value: '',
     errMsg: '',
@@ -79,30 +79,36 @@ var account = {
 
 var errMsg = '';
 
-var UserStore = assign({}, EventEmitter.prototype, {
-  emitChange: function() {
+class UserStore extends EventEmitter {
+  emitChange() {
     this.emit(CHANGE_EVENT);
-  },
-  addChangeListener: function(callback) {
+  }
+
+  addChangeListener(callback) {
     this.on(CHANGE_EVENT, callback);
-  },
-  removeChangeListener: function(callback) {
+  }
+
+  removeChangeListener(callback) {
     this.removeListener(CHANGE_EVENT, callback);
-  },
-  getAccountData: function() {
+  }
+
+  getAccountData() {
     return account;
-  },
-  getErrMsg: function() {
+  }
+
+  getErrMsg() {
     return errMsg;
   }
-});
+}
 
-UserStore.dispatchToken = AppDispatcher.register(function(payload) {
-  var action = payload.action;
+let _UserStore = new UserStore();
+
+export default _UserStore;
+
+AppDispatcher.register((payload) => {
+  let action = payload.action;
 
   switch(action.type) {
-    case ActionTypes.USER.SIGN_UP.SUBMIT:
-      break;
     case ActionTypes.USER.SIGN_UP.CHANGE_ICON:
       var files = action.data;
       if(files.length == 0) {
@@ -128,7 +134,7 @@ UserStore.dispatchToken = AppDispatcher.register(function(payload) {
               account.icon.errMsg = "画像ファイルではありません";
               account.icon.bsStyle = "";
             }
-            UserStore.emitChange();
+            _UserStore.emitChange();
           };
           reader.readAsDataURL(file);
         }else {
@@ -155,11 +161,13 @@ UserStore.dispatchToken = AppDispatcher.register(function(payload) {
       account.password_confirmation.value = action.data;
       account.password_confirmation.validation();
       break;
+    case ActionTypes.USER.SIGN_UP.SUCCESS_RESPONSE:
+      id = action.id;
+      token = action.token;
+      break;
     case ActionTypes.USER.SIGN_UP.ERROR_RESPONSE:
       errMsg = action.errMsg;
       break;
   }
-  UserStore.emitChange();
+  _UserStore.emitChange();
 });
-
-module.exports = UserStore;
