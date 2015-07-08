@@ -61,6 +61,13 @@ class SignUp extends React.Component {
       errMsg: "",
       alertVisible: false
     };
+
+    this.componentDidMount = this.componentDidMount.bind(this);
+    this.componentWillUnmount = this.componentWillUnmount.bind(this);
+    this._onChange = this._onChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleInput = this.handleInput.bind(this);
+    this.handleAlertDismiss = this.handleAlertDismiss.bind(this);
   }
 
   componentDidMount() {
@@ -97,7 +104,7 @@ class SignUp extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    UserAPIUtils.submit({
+    UserAPIUtils.signUp({
       icon_data: this.state.user.icon.value,
       name: this.state.user.name.value,
       mail: this.state.user.mail.value,
@@ -108,8 +115,9 @@ class SignUp extends React.Component {
   }
 
   handleInput(e) {
-    var action = Constants.ActionTypes.USER.SIGN_UP;
+    let action = Constants.ActionTypes.USER.SIGN_UP;
     var data = e.target.value;
+    var actionType = '';
     switch(e.target.id) {
       case "icon":
         data = e.target.files;
