@@ -19,6 +19,11 @@ var styles = Vendor.prefix({
 });
 
 class AlertBox extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this._handleAlertDismiss = this._handleAlertDismiss.bind(this);
+  }
 
   _handleAlertDismiss() {
     this.props.handleAlertDismiss();
