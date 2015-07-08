@@ -2,8 +2,8 @@ import keyMirror from 'keymirror-nested';
 
 export default {
   RootUrl: {
-    SERVER: "http://localhost:4000/api/",
-    CLIENT: "http://localhost:3000/#/"
+    SERVER: "http://localhost:4000/api",
+    CLIENT: "http://localhost:3000/#"
   },
 
   PayloadSources: keyMirror({
@@ -23,6 +23,11 @@ export default {
         CHANGE_PASSWORD_CONFIRMATION: null,
         SUCCESS_RESPONSE: null,
         ERROR_RESPONSE: null
+      },
+      SIGN_IN: {
+        SUBMIT: null,
+        SUCCESS_RESPONSE: null,
+        ERROR_RESPONSE: null,
       }
     }
   })

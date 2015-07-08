@@ -168,6 +168,13 @@ AppDispatcher.register((payload) => {
     case ActionTypes.USER.SIGN_UP.ERROR_RESPONSE:
       errMsg = action.errMsg;
       break;
+    case ActionTypes.USER.SIGN_IN.SUCCESS_RESPONSE:
+      account.id = action.id;
+      account.token = action.token;
+      break;
+    case ActionTypes.USER.SIGN_IN.ERROR_RESPONSE:
+      errMsg = action.errMsg;
+      break;
   }
   _UserStore.emitChange();
 });

@@ -3,7 +3,12 @@ import ReactMixin from 'react-mixin';
 import Radium from 'radium';
 import Vendor from 'react-vendor-prefix';
 import FormStyle from '../styles/form';
+import UserStore from '../stores/UserStore';
+import UserAPIUtils from '../utils/UserAPIUtils';
+
 import { Button, Input } from 'react-bootstrap';
+
+import AlertBox from './components/AlertBox';
 
 var styles = Vendor.prefix({
   top: {
@@ -45,19 +50,50 @@ class Top extends React.Component {
 
     this.state = {
       autoLogin: false,
+      errMsg: '',
+      alertVisible: false,
     };
+    this.componentDidMount = this.componentDidMount.bind(this);
+    this.componentWillUnmount = this.componentWillUnmount.bind(this);
+    this._onChange = this._onChange.bind(this);
     this._handleSubmit = this._handleSubmit.bind(this);
+    this._handleAlertDismiss = this._handleAlertDismiss.bind(this);
+  }
+
+  componentDidMount() {
+    UserStore.addChangeListener(this._onChange);
+  }
+
+  componentWillUnmount() {
+    UserStore.removeChangeListener(this._onChange);
+  }
+
+  _onChange() {
+    this.setState({ 
+      errMsg: UserStore.getErrMsg(),
+    });
+
+    if (this.state.errMsg != '') {
+      this.setState({ alertVisible: true });
+    }else {
+      this.setState({ alertVisible: false });
+    }
   }
 
   _handleSubmit() {
-    console.log(React.findDOMNode(this.refs.mail).value);
-    console.log(React.findDOMNode(this.refs.password).value);
-    console.log(this.state.autoLogin);
+    let mail = React.findDOMNode(this.refs.mail).value;
+    let password = React.findDOMNode(this.refs.password).value;
+    UserAPIUtils.signIn(mail, password, this.state.autoLogin);
+  }
+
+  _handleAlertDismiss() {
+    this.setState({ alertVisible: false });
   }
 
   render() {
     return (
       <div className='top' style={styles.top}>
+        <AlertBox msg={this.state.errMsg} alertVisible={this.state.alertVisible} handleAlertDismiss={this._handleAlertDismiss} />
         <div style={styles.padding}></div>
         <div style={styles.formContainer}>
           <div className='form' style={FormStyle.container}>
