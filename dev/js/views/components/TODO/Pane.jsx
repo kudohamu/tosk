@@ -74,6 +74,7 @@ class Pane extends React.Component {
 
     this.moveTODOQueue = new MoveTODOQueue();
 
+    this.calculateProgress = this.calculateProgress.bind(this);
     this._handleCheck = this._handleCheck.bind(this);
     this._handleClickFolder = this._handleClickFolder.bind(this);
     this._changeContent = this._changeContent.bind(this);
@@ -86,97 +87,94 @@ class Pane extends React.Component {
     this._changeIntoFolder = this._changeIntoFolder.bind(this);
   }
 
+  calculateProgress(todo) {
+    return todo.children.filter(function(todo) { return todo.checked == true; }).length * 100 / todo.children.length;
+  }
+
   _handleCheck(id) {
-    var listCheck = (todos) => {
-      return todos.map((todo) => {
-        if (todo.children.length == 0) {
-          if(todo.id == id) {
-            todo.checked = !todo.checked;
-          }
-        }else {
-          todo.children = listCheck(todo.children);
-          var checkNum = todo.children.filter((todo) => {
-            return todo.checked == true;
-          }).length;
-          var totalNum = todo.children.length;
-          todo.progress = checkNum * 100 / totalNum;
-          todo.checked = todo.children.reduce((acc, todo) => {
-            return acc && todo.checked;
-          }, true);
-        }
-        return todo;
-      });
+    let checkTODO = (todo) => {
+      return {
+        id: todo.id,
+        content: todo.content,
+        checked: (id == todo.id) ? !todo.checked : todo.checked,
+        open: todo.open,
+        children: todo.children.map((todo) => {
+          return checkTODO(todo);
+        })
+      };
     };
-    this.setState({
-      todo: {
-        id: this.state.todo.id,
-        content: this.state.todo.content,
-        checked: this.state.todo.checked,
-        progress: this.state.todo.progress,
-        children: listCheck(this.state.todo.children),
-      }
-    });
-    var checkNum = this.state.todo.children.filter(function(todo) {
-      return todo.checked == true;
-    }).length;
-    var totalNum = this.state.todo.children.length;
-    this.setState({
-      todo: {
-        id: this.state.todo.id,
-        content: this.state.todo.content,
-        progress: checkNum * 100 / totalNum,
-        checked: this.state.todo.children.reduce(function(acc, todo) {
+    let checkFolder = (todo) => {
+    
+    };
+    let checkProgress = (todo) => {
+      let children = todo.children.map((todo) => {
+        if(todo.children.length == 0) {
+          return todo;
+        }else {
+          return checkProgress(todo);
+        }
+      });
+      return {
+        id: todo.id,
+        content: todo.content,
+        open: todo.open,
+        checked: children.reduce(function(acc, todo) {
           return acc && todo.checked;
         }, true),
-        children: this.state.todo.children,
-      }
-    });
+        children: children,
+      };
+    };
+    this.setState({ todo: checkProgress(checkTODO(this.state.todo)) });
   }
 
   _handleClickFolder(id) {
-    var folderCheck = (todos) => {
-      return todos.map((todo) => {
-        if(todo.id == id) {
-          todo.open = !todo.open;
-        }else {
-          todo.children = folderCheck(todo.children);
-        }
-        return todo;
-      });
-    };
-    this.setState({
-      todo: {
-        id: this.state.todo.id,
-        content: this.state.todo.content,
-        checked: this.state.todo.checked,
-        progress: this.state.todo.progress,
-        children: folderCheck(this.state.todo.children),
+    let openFolder = (todo) => {
+      if(id == todo.id) {
+        return {
+          id: todo.id,
+          content: todo.content,
+          checked: todo.checked,
+          open: !todo.open,
+          children: todo.children
+        };
+      }else {
+        return {
+          id: todo.id,
+          content: todo.content,
+          checked: todo.checked,
+          open: todo.open,
+          children: todo.children.map((todo) => {
+            return openFolder(todo);
+          })
+        };
       }
-    });
+    };
+    this.setState({ todo: openFolder(this.state.todo) });
   }
 
   _changeContent(id, content) {
-    var updateContent = (todos) => {
-      return todos.map((todo) => {
-        if(todo.id == id) {
-            todo.content = content;
-        }else {
-          if (todo.children.length != 0) {
-            todo.children = updateContent(todo.children);
-          }
-        }
-        return todo;
-      });
-    };
-    this.setState({
-      todo: {
-        id: this.state.todo.id,
-        content: this.state.todo.content,
-        checked: this.state.todo.checked,
-        progress: this.state.todo.progress,
-        children: updateContent(this.state.todo.children),
+    let updateContent = (todo) => {
+      if(id == todo.id) {
+        return {
+          id: todo.id,
+          content: content,
+          checked: todo.checked,
+          open: todo.open,
+          children: todo.children
+        };
+      }else {
+        return {
+          id: todo.id,
+          content: todo.content,
+          checked: todo.checked,
+          open: todo.open,
+          children: todo.children.map((todo) => {
+            return updateContent(todo);
+          })
+        };
       }
-    });
+    };
+    this.setState({ todo: updateContent(this.state.todo) });
   }
 
   _handleMenuToggle() {
@@ -223,7 +221,6 @@ class Pane extends React.Component {
           id: this.state.todo.id,
           content: this.state.todo.content,
           checked: this.state.todo.checked,
-          progress: this.state.todo.progress,
           children: todos,
         }
       });
@@ -238,13 +235,11 @@ class Pane extends React.Component {
             id: todo.id,
             content: todo.content,
             checked: todo.checked,
-            progress: todo.progress,
             open: todo.open,
             children: todo.children.concat([{
               id: Math.floor(Math.random() * 10000), //TODO サーバでランダムな値を設定
               content: content,
               checked: false,
-              progress: 0,
               open: false,
               children: [],
             }])
@@ -256,7 +251,6 @@ class Pane extends React.Component {
             id: todo.id,
             content: todo.content,
             checked: todo.checked,
-            progress: todo.progress,
             open: todo.open,
             children: todo.children.map((todo) => {
               return addTODO(todo);
@@ -274,7 +268,6 @@ class Pane extends React.Component {
         id: todo.id,
         content: todo.content,
         checked: todo.checked,
-        progress: todo.progress,
         open: todo.open,
         children: todo.children.filter((todo) => {
           if(id == todo.id) {
@@ -285,7 +278,7 @@ class Pane extends React.Component {
         }).map((todo) => {
           return deleteTODO(todo);
         })
-      }
+      };
     }
     this.setState({ todo: deleteTODO(this.state.todo) });
   }
@@ -297,7 +290,7 @@ class Pane extends React.Component {
 
   render() {
     var list = this.state.checkable ? 
-      <List todos={this.state.todo.children} handleCheck={this._handleCheck} handleClickFolder={this._handleClickFolder.bind(this)} /> : 
+      <List todos={this.state.todo.children} handleCheck={this._handleCheck} handleClickFolder={this._handleClickFolder.bind(this)} calculateProgress={this.calculateProgress} /> : 
       <EditableList folderID={this.state.todo.id} todos={this.state.todo.children} handleClickFolder={this._handleClickFolder} changeContent={this._changeContent} handleMovingTODOStart={this._handleMovingTODOStart} handleMovingTODOEnter={this._handleMovingTODOEnter} handleTODOPlus={this._handleTODOPlus} handleTODODelete={this._handleTODODelete} changeIntoFolder={this._changeIntoFolder} />
     return (
       <div style={styles.container}>
@@ -307,7 +300,7 @@ class Pane extends React.Component {
             <p style={styles.header.p}>{this.state.todo.content}</p>
             <button style={styles.header.menu} onClick={this._handleMenuToggle.bind(this)}><Glyphicon glyph="cog" /></button>
           </div>
-          <ProgressBar bsStyle="success" style={styles.progress} now={this.state.todo.progress} />
+          <ProgressBar bsStyle="success" style={styles.progress} now={this.calculateProgress(this.state.todo)} />
           {list}
         </div>
       </div>
