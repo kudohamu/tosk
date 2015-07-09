@@ -15,6 +15,10 @@ var styles = Vendor.prefix({
 
 var items = [
   {
+    title: 'Tosk',
+    path: '',
+  },
+  {
     title: 'Dashboard',
     path: 'account/dashboard',
   },
@@ -31,7 +35,7 @@ var items = [
     path: 'account/settings',
   },
   {
-    title: 'LogOut',
+    title: 'SignOut',
     path: 'account/logout',
   }
 ];

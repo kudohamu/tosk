@@ -7,8 +7,8 @@ var styles = Vendor.prefix({
     flexFlow:'row nowrap',
     //width:'130px',
     height:'30px',
-    borderRadius:'3px',
-    padding:'0px 12px',
+    padding:'0px 15px',
+    borderRight:'solid 1px rgba(255,255,255,.3)',
     
     ':hover': {
       backgroundColor:'rgba(255,255,255,.07)',
@@ -19,7 +19,7 @@ var styles = Vendor.prefix({
   p: {
     fontSize:'14px',
     fontWeight:'bold',
-    color:'#7f7f7f',
+    color:'#afafaf',
     textAlign:'center',
     margin:'0',
     lineHeight:'1.2',
