@@ -6,6 +6,7 @@ import LoginedApp from './LoginedApp';
 import Top from './Top';
 import SignUp from './users/SignUp';
 import Dashboard from './Dashboard';
+import Actives from './components/Actives';
 
 let Route = Router.Route;
 let DefaultRoute = Router.DefaultRoute;
@@ -15,7 +16,7 @@ var routes = (
     <DefaultRoute handler={Top} />
     <Route path="user/sign_up" handler={SignUp} />
     <Route name="account" handler={LoginedApp} path="account">
-      <Route path="dashboard/actives" handler={Dashboard} />
+      <Route path="dashboard/actives" handler={Actives} />
       <Route path="dashboard/templates" handler={Dashboard} />
     </Route>
   </Route>
