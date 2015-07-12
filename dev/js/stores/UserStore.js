@@ -99,6 +99,10 @@ class UserStore extends EventEmitter {
   getErrMsg() {
     return errMsg;
   }
+
+  getAuthData() {
+    return { id: account.id, token: account.token };
+  }
 }
 
 let _UserStore = new UserStore();
