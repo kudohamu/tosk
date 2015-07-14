@@ -4,6 +4,37 @@ import AppDispatcher from '../dispatcher/Dispatcher';
 import UserStore from '../stores/UserStore';
 
 export default {
+  get: (url, success) => {
+    request
+      .get(`${Constants.RootUrl.SERVER}/${url}`)
+      .end((err, res) => {
+        if(err == null) {
+          success(res);
+        }else {
+          console.log(err);
+          //TODO 500または404ページに飛ばす
+        }
+      }
+    );
+  },
+
+  authGet: (url, success) => {
+    let authData = UserStore.getAuthData();
+    console.log("auth:" + authData.id);
+    request
+      .get(`${Constants.RootUrl.SERVER}/${url}`)
+      .set('Authorization', `${authData.id}:${authData.token}`)
+      .end((err, res) => {
+        if(err == null) {
+          success(res);
+        }else {
+          console.log(err);
+          //TODO 500または404ページに飛ばす
+        }
+      }
+    );
+  },
+
   post: (url, params, success) => {
     request
       .post(`${Constants.RootUrl.SERVER}/${url}`)

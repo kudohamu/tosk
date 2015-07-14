@@ -30,14 +30,14 @@ class Item extends React.Component {
   render() {
     return (
       <li classname='' style={styles.li}>
-        <a href='#/user/dashboard' role='button' style={styles.a.negative}>{this.props.title}</a>
+        <a href='#/user/dashboard' role='button' style={styles.a.negative}>{this.props.name}</a>
       </li>
     );
   }
 }
 
 Item.propTypes = {
-  title: React.PropTypes.string.isRequired,
+  name: React.PropTypes.string.isRequired,
 };
 
 export default Radium(Item);

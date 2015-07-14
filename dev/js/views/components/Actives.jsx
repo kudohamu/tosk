@@ -2,8 +2,8 @@ import React from 'react/addons';
 import Radium from 'radium';
 import Vendor from 'react-vendor-prefix';
 
-import UserStore from '../../stores/UserStore';
-import UserAPIUtils from '../../utils/UserAPIUtils';
+import BoardStore from '../../stores/BoardStore';
+import BoardAPIUtils from '../../utils/BoardAPIUtils';
 
 import TODOPane from './TODO/Pane';
 import TabHeader from './Tab/Header';
@@ -25,35 +25,37 @@ class Actives extends React.Component {
     super(props);
 
     this.state = {
-      tabs: [
-        {
-          id: 1,
-          title: '開発'
-        },
-        {
-          id: 2,
-          title: '料理'
-        }
-      ]
+      boards: BoardStore.getBoards(),
     }
-    console.log(UserStore.getAccountData().id);
-    console.log(UserStore.getAccountData().token);
 
+    this.componentDidMount = this.componentDidMount.bind(this);
+    this.componentWillUnmount = this.componentWillUnmount.bind(this);
+    this._onChange = this._onChange.bind(this);
     this._handleTabPlus = this._handleTabPlus.bind(this);
   }
 
-  _handleTabPlus() {
-    console.log('plus');
-    this.setState({ tabs: this.state.tabs.concat({
-      id: 3,
-      title: 'hoge',
-    }) })
+  componentDidMount() {
+    BoardStore.addChangeListener(this._onChange);
+  }
+
+  componentWillUnmount() {
+    BoardStore.removeChangeListener(this._onChange);
+  }
+
+  _onChange() {
+    this.setState({ 
+      boards: BoardStore.getBoards(),
+    });
+  }
+
+  _handleTabPlus(name) {
+    BoardAPIUtils.create(name, 1);
   }
 
   render() {
     return (
       <div style={styles.tab_area}>
-        <TabHeader items={this.state.tabs} handleTabPlus={this._handleTabPlus} />
+        <TabHeader items={this.state.boards} handleTabPlus={this._handleTabPlus} />
         <div style={styles.tab_body}>
           <TODOPane id={0} />
         </div>

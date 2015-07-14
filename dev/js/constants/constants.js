@@ -12,8 +12,6 @@ export default {
   }),
 
   ActionTypes: keyMirror({
-    USER_SIGN_UP: null,
-    USER_SIGN_UP_CHANGE: null,
     USER: {
       SIGN_UP: {
         CHANGE_ICON: null,
@@ -26,6 +24,16 @@ export default {
       },
       SIGN_IN: {
         SUBMIT: null,
+        SUCCESS_RESPONSE: null,
+        ERROR_RESPONSE: null,
+      }
+    },
+    BOARDS: {
+      INDEX: {
+        SUCCESS_RESPONSE: null,
+        ERROR_RESPONSE: null,
+      },
+      CREATE: {
         SUCCESS_RESPONSE: null,
         ERROR_RESPONSE: null,
       }
