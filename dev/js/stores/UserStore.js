@@ -80,6 +80,20 @@ let account = {
 var errMsg = '';
 
 class UserStore extends EventEmitter {
+  constructor() {
+    super();
+    let cookies = (() =>{
+      return document.cookie.split('; ').map((cookie) => {
+        let kv = cookie.split('=');
+        var obj = {};
+        obj[kv[0]] = kv[1]; //仕様が...
+        return obj;
+      }).concat();
+    })();
+    account.id = cookies[0].id;
+    account.token = cookies[1].token;
+  }
+
   emitChange() {
     this.emit(CHANGE_EVENT);
   }
