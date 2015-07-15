@@ -1,57 +1,59 @@
 import React from 'react/addons';
+import ReactMixin from 'react-mixin';
+import Router from 'react-router';
 import Radium from 'radium';
 import Vendor from 'react-vendor-prefix';
-import UserStore from '../stores/UserStore';
-import UserAPIUtils from '../utils/UserAPIUtils';
-import DashboardActionCreator from '../action_creators/DashboardActionCreator';
-import Constants from '../constants/Constants';
 
-import { Button, ButtonInput, Input } from 'react-bootstrap';
+import Sidebar from './components/Sidebar/Sidebar';
+import { HEADER_HEIGHT } from '../styles/Header/GlobalStyles';
 
-import TODOPane from './components/TODO/Pane';
-import TabHeader from './components/Tab/Header';
+const RouteHandler = Router.RouteHandler;
 
 var styles = Vendor.prefix({
-  tab_area: {
-    width:"100%",
-    height:"100%"
+  container: {
+    display:'flex',
+    width:'100%',
+    height:'100%',
+    paddingTop:HEADER_HEIGHT,
   },
-  tab_body: {
-    width:"100%",
-    height:"100%",
-    padding:"5px",
+  sidebar: {
+    width:'150px',
+    flexFlow:'row nowrap',
+    backgroundColor:'#2f2f2f',
+  },
+  content: {
+    width:'100%',
+    flexFlow:'row nowrap',
+    backgroundColor:'rgba(255,255,255,0.6)',
   }
 });
 
 class Dashboard extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor(props, context) {
+    super(props, context);
     this.state = {
-      items: [
-        {
-          id: 1,
-          title: '開発'
-        },
-        {
-          id: 2,
-          title: '料理'
-        }
-      ]
+      boardId: this.context.router.getCurrentParams().boardId,
     }
-    console.log(UserStore.getAccountData().id);
-    console.log(UserStore.getAccountData().token);
   }
 
   render() {
     return(
-      <div style={styles.tab_area}>
-        <TabHeader items={this.state.items} />
-        <div style={styles.tab_body}>
-          <TODOPane id={0} />
+      <div style={styles.container}>
+        <div style={styles.sidebar}>
+          <Sidebar boardId={this.state.boardId} />
+        </div>
+        <div style={styles.content}>
+          <RouteHandler />
         </div>
       </div>
     );
   }
 }
+
+Dashboard.contextTypes = {
+    router: React.PropTypes.func.isRequired
+};
+
+ReactMixin(Dashboard.prototype, [Router.State]);
 
 export default Radium(Dashboard);

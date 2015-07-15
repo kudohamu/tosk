@@ -17,9 +17,11 @@ var routes = (
     <DefaultRoute handler={Top} />
     <Route path="user/sign_up" handler={SignUp} />
     <Route name="account" handler={LoginedApp} path="account">
-      <Route path="dashboard/actives" handler={Actives} />
-      <Route path="dashboard/templates" handler={Dashboard} />
-      <Route path="dashboard/settings" handler={Settings} />
+      <Route name='dashboard' path="dashboard/:boardId" Handler={Dashboard}>
+        <Route path="actives" handler={Actives} />
+        <Route path="templates" handler={Dashboard} />
+        <Route path="settings" handler={Settings} />
+      </Route>
     </Route>
   </Route>
 );
