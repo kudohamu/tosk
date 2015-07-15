@@ -70,7 +70,7 @@ class Sidebar extends React.Component {
         {
           items.map((item) => {
             return (
-              <Item icon={item.icon} iconColor={item.iconColor} title={item.title} path={`/#/account/dashboard/${item.path}`} handleClick={this._handleClick} current={this._pathCheck(`/#/account/dashboard/${item.path}`)} />
+              <Item icon={item.icon} iconColor={item.iconColor} title={item.title} path={`/#/account/dashboard/${this.props.boardId}/${item.path}`} handleClick={this._handleClick} current={this._pathCheck(`/#/account/dashboard/${this.props.boardId}/${item.path}`)} />
             );
           })
         }
@@ -78,5 +78,9 @@ class Sidebar extends React.Component {
     );
   }
 }
+
+Sidebar.propTypes = {
+  boardId: React.PropTypes.number.isRequired,
+};
 
 export default Radium(Sidebar);

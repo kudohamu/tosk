@@ -32,4 +32,15 @@ export default {
       }
     );
   },
+  delete: (boardId) => {
+    APIUtils.authPost(
+      `boards/${boardId}`,
+      (res) => {
+        if (res["body"]["result"] == "ok") {
+          BoardAPIUtils.index();
+        }else {
+        }
+      }
+    );
+  },
 }
