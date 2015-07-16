@@ -29,7 +29,7 @@ var items = [
     icon: 'user',
     iconColor: 'rgba(111,223,95,1)',
     title: 'Invite',
-    path: 'Invite',
+    path: 'invite',
   },
   {
     icon: 'cog',
@@ -49,19 +49,8 @@ class Sidebar extends React.Component {
   constructor() {
     super();
     this.state = {
-      current_path: window.location.href,
     }
 
-    this._handleClick = this._handleClick.bind(this);
-  }
-
-  _handleClick(next_path) {
-    this.setState({ current_path: next_path });
-    window.location.href = next_path;
-  }
-
-  _pathCheck(path) {
-    return XRegExp.test(window.location.href, XRegExp(path));
   }
 
   render() {
@@ -70,7 +59,7 @@ class Sidebar extends React.Component {
         {
           items.map((item) => {
             return (
-              <Item icon={item.icon} iconColor={item.iconColor} title={item.title} path={`/#/account/dashboard/${this.props.boardId}/${item.path}`} handleClick={this._handleClick} current={this._pathCheck(`/#/account/dashboard/${this.props.boardId}/${item.path}`)} />
+              <Item boardId={this.props.boardId} icon={item.icon} iconColor={item.iconColor} title={item.title} path={item.path} handleClick={this.props.handleSidebarClick} />
             );
           })
         }
@@ -81,6 +70,7 @@ class Sidebar extends React.Component {
 
 Sidebar.propTypes = {
   boardId: React.PropTypes.number.isRequired,
+  handleSidebarClick: React.PropTypes.func.isRequired,
 };
 
 export default Radium(Sidebar);

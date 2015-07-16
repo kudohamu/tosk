@@ -29,7 +29,7 @@ class Settings extends React.Component {
 
   _handleBoardDeleteSubmit() {
     this.setState({ deleteConfirmation: false });
-    BoardAPIUtils.delete(this.props.boardId);
+    BoardAPIUtils.delete(this.props.params.boardId);
   }
 
   _handleBoardDeleteCancel() {
@@ -55,7 +55,6 @@ class Settings extends React.Component {
 }
 
 Settings.propTypes = {
-  boardId: React.PropTypes.number.isRequired,
 };
 
 export default Radium(Settings);

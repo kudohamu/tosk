@@ -66,5 +66,22 @@ export default {
         }
       }
     );
+  },
+
+  authDelete: (url, params, success) => {
+    let authData = UserStore.getAuthData();
+    request
+      .del(`${Constants.RootUrl.SERVER}/${url}`)
+      .send(params)
+      .set('Authorization', `${authData.id}:${authData.token}`)
+      .end((err, res) => {
+        if(err == null) {
+          success(res);
+        }else {
+          console.log(err);
+          //TODO 500または404ページに飛ばす
+        }
+      }
+    );
   }
 }

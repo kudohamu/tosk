@@ -66,7 +66,7 @@ class Header extends React.Component {
           {
             this.props.items.map((item) => {
               return (
-                <Item name={item.name} />
+                <Item boardId={item.id} path={this.props.path} name={item.name} handleClick={this.props.handleTabClick} />
               );
             })
           }
@@ -79,7 +79,9 @@ class Header extends React.Component {
 
 Header.propTypes = {
   items: React.PropTypes.array.isRequired,
+  path: React.PropTypes.string.isRequired,
   handleTabPlus: React.PropTypes.func.isRequired,
+  handleTabClick: React.PropTypes.func.isRequired,
 };
 
 export default Radium(Header);

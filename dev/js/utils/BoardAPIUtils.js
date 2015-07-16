@@ -6,9 +6,9 @@ import APIUtils from './APIUtils';
 import BoardAPIUtils from './BoardAPIUtils';
 
 export default {
-  index: (category) => {
+  index: () => {
     APIUtils.authGet(
-      `boards?category=${category}`,
+      'boards',
       (res) => {
         if(res["body"]["result"] == "ok") {
           DashboardActionCreator.getBoardsSuccess(res["body"]["boards"]);
@@ -18,23 +18,24 @@ export default {
       }
     );
   },
-  create: (name, category) => {
+  create: (name) => {
     APIUtils.authPost(
       'boards',
       {
-        board: { name: name, category: category}
+        board: {name: name}
       },
       (res) => {
         if (res["body"]["result"] == "ok") {
-          BoardAPIUtils.index(category);
+          BoardAPIUtils.index();
         }else {
         }
       }
     );
   },
   delete: (boardId) => {
-    APIUtils.authPost(
+    APIUtils.authDelete(
       `boards/${boardId}`,
+      {},
       (res) => {
         if (res["body"]["result"] == "ok") {
           BoardAPIUtils.index();
