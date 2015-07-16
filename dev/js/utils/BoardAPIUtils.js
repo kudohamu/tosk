@@ -26,7 +26,7 @@ export default {
       },
       (res) => {
         if (res["body"]["result"] == "ok") {
-          BoardAPIUtils.index();
+          DashboardActionCreator.getBoardsSuccess(res["body"]["boards"]);
         }else {
         }
       }
@@ -38,7 +38,7 @@ export default {
       {},
       (res) => {
         if (res["body"]["result"] == "ok") {
-          BoardAPIUtils.index();
+          DashboardActionCreator.getBoardsSuccess(res["body"]["boards"]);
         }else {
         }
       }

@@ -8,6 +8,18 @@ const DashboardActionCreator = {
       data: data
     });
   },
+  createBoardsSuccess: (data) => {
+    AppDispatcher.handleServerAction({
+      type: Constants.ActionTypes.BOARDS.CREATE.SUCCESS_RESPONSE,
+      data: data
+    });
+  },
+  deleteBoardsSuccess: (data) => {
+    AppDispatcher.handleServerAction({
+      type: Constants.ActionTypes.BOARDS.DELETE.SUCCESS_RESPONSE,
+      data: data
+    });
+  },
 };
 
 export default DashboardActionCreator;

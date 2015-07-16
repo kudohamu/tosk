@@ -36,7 +36,11 @@ export default {
       CREATE: {
         SUCCESS_RESPONSE: null,
         ERROR_RESPONSE: null,
-      }
+      },
+      DELETE: {
+        SUCCESS_RESPONSE: null,
+        ERROR_RESPONSE: null,
+      },
     }
   })
 }

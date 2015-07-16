@@ -41,6 +41,8 @@ AppDispatcher.register((payload) => {
 
   switch(action.type) {
     case ActionTypes.BOARDS.INDEX.SUCCESS_RESPONSE:
+    case ActionTypes.BOARDS.CREATE.SUCCESS_RESPONSE:
+    case ActionTypes.BOARDS.DELETE.SUCCESS_RESPONSE:
       boards = action.data;
       _BoardStore.emitChange();
       break;
