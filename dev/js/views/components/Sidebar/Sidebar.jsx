@@ -17,31 +17,26 @@ var items = [
     icon: 'certificate',
     iconColor: 'rgba(246,54,65,1)',
     title: 'Actives',
-    path: 'actives',
   },
   {
     icon: 'bookmark',
     iconColor: 'rgba(85,76,210,1)',
     title: 'Templates',
-    path: 'templates',
   },
   {
     icon: 'user',
     iconColor: 'rgba(111,223,95,1)',
-    title: 'Invite',
-    path: 'invite',
+    title: 'Members',
   },
   {
     icon: 'cog',
     iconColor: 'rgba(236,228,209,1)',
     title: 'Settings',
-    path: 'settings',
   },
   {
     icon: 'align-left',
     iconColor: 'rgba(255,255,69,1)',
     title: 'Logs',
-    path: 'logs',
   }
 ];
 
@@ -59,7 +54,7 @@ class Sidebar extends React.Component {
         {
           items.map((item) => {
             return (
-              <Item boardId={this.props.boardId} icon={item.icon} iconColor={item.iconColor} title={item.title} path={item.path} handleClick={this.props.handleSidebarClick} />
+              <Item icon={item.icon} iconColor={item.iconColor} title={item.title} current={this.props.current == item.title} handleClick={this.props.handleSidebarClick} />
             );
           })
         }
@@ -70,6 +65,7 @@ class Sidebar extends React.Component {
 
 Sidebar.propTypes = {
   boardId: React.PropTypes.number.isRequired,
+  current: React.PropTypes.string.isRequired,
   handleSidebarClick: React.PropTypes.func.isRequired,
 };
 

@@ -2,14 +2,12 @@ import AppDispatcher from '../dispatcher/Dispatcher';
 import Constants from '../constants/Constants';
 import { EventEmitter } from 'events';
 
-import BoardAPIUtils from '../utils/BoardAPIUtils';
-
 var ActionTypes = Constants.ActionTypes;
 var CHANGE_EVENT = 'change';
 
-var boards = [];
+var page = 'loading';
 
-class BoardStore extends EventEmitter {
+class PageStore extends EventEmitter {
   constructor() {
     super();
   }
@@ -26,24 +24,22 @@ class BoardStore extends EventEmitter {
     this.removeListener(CHANGE_EVENT, callback);
   }
 
-  getBoards() {
-    return boards;
+  getPage() {
+    return page;
   }
 }
 
-let _BoardStore = new BoardStore();
+let _PageStore = new PageStore();
 
-export default _BoardStore;
+export default _PageStore;
 
 AppDispatcher.register((payload) => {
   let action = payload.action;
 
   switch(action.type) {
-    case ActionTypes.BOARDS.INDEX.SUCCESS_RESPONSE:
-    case ActionTypes.BOARDS.CREATE.SUCCESS_RESPONSE:
-    case ActionTypes.BOARDS.DELETE.SUCCESS_RESPONSE:
-      boards = action.data;
-      _BoardStore.emitChange();
+    case ActionTypes.PAGE.CHANGE:
+      page = action.page;
+      _PageStore.emitChange();
       break;
   }
 });

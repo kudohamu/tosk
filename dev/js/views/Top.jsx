@@ -3,8 +3,10 @@ import ReactMixin from 'react-mixin';
 import Radium from 'radium';
 import Vendor from 'react-vendor-prefix';
 import FormStyle from '../styles/form';
+
 import UserStore from '../stores/UserStore';
 import UserAPIUtils from '../utils/UserAPIUtils';
+import PageActionCreator from '../action_creators/PageActionCreator';
 
 import { Button, Input } from 'react-bootstrap';
 
@@ -39,6 +41,7 @@ var styles = Vendor.prefix({
   },
   createAccountLink: {
     color:'black',
+    cursor:'pointer',
   },
   autoLoginCheckbox: {
   }
@@ -50,6 +53,7 @@ class Top extends React.Component {
 
     this.state = {
       autoLogin: false,
+      authData: {},
       errMsg: '',
       alertVisible: false,
     };
@@ -69,8 +73,9 @@ class Top extends React.Component {
   }
 
   _onChange() {
-    this.setState({ 
+    this.setState({
       errMsg: UserStore.getErrMsg(),
+      authData: UserStore.getAuthData(),
     });
 
     if (this.state.errMsg != '') {
@@ -78,6 +83,20 @@ class Top extends React.Component {
     }else {
       this.setState({ alertVisible: false });
     }
+
+    let checkAutoLogin = () => {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(this.state.authData);
+        }, 500);
+      });
+    }
+
+    checkAutoLogin().then((authData) => {
+      if(authData.id && authData.token) {
+        PageActionCreator.setPage('dashboard');
+      }
+    });
   }
 
   _handleSubmit() {
@@ -107,7 +126,7 @@ class Top extends React.Component {
             </div>
             <Input type='checkbox' label='次回から自動でログインする' style={styles.autoLoginCheckbox} checkedLink={this.linkState('autoLogin')} />
             <Button bsStyle='success' style={styles.submit} onClick={this._handleSubmit}>ログイン</Button>
-            <a href='/#/user/sign_up' style={styles.createAccountLink}>アカウントを作成</a>
+            <a style={styles.createAccountLink} onClick={(() => {PageActionCreator.setPage('sign_up')})}>アカウントを作成</a>
             <br />
             <br />
             <br />

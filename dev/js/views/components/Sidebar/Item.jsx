@@ -1,10 +1,7 @@
 import React from 'react/addons';
-import Router from 'react-router';
 import Radium from 'radium';
 import Vendor from 'react-vendor-prefix';
 import { Glyphicon } from 'react-bootstrap';
-
-let Link = Router.Link;
 
 var styles = Vendor.prefix({
   container: {
@@ -33,14 +30,7 @@ var styles = Vendor.prefix({
       backgroundColor:'rgba(255,255,255,.07)',
     },
     p: {
-      display:'inline',
-      fontSize:'18px',
-      fontWeight:'bold',
       color:'rgba(100,100,255,1)',
-      margin:'0',
-      lineHeight:'1.2',
-      padding:'3px 3px 3px 6px',
-      textDecoration:'none',
     }
   },
 });
@@ -52,25 +42,30 @@ class Item extends React.Component {
   }
 
   _handleClick() {
-    this.props.handleClick(this.props.path);
+    this.props.handleClick(this.props.title);
   }
 
   render() {
     return (
-      <div style={styles.container}>
+      <div style={[
+        styles.container,
+        this.props.current && styles.current.container
+      ]} onClick={this._handleClick}>
         <Glyphicon glyph={this.props.icon} style={{color: `${this.props.iconColor}`}} />
-        <Link style={styles.p} activeStyle={styles.current.p} to={this.props.path} params={{boardId: this.props.boardId}} onClick={this._handleClick}>{this.props.title}</Link>
+        <p style={[
+          styles.p,
+          this.props.current && {color: `${this.props.iconColor}`}
+        ]}>{this.props.title}</p>
       </div>
     );
   }
 }
 
 Item.propTypes = {
-  boardId: React.PropTypes.number.isRequired,
   icon: React.PropTypes.string.isRequired,
   iconColor: React.PropTypes.string,
   title: React.PropTypes.string.isRequired,
-  path: React.PropTypes.string.isRequired,
+  current: React.PropTypes.string.isRequired,
   handleClick: React.PropTypes.func.isRequired,
 };
 

@@ -35,11 +35,11 @@ var styles = Vendor.prefix({
 class Item extends React.Component {
   constructor(props) {
     super(props);
-    this._handleClick = this._handleClick.bind(this, this.props.path);
+    this._handleClick = this._handleClick.bind(this, this.props.page);
   }
 
-  _handleClick(path) {
-    this.props.handleClick(path);
+  _handleClick(page) {
+    this.props.handleClick(page);
   }
 
   render() {
@@ -56,7 +56,7 @@ class Item extends React.Component {
 
 Item.propTypes = {
   title: React.PropTypes.string.isRequired,
-  path: React.PropTypes.string.isRequired,
+  page: React.PropTypes.string.isRequired,
   handleClick: React.PropTypes.func.isRequired,
   current: React.PropTypes.bool.isRequired,
 };

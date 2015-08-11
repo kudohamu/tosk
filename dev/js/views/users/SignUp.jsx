@@ -4,10 +4,12 @@ import DeepLinkedState from 'react-deep-link-state';
 import Radium from 'radium';
 import Vendor from 'react-vendor-prefix';
 import FormStyle from '../../styles/form';
-import UserStore from '../../stores/UserStore';
-import SignUpActionCreator from '../../action_creators/users/SignUpActionCreator';
-import UserAPIUtils from '../../utils/UserAPIUtils';
 import Constants from '../../constants/Constants';
+
+import UserStore from '../../stores/UserStore';
+import UserActionCreator from '../../action_creators/UserActionCreator';
+import PageActionCreator from '../../action_creators/PageActionCreator';
+import UserAPIUtils from '../../utils/UserAPIUtils';
 
 import { Button, ButtonInput, Input } from 'react-bootstrap';
 import AlertBox from '../components/AlertBox';
@@ -59,7 +61,8 @@ class SignUp extends React.Component {
       user: UserStore.getAccountData(),
       disabled: "disabled",
       errMsg: "",
-      alertVisible: false
+      alertVisible: false,
+      signUpSuccess: false,
     };
 
     this.componentDidMount = this.componentDidMount.bind(this);
@@ -81,7 +84,8 @@ class SignUp extends React.Component {
   _onChange() {
     this.setState({ 
       user: UserStore.getAccountData(),
-      errMsg: UserStore.getErrMsg()
+      errMsg: UserStore.getErrMsg(),
+      signUpSuccess: UserStore.getSignUpSuccess(),
     });
 
     if (this.state.errMsg != '') {
@@ -100,11 +104,21 @@ class SignUp extends React.Component {
     }else {
       this.setState({ disabled: "disabled" });
     }
+
+    if(this.state.signUpSuccess) {
+      (() => {
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            PageActionCreator.setPage('dashboard');
+          }, 500);
+        });
+      })()
+    }
   }
 
   handleSubmit(e) {
     e.preventDefault();
-    UserAPIUtils.signUp({
+    UserActionCreator.signUp({
       icon_data: this.state.user.icon.value,
       name: this.state.user.name.value,
       mail: this.state.user.mail.value,
@@ -136,7 +150,7 @@ class SignUp extends React.Component {
         actionType = action.CHANGE_PASSWORD_CONFIRMATION;
         break;
     }
-    SignUpActionCreator.changeInput(data, actionType);
+    UserActionCreator.changeInput(data, actionType);
   }
 
   handleAlertDismiss(e) {

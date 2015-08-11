@@ -16,47 +16,46 @@ var styles = Vendor.prefix({
 var items = [
   {
     title: 'Tosk',
-    path: '',
+    path: 'tosk',
   },
   {
     title: 'Dashboard',
-    path: 'account/dashboard',
+    path: 'dashboard',
   },
   {
     title: 'Public Templates',
-    path: 'account/public_templates',
+    path: 'public_templates',
   },
   {
     title: 'Profile',
-    path: 'account/profile',
+    path: 'profile',
   },
   {
     title: 'Settings',
-    path: 'account/settings',
+    path: 'settings',
   },
   {
     title: 'SignOut',
-    path: 'account/logout',
+    path: 'logout',
   }
 ];
 
 class Header extends React.Component {
   constructor() {
     super();
-    this.state = {
-      current_path: window.location.href,
-    }
 
     this._handleClick = this._handleClick.bind(this);
   }
 
-  _handleClick(next_path) {
-    this.setState({ current_path: next_path });
-    window.location.href = next_path;
+  _handleClick(next_page) {
   }
 
-  _pathCheck(path) {
-    return XRegExp.test(window.location.href, XRegExp(path));
+  pageCheck(page) {
+    if(page == 'tosk') {
+      return true;
+    }else {
+      return page == this.props.page;
+    }
   }
 
   render() {
@@ -65,13 +64,17 @@ class Header extends React.Component {
         {
           items.map((item) => {
             return (
-              <Item title={item.title} path={`/#/${item.path}`} handleClick={this._handleClick} current={this._pathCheck(`/#/${item.path}`)} />
+              <Item title={item.title} handleClick={this._handleClick} current={this.pageCheck(item.path)} />
             );
           })
         }
       </div>
     );
   }
+}
+
+Header.propTypes = {
+  page: React.PropTypes.string.isRequired,
 }
 
 export default Radium(Header);

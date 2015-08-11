@@ -12,6 +12,9 @@ export default {
   }),
 
   ActionTypes: keyMirror({
+    PAGE: {
+      CHANGE: null,
+    },
     USER: {
       SIGN_UP: {
         CHANGE_ICON: null,
@@ -19,6 +22,7 @@ export default {
         CHANGE_MAIL: null,
         CHANGE_PASSWORD: null,
         CHANGE_PASSWORD_CONFIRMATION: null,
+        REQUEST: null,
         SUCCESS_RESPONSE: null,
         ERROR_RESPONSE: null
       },

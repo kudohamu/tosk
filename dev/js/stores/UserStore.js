@@ -78,6 +78,7 @@ let account = {
 };
 
 var errMsg = '';
+var signUpSuccess = false;
 
 class UserStore extends EventEmitter {
   constructor() {
@@ -90,8 +91,12 @@ class UserStore extends EventEmitter {
         return obj;
       }).concat();
     })();
-    account.id = cookies[0].id;
-    account.token = cookies[1].token;
+    if(cookies[0] && 'id' in cookies[0]) {
+      account.id = cookies[0]['id'];
+    }
+    if(cookies[1] && 'token' in cookies[1]) {
+      account.token = cookies[1]['token'];
+    }
   }
 
   emitChange() {
@@ -116,6 +121,10 @@ class UserStore extends EventEmitter {
 
   getAuthData() {
     return { id: account.id, token: account.token };
+  }
+
+  getSignUpSuccess() {
+    return signUpSuccess;
   }
 }
 
@@ -180,8 +189,9 @@ AppDispatcher.register((payload) => {
       account.password_confirmation.validation();
       break;
     case ActionTypes.USER.SIGN_UP.SUCCESS_RESPONSE:
-      id = action.id;
-      token = action.token;
+      account.id = action.id;
+      account.token = action.token;
+      signUpSuccess = true;
       break;
     case ActionTypes.USER.SIGN_UP.ERROR_RESPONSE:
       errMsg = action.errMsg;
