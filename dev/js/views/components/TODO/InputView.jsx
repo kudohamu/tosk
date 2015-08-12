@@ -77,7 +77,7 @@ class InputView extends React.Component {
           <button style={styles.trashButton} onClick={this._handleTrash}><Glyphicon glyph="trash" /></button> :
           ''
         }
-        <Input type='textarea' style={styles.textarea} defaultValue={this.props.content} ref='content' />
+        <Input type='textarea' style={styles.textarea} defaultValue={this.props.content} ref='content' placeholder={this.props.placeholder} />
         <Button bsStyle="success" bsSize="small" style={styles.saveButton} onClick={this._handleSubmit}>Save</Button>
         {
           this.props.content.length != 0 ?
@@ -98,6 +98,7 @@ InputView.propTypes = {
 
 InputView.defaultProps = {
   trashable: true,
+  placeholder: '',
 };
 
 export default Radium(InputView);
