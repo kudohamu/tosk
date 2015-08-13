@@ -25,6 +25,11 @@ export default {
       type: Constants.ActionTypes.USER.SIGN_UP.ERROR_RESPONSE,
       errMsg: errMsg
     });
+  },
+  signOut: () => {
+    AppDispatcher.handleViewAction({
+      type: Constants.ActionTypes.USER.SIGN_OUT,
+    })
   }
 };
 
