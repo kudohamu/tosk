@@ -18,27 +18,21 @@ var styles = Vendor.prefix({
 var items = [
   {
     title: 'Tosk',
-    path: 'tosk',
   },
   {
     title: 'Dashboard',
-    path: 'dashboard',
   },
   {
     title: 'Public Templates',
-    path: 'public_templates',
   },
   {
     title: 'Profile',
-    path: 'profile',
   },
   {
     title: 'Settings',
-    path: 'settings',
   },
   {
     title: 'SignOut',
-    path: 'logout',
   }
 ];
 
