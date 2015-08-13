@@ -6,6 +6,9 @@ const DashboardActionCreator = {
   fetchBoards: () => {
     BoardAPIUtils.index();
   },
+  createBoard: (name) => {
+    BoardAPIUtils.create(name);
+  },
   getBoardsSuccess: (data) => {
     AppDispatcher.handleServerAction({
       type: Constants.ActionTypes.BOARDS.INDEX.SUCCESS_RESPONSE,

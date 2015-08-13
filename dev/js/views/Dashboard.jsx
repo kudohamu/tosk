@@ -112,7 +112,7 @@ class Dashboard extends React.Component {
   }
 
   _handleTabPlus(name) {
-    BoardAPIUtils.create(name);
+    DashboardActionCreator.createBoard(name);
   }
 
   _handleTabClick(boardId) {
