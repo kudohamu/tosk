@@ -123,6 +123,11 @@ class UserStore extends EventEmitter {
     return { id: account.id, token: account.token };
   }
 
+  deleteAuthData() {
+    document.cookie = `id=; expires=Thu, 01 Jan 1970 00:00:00 GMT`; 
+    document.cookie = `token=; expires=Thu, 01 Jan 1970 00:00:00 GMT`; 
+  }
+
   getSignUpSuccess() {
     return signUpSuccess;
   }
