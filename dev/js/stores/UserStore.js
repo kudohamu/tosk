@@ -208,6 +208,9 @@ AppDispatcher.register((payload) => {
     case ActionTypes.USER.SIGN_IN.ERROR_RESPONSE:
       errMsg = action.errMsg;
       break;
+    case ActionTypes.USER.SIGN_OUT:
+      _UserStore.deleteAuthData();
+      break;
   }
   _UserStore.emitChange();
 });

@@ -2,6 +2,8 @@ import React from 'react/addons';
 import Radium from 'radium';
 import Vendor from 'react-vendor-prefix';
 import {XRegExp} from 'xregexp';
+import PageActionCreator from '../../../action_creators/PageActionCreator';
+import UserActionCreator from '../../../action_creators/UserActionCreator';
 
 import Item from './Item';
 
@@ -48,6 +50,10 @@ class Header extends React.Component {
   }
 
   _handleClick(next_page) {
+    if(next_page == 'SignOut') {
+      UserActionCreator.signOut();
+      PageActionCreator.setPage('top');
+    }
   }
 
   pageCheck(page) {
