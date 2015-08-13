@@ -26,11 +26,11 @@ class LoginedApp extends React.Component {
     return (
       <div className='LoginedApp' style={styles.container}>
         <div style={styles.header}>
-          <Header page={this.props.page} />
+          <Header current_page={this.props.current_page} />
         </div>
         {
           (() => {
-            switch(this.props.page) {
+            switch(this.props.current_page) {
               case 'dashboard':
                 return (<Dashboard />);
             }
@@ -42,7 +42,7 @@ class LoginedApp extends React.Component {
 }
 
 LoginedApp.propTypes = {
-  page: React.PropTypes.string.isRequired,
+  current_page: React.PropTypes.string.isRequired,
 }
 
 export default Radium(LoginedApp);

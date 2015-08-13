@@ -97,7 +97,7 @@ class Main extends React.Component {
               case 'sign_up':
                 return (<SignUp />);
               default:
-                return (<LoginedApp page={this.state.page} />);
+                return (<LoginedApp current_page={this.state.page} />);
             }
           })()
         }

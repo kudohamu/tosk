@@ -54,7 +54,7 @@ class Header extends React.Component {
     if(page == 'tosk') {
       return true;
     }else {
-      return page == this.props.page;
+      return page == this.props.current_page;
     }
   }
 
@@ -74,7 +74,7 @@ class Header extends React.Component {
 }
 
 Header.propTypes = {
-  page: React.PropTypes.string.isRequired,
+  current_page: React.PropTypes.string.isRequired,
 }
 
 export default Radium(Header);
