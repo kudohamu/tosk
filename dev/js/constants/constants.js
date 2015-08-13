@@ -30,7 +30,8 @@ export default {
         SUBMIT: null,
         SUCCESS_RESPONSE: null,
         ERROR_RESPONSE: null,
-      }
+      },
+      SIGN_OUT: null,
     },
     BOARDS: {
       INDEX: {
