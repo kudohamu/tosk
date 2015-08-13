@@ -13,7 +13,8 @@ import MoveTODOQueue from './MoveTODOQueue';
 
 var styles = Vendor.prefix({
   container: {
-    display:"inline",
+    display:"inline-block",
+    verticalAlign: 'top',
   },
   pane: {
     position:"relative",
