@@ -87,7 +87,7 @@ var sampleTODO = {
   ]
 }
 
-let todos = [sampleTODO];
+var _todos = [sampleTODO];
 
 export default class TODOStore extends EventEmitter {
   emitChange() {
@@ -103,7 +103,7 @@ export default class TODOStore extends EventEmitter {
   }
                         
   getTODO(id) {
-    return todos[id];
+    return _todos[id];
   }
 }
 
