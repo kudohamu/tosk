@@ -115,7 +115,8 @@ AppDispatcher.register((payload) => {
   var action = payload.action;
 
   switch(action.type) {
-    case ActionTypes.Hoge:
+    case ActionTypes.TODOS.INDEX.SUCCESS_RESPONSE:
+      _todos = action.todos;
       _TODOStore.emitChange();
       break;
   }
