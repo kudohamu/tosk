@@ -2,6 +2,7 @@ import React from 'react';
 import Radium from 'radium';
 import Vendor from 'react-vendor-prefix';
 
+import ChannelStore from '../stores/ChannelStore';
 import Header from './components/Header/Header';
 import Dashboard from './Dashboard';
 import { HEADER_HEIGHT } from '../styles/Header/GlobalStyles';
@@ -21,6 +22,11 @@ let styles = Vendor.prefix({
 });
 
 class LoginedApp extends React.Component {
+  constructor(props) {
+    super(props);
+
+    ChannelStore.connect();
+  }
 
   render() {
     return (
