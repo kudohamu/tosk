@@ -46,6 +46,11 @@ export default {
         SUCCESS_RESPONSE: null,
         ERROR_RESPONSE: null,
       },
-    }
+    },
+    TODOS: {
+      INDEX: {
+        SUCCESS_RESPONSE: null,
+      },
+    },
   })
 }
