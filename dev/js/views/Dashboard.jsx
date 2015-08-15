@@ -3,6 +3,7 @@ import Radium from 'radium';
 import Vendor from 'react-vendor-prefix';
 
 import BoardStore from '../stores/BoardStore';
+import TODOActionCreator from '../action_creators/TODOActionCreator';
 import DashboardActionCreator from '../action_creators/DashboardActionCreator';
 
 import TabHeader from './components/Tab/Header';
@@ -108,6 +109,7 @@ class Dashboard extends React.Component {
       this.setState({
         boardId: this.state.boards[0].id,
       });
+      TODOActionCreator.getTODOs(this.state.boardId);
     }
   }
 
@@ -116,7 +118,9 @@ class Dashboard extends React.Component {
   }
 
   _handleTabClick(boardId) {
-    console.log(boardId);
+    if(this.state.boardId != boardId) {
+      TODOActionCreator.getTODOs(boardId);
+    }
     this.setState({ boardId: boardId });
   }
 
