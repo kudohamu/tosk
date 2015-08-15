@@ -94,7 +94,7 @@ export default class TODOStore extends EventEmitter {
     this.emit(CHANGE_EVENT);
   }
 
-  addChangeListenern(callback) {
+  addChangeListener(callback) {
     this.on(CHANGE_EVENT, callback);
   }
 
