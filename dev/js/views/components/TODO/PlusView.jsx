@@ -61,7 +61,7 @@ class PlusView extends React.Component {
           this.state.input ?
           (
             <div style={styles.inputViewContainer}>
-              <InputView handleSubmit={this._handleSubmit} handleCancel={this._handleCancel} trashable={false} />
+              <InputView content='' handleSubmit={this._handleSubmit} handleCancel={this._handleCancel} trashable={false} />
             </div>
           ) :
           (
