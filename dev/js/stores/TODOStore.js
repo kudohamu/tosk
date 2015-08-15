@@ -101,7 +101,11 @@ export default class TODOStore extends EventEmitter {
   removeChangeListener(callback) {
     this.removeListener(CHANGE_EVENT, callback);
   }
-                        
+  
+  getTODOs() {
+    return _todos;
+  }
+
   getTODO(id) {
     return _todos[id];
   }
