@@ -1,11 +1,16 @@
 import React from 'react/addons';
 import Radium from 'radium';
 import Vendor from 'react-vendor-prefix';
-import TODOPane from './TODO/Pane';
 
-import {Socket} from 'libphoenix';
+import UserStore from '../../stores/UserStore';
+import TODOStore from '../../stores/TODOStore';
+import TODOAPIUtils from '../../utils/TODOAPIUtils';
+import TODOPane from './TODO/Pane';
+import AddPane from './TODO/AddPane';
 
 var styles = Vendor.prefix({
+  container: {
+  }
 });
 
 class Actives extends React.Component {
@@ -13,35 +18,60 @@ class Actives extends React.Component {
     super(props);
 
     this.state = {
+      todos_num: 0,
     };
 
-    var socket = new Socket('ws://localhost:4000/ws/');
-    socket.connect();
+    this.componentDidMount = this.componentDidMount.bind(this);
+    this.componentWillUnmount = this.componentWillUnmount.bind(this);
+    this._onChange = this._onChange.bind(this);
+  }
 
-    this._chan = socket.chan("todos:lobby", {});
+  componentDidMount() {
+    TODOStore.addChangeListener(this._onChange);
+  }
 
-    this._chan.join().receive("ok", chan => {
-      console.log("Welcome to Phoenix Chat!")
-    })
+  componentWillUnmount() {
+    TODOStore.removeChangeListener(this._onChange);
+  }
 
-    this._chan.on("shout", (payload) => {
-      console.log(payload.body);
-    })
-
-    this.sendTODO = this.sendTODO.bind(this);
+  _onChange() {
+    this.setState({
+      todos_num: TODOStore.getTODOs().length,
+    });
   }
 
   sendTODO() {
-    this._chan.push("change", {body: "hoge"})
+    this._chan.push("change", {body: "change"});
+  }
+
+  addTODO(title) {
+    const { id, token } = UserStore.getAuthData();
+    this._chan.push("create", {
+      id: id,
+      token: token,
+      boardId: this.props.boardId, 
+      title: title
+    });
   }
 
   render() {
     return (
-      <div>
-        <TODOPane id={0} />
+      <div style={styles.container}>
+      {(() => {
+        var panes = [];
+        for(var i=0; i < this.state.todos_num; i++) {
+          panes.push(<TODOPane id={i} />);
+        }
+        return panes;
+      })()}
+        <AddPane addTODO={this.addTODO} />
       </div>
     );
   }
 }
+
+Actives.propTypes = {
+  boardId: React.PropTypes.number.isRequired,
+};
 
 export default Radium(Actives);
