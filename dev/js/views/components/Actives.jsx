@@ -25,6 +25,7 @@ class Actives extends React.Component {
     this.componentDidMount = this.componentDidMount.bind(this);
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
     this._onChange = this._onChange.bind(this);
+    this.addTODO = this.addTODO.bind(this);
   }
 
   componentDidMount() {
