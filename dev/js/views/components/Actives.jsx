@@ -53,13 +53,13 @@ class Actives extends React.Component {
   render() {
     return (
       <div style={styles.container}>
-      {(() => {
-        var panes = [];
-        for(var i=0; i < this.state.todos_num; i++) {
-          panes.push(<TODOPane id={i} />);
-        }
-        return panes;
-      })()}
+        {(() => {
+          var panes = [];
+          for(var i=0; i < this.state.todos_num; i++) {
+            panes.push(<TODOPane id={i} />);
+          }
+          return panes;
+        })()}
         <AddPane addTODO={this._createPane} />
       </div>
     );
