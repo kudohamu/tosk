@@ -51,6 +51,9 @@ export default {
       INDEX: {
         SUCCESS_RESPONSE: null,
       },
+      CREATE: {
+        SUCCESS_RESPONSE: null,
+      },
     },
   })
 }
