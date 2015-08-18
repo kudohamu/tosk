@@ -109,7 +109,8 @@ class Dashboard extends React.Component {
       this.setState({
         boardId: this.state.boards[0].id,
       });
-      TODOActionCreator.getTODOs(this.state.boardId);
+      TODOActionCreator.addActionListener(this.state.boardId);
+      TODOActionCreator.getTODOs();
     }
   }
 
@@ -119,7 +120,8 @@ class Dashboard extends React.Component {
 
   _handleTabClick(boardId) {
     if(this.state.boardId != boardId) {
-      TODOActionCreator.getTODOs(boardId);
+      TODOActionCreator.addActionListener(boardId);
+      TODOActionCreator.getTODOs();
     }
     this.setState({ boardId: boardId });
   }

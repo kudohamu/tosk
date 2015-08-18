@@ -4,15 +4,18 @@ import AppDispatcher from '../dispatcher/Dispatcher';
 import TODOAPIUtils from '../utils/TODOAPIUtils';
 
 const TODOActionCreator = {
-  getTODOs: (boardId) => {
+  addActionListener: (boardId) => {
     TODOAPIUtils.join(boardId);
+
+    TODOAPIUtils.on("index", (payload) => {
+      TODOActionCreator.getTODOsSuccess(payload["data"]);
+    });
+  },
+
+  getTODOs: () => {
     setTimeout(() => {
-      TODOAPIUtils.on("index", (payload) => {
-        console.log(payload["data"]);
-        TODOActionCreator.getTODOsSuccess(payload["data"]);
-      });
       TODOAPIUtils.push("index", {});
-    }, 1000);
+    }, 100);
   },
 
   getTODOsSuccess: (todos) => {
