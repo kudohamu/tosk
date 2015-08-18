@@ -25,7 +25,7 @@ class Actives extends React.Component {
     this.componentDidMount = this.componentDidMount.bind(this);
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
     this._onChange = this._onChange.bind(this);
-    this.addTODO = this.addTODO.bind(this);
+    this._createPane = this._createPane.bind(this);
   }
 
   componentDidMount() {
@@ -46,7 +46,7 @@ class Actives extends React.Component {
     this._chan.push("change", {body: "change"});
   }
 
-  addTODO(title) {
+  _createPane(title) {
     TODOActionCreator.createTODO(this.props.boardId, title);
   }
 
@@ -60,7 +60,7 @@ class Actives extends React.Component {
         }
         return panes;
       })()}
-        <AddPane addTODO={this.addTODO} />
+        <AddPane addTODO={this._createPane} />
       </div>
     );
   }
