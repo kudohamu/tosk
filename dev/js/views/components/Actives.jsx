@@ -3,6 +3,7 @@ import Radium from 'radium';
 import Vendor from 'react-vendor-prefix';
 
 import UserStore from '../../stores/UserStore';
+import TODOActionCreator from '../../action_creators/TODOActionCreator';
 import TODOStore from '../../stores/TODOStore';
 import TODOAPIUtils from '../../utils/TODOAPIUtils';
 import TODOPane from './TODO/Pane';
@@ -45,13 +46,7 @@ class Actives extends React.Component {
   }
 
   addTODO(title) {
-    const { id, token } = UserStore.getAuthData();
-    this._chan.push("create", {
-      id: id,
-      token: token,
-      boardId: this.props.boardId, 
-      title: title
-    });
+    TODOActionCreator.createTODO(this.props.boardId, title);
   }
 
   render() {

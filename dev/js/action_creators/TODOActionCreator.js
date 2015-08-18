@@ -24,6 +24,15 @@ const TODOActionCreator = {
       todos: todos
     });
   },
+
+  createTODO: (boardId, title) => {
+    setTimeout(() => {
+      TODOAPIUtils.push("create", {
+        boardId: boardId,
+        title: title,
+      });
+    }, 100);
+  }
 };
 
 export default TODOActionCreator;
