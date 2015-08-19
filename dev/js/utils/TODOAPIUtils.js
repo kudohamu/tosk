@@ -21,6 +21,8 @@ export default {
   },
 
   push: (message, payload) => {
-    ChannelStore.getChan().push(message, payload);
+    setTimeout(() => {
+      ChannelStore.getChan().push(message, payload);
+    }, 100);
   }
 }

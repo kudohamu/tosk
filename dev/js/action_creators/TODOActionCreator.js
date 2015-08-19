@@ -18,9 +18,7 @@ const TODOActionCreator = {
   },
 
   getTODOs: () => {
-    setTimeout(() => {
-      TODOAPIUtils.push("index", {});
-    }, 100);
+    TODOAPIUtils.push("index", {});
   },
 
   getTODOsSuccess: (todos) => {
@@ -31,12 +29,10 @@ const TODOActionCreator = {
   },
 
   createTODO: (boardId, title) => {
-    setTimeout(() => {
-      TODOAPIUtils.push("create", {
-        boardId: boardId,
-        title: title,
-      });
-    }, 100);
+    TODOAPIUtils.push("create", {
+      boardId: boardId,
+      title: title,
+    });
   },
 
   createTODOSuccess: (todo) => {
