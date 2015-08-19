@@ -48,6 +48,13 @@ const TODOActionCreator = {
       id: id,
     });
   },
+
+  deleteTODOSuccess: (id) => {
+    AppDispatcher.handleServerAction({
+      type: Constants.ActionTypes.TODOS.DELETE.SUCCESS_RESPONSE,
+      id: id,
+    });
+  }
 };
 
 export default TODOActionCreator;
