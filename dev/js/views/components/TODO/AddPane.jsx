@@ -68,8 +68,9 @@ class AddPane extends React.Component {
 
   _handleSubmit() {
     this.props.addTODO(this.state.title);
-    this.setState({
+    this.setState({ 
       title: '',
+      disabled: true,
     });
   }
 
@@ -78,7 +79,7 @@ class AddPane extends React.Component {
       <div style={styles.container} onClick={this._onClick}>
         <div style={styles.pane}>
           <div style={styles.header}>
-            <Input type='textarea' style={styles.textarea} ref='title' placeholder='タイトル' onChange={this._onChange} />
+            <Input type='textarea' style={styles.textarea} value={this.state.title} placeholder='タイトル' onChange={this._onChange} />
             <Button bsStyle='success' bsSize='' style={styles.addButton} onClick={this._handleSubmit} disabled={this.state.disabled} >Add</Button>
           </div>
         </div>
