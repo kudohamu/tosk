@@ -37,6 +37,13 @@ const TODOActionCreator = {
         title: title,
       });
     }, 100);
+  },
+
+  createTODOSuccess: (todo) => {
+    AppDispatcher.handleServerAction({
+      type: Constants.ActionTypes.TODOS.CREATE.SUCCESS_RESPONSE,
+      todo: todo
+    });
   }
 };
 
