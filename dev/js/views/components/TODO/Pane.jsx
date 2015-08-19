@@ -72,7 +72,6 @@ class Pane extends React.Component {
       checkable: true,
       todo: TODOStore.getTODO(this.props.id),
     };
-
     this.moveTODOQueue = new MoveTODOQueue();
 
     this.calculateProgress = this.calculateProgress.bind(this);
@@ -81,6 +80,7 @@ class Pane extends React.Component {
     this._changeContent = this._changeContent.bind(this);
     this._handleMenuToggle = this._handleMenuToggle.bind(this);
     this._handlePaneEdit = this._handlePaneEdit.bind(this);
+    this._handlePaneDelete = this._handlePaneDelete.bind(this);
     this._handleMovingTODOStart = this._handleMovingTODOStart.bind(this);
     this._handleMovingTODOEnter = this._handleMovingTODOEnter.bind(this);
     this._handleTODOPlus = this._handleTODOPlus.bind(this);
@@ -186,6 +186,10 @@ class Pane extends React.Component {
 
   _handlePaneEdit() {
     this.setState({checkable: !this.state.checkable});
+  }
+
+  _handlePaneDelete() {
+    this.props.handlePaneDelete(this.props.id);
   }
 
   _handleMovingTODOStart(id) {
@@ -296,7 +300,7 @@ class Pane extends React.Component {
     return (
       <div style={styles.container}>
         <div style={styles.pane}>
-          <Menu open={this.state.showMenu} handleMenuToggle={this._handleMenuToggle.bind(this)} handlePaneEdit={this._handlePaneEdit.bind(this)} />
+          <Menu open={this.state.showMenu} handleMenuToggle={this._handleMenuToggle.bind(this)} handlePaneEdit={this._handlePaneEdit.bind(this)} handlePaneDelete={this._handlePaneDelete} />
           <div style={styles.header.own}>
             <p style={styles.header.p}>{this.state.todo.content}</p>
             <button style={styles.header.menu} onClick={this._handleMenuToggle.bind(this)}><Glyphicon glyph="cog" /></button>
@@ -311,6 +315,7 @@ class Pane extends React.Component {
 
 Pane.propTypes = {
   id: React.PropTypes.number.isRequired,
+  handlePaneDelete: React.PropTypes.func.isRequired,
 };
 
 export default Radium(Pane);
