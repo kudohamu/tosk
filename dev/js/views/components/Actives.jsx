@@ -19,7 +19,7 @@ class Actives extends React.Component {
     super(props);
 
     this.state = {
-      todos_num: 0,
+      todos: {},
     };
 
     this.componentDidMount = this.componentDidMount.bind(this);
@@ -38,7 +38,7 @@ class Actives extends React.Component {
 
   _onChange() {
     this.setState({
-      todos_num: TODOStore.getTODOs().length,
+      todos: TODOStore.getTODOs(),
     });
   }
 
@@ -54,11 +54,9 @@ class Actives extends React.Component {
     return (
       <div style={styles.container}>
         {(() => {
-          var panes = [];
-          for(var i=0; i < this.state.todos_num; i++) {
-            panes.push(<TODOPane id={i} />);
-          }
-          return panes;
+          return Object.keys(this.state.todos).map((id) => {
+            return <TODOPane id={Number(id)} />;
+          });
         })()}
         <AddPane addTODO={this._createPane} />
       </div>
