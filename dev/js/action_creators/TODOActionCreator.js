@@ -15,6 +15,10 @@ const TODOActionCreator = {
       console.log(payload['todo']);
       TODOActionCreator.createTODOSuccess(payload['todo']);
     });
+
+    TODOAPIUtils.on('deleted', (payload) => {
+      TODOActionCreator.deleteTODOSuccess(payload['id']);
+    });
   },
 
   getTODOs: () => {
