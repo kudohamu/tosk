@@ -26,6 +26,7 @@ class Actives extends React.Component {
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
     this._onChange = this._onChange.bind(this);
     this._createPane = this._createPane.bind(this);
+    this._deletePane = this._deletePane.bind(this);
   }
 
   componentDidMount() {
@@ -50,12 +51,16 @@ class Actives extends React.Component {
     TODOActionCreator.createTODO(this.props.boardId, title);
   }
 
+  _deletePane(id) {
+    TODOActionCreator.deleteTODO(this.props.boardId, id);
+  }
+
   render() {
     return (
       <div style={styles.container}>
         {(() => {
           return Object.keys(this.state.todos).map((id) => {
-            return <TODOPane id={Number(id)} />;
+            return <TODOPane id={Number(id)} handlePaneDelete={this._deletePane} />;
           });
         })()}
         <AddPane addTODO={this._createPane} />
