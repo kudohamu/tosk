@@ -87,7 +87,7 @@ var sampleTODO = {
   ]
 }
 
-var _todos = [sampleTODO];
+var _todos = {};
 
 export default class TODOStore extends EventEmitter {
   emitChange() {
@@ -120,7 +120,9 @@ AppDispatcher.register((payload) => {
 
   switch(action.type) {
     case ActionTypes.TODOS.INDEX.SUCCESS_RESPONSE:
-      _todos = action.todos;
+      action.todos.map((todo) => {
+        _todos[todo.id] = todo;
+      });
       _TODOStore.emitChange();
       break;
   }
