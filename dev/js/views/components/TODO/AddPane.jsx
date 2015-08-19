@@ -45,11 +45,32 @@ class AddPane extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      title: '',
+      disabled: true,
+    };
+
+    this._onChange = this._onChange.bind(this);
     this._handleSubmit = this._handleSubmit.bind(this);
   }
 
+  _onChange(e) {
+    this.setState({
+      title: e.target.value,
+    });
+
+    if (e.target.value.length == 0) {
+      this.setState({ disabled: true });
+    }else {
+      this.setState({ disabled: false });
+    }
+  }
+
   _handleSubmit() {
-    this.props.addTODO(React.findDOMNode(this.refs.title).children[0].value);
+    this.props.addTODO(this.state.title);
+    this.setState({
+      title: '',
+    });
   }
 
   render() {
@@ -57,8 +78,8 @@ class AddPane extends React.Component {
       <div style={styles.container} onClick={this._onClick}>
         <div style={styles.pane}>
           <div style={styles.header}>
-            <Input type='textarea' style={styles.textarea} ref='title' placeholder='タイトル' />
-            <Button bsStyle='success' bsSize='' style={styles.addButton} onClick={this._handleSubmit} >Add</Button>
+            <Input type='textarea' style={styles.textarea} ref='title' placeholder='タイトル' onChange={this._onChange} />
+            <Button bsStyle='success' bsSize='' style={styles.addButton} onClick={this._handleSubmit} disabled={this.state.disabled} >Add</Button>
           </div>
         </div>
       </div>
