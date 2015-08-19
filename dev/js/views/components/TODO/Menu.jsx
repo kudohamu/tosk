@@ -31,6 +31,7 @@ class Menu extends React.Component {
           <ul className="dropdown-menu" >
             <MenuItem header>Header</MenuItem>
             <MenuItem onSelect={this._handlePaneEdit.bind(this)}>編集</MenuItem>
+            <MenuItem onSelect={this.props.handlePaneDelete}>削除</MenuItem>
           </ul>
         </div>
       </div>
@@ -43,6 +44,7 @@ Menu.propTypes = {
   open: React.PropTypes.bool,
   handleMenuToggle: React.PropTypes.func.isRequired,
   handlePaneEdit: React.PropTypes.func.isRequired,
+  handlePaneDelete: React.PropTypes.func.isRequired,
   position: React.PropTypes.shape({
     x: React.PropTypes.number.isRequired,
     y: React.PropTypes.number.isRequired
