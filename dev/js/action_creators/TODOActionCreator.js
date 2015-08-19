@@ -10,6 +10,11 @@ const TODOActionCreator = {
     TODOAPIUtils.on("index", (payload) => {
       TODOActionCreator.getTODOsSuccess(payload["data"]);
     });
+
+    TODOAPIUtils.on('created', (payload) => {
+      console.log(payload['todo']);
+      TODOActionCreator.createTODOSuccess(payload['todo']);
+    });
   },
 
   getTODOs: () => {
