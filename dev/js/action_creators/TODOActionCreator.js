@@ -40,7 +40,14 @@ const TODOActionCreator = {
       type: Constants.ActionTypes.TODOS.CREATE.SUCCESS_RESPONSE,
       todo: todo
     });
-  }
+  },
+
+  deleteTODO: (boardId, id) => {
+    TODOAPIUtils.push("delete", {
+      boardId: boardId,
+      id: id,
+    });
+  },
 };
 
 export default TODOActionCreator;
