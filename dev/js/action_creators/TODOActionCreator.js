@@ -58,7 +58,14 @@ const TODOActionCreator = {
       type: Constants.ActionTypes.TODOS.DELETE.SUCCESS_RESPONSE,
       id: id,
     });
-  }
+  },
+
+  changeTODO: (boardId, todo) => {
+    TODOAPIUtils.push("change", {
+      boardId: boardId,
+      todo: todo,
+    });
+  },
 };
 
 export default TODOActionCreator;
