@@ -56,6 +56,9 @@ export default {
       },
       DELETE: {
         SUCCESS_RESPONSE: null,
+      },
+      CHANGE: {
+        SUCCESS_RESPONSE: null,
       }
     },
   })
