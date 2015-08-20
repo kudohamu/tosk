@@ -133,6 +133,10 @@ AppDispatcher.register((payload) => {
       delete _todos[action.id];
       _TODOStore.emitChange();
       break;
+    case ActionTypes.TODOS.CHANGE.SUCCESS_RESPONSE:
+      _todos[action.todo.id] = action.todo;
+      _TODOStore.emitChange();
+      break;
   }
 });
 
