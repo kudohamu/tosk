@@ -7,6 +7,7 @@ const TODOActionCreator = {
   addActionListener: (boardId) => {
     TODOAPIUtils.join(boardId);
 
+    //各subscriberの設定
     TODOAPIUtils.on("index", (payload) => {
       TODOActionCreator.getTODOsSuccess(payload["data"]);
     });
@@ -18,6 +19,11 @@ const TODOActionCreator = {
 
     TODOAPIUtils.on('deleted', (payload) => {
       TODOActionCreator.deleteTODOSuccess(payload['id']);
+    });
+    
+    TODOAPIUtils.on('changed', (payload) => {
+      console.log(payload['todo']);
+      TODOActionCreator.changeTODOSuccess(payload['todo']);
     });
   },
 
