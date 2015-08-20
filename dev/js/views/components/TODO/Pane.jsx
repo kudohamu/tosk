@@ -242,7 +242,7 @@ class Pane extends React.Component {
             checked: todo.checked,
             open: todo.open,
             children: todo.children.concat([{
-              id: Math.floor(Math.random() * 10000), //TODO サーバでランダムな値を設定
+              id: '',
               content: content,
               checked: false,
               open: false,
