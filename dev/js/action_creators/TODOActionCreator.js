@@ -66,6 +66,13 @@ const TODOActionCreator = {
       todo: todo,
     });
   },
+
+  changeTODOSuccess: (todo) => {
+    AppDispatcher.handleServerAction({
+      type: Constants.ActionTypes.TODOS.CHANGE.SUCCESS_RESPONSE,
+      todo: todo,
+    });
+  },
 };
 
 export default TODOActionCreator;
