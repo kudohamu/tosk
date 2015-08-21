@@ -48,6 +48,7 @@ export default {
       },
     },
     TODOS: {
+      OPEN_FOLDER: null,
       INDEX: {
         SUCCESS_RESPONSE: null,
       },
