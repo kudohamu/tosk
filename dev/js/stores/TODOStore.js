@@ -126,6 +126,7 @@ AppDispatcher.register((payload) => {
       _TODOStore.emitChange();
       break;
     case ActionTypes.TODOS.CREATE.SUCCESS_RESPONSE:
+    case ActionTypes.TODOS.OPEN_FOLDER:
       _todos[action.todo.id] = action.todo;
       _TODOStore.emitChange();
       break;
