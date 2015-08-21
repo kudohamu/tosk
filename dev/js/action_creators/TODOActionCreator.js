@@ -27,6 +27,13 @@ const TODOActionCreator = {
     });
   },
 
+  openTODOFolder: (todo) => {
+    AppDispatcher.handleViewAction({
+      type: Constants.ActionTypes.TODOS.OPEN_FOLDER,
+      todo: todo,
+    });
+  },
+
   getTODOs: () => {
     TODOAPIUtils.push("index", {});
   },
