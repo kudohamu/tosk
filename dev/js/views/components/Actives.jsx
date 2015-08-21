@@ -60,7 +60,7 @@ class Actives extends React.Component {
       <div style={styles.container}>
         {(() => {
           return Object.keys(this.state.todos).map((id) => {
-            return <TODOPane id={Number(id)} handlePaneDelete={this._deletePane} />;
+            return <TODOPane boardId={this.props.boardId} todo={this.state.todos[id]} handlePaneDelete={this._deletePane} />;
           });
         })()}
         <AddPane addTODO={this._createPane} />

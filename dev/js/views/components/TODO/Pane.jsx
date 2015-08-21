@@ -2,6 +2,7 @@ import React from 'react/addons';
 import Radium from 'radium';
 import Vendor from 'react-vendor-prefix';
 
+import TODOActionCreator from '../../../action_creators/TODOActionCreator';
 import TODOStore from '../../../stores/TODOStore';
 
 import { ProgressBar, Glyphicon } from 'react-bootstrap';
@@ -70,7 +71,6 @@ class Pane extends React.Component {
     this.state = {
       showMenu: false,
       checkable: true,
-      todo: TODOStore.getTODO(this.props.id),
     };
     this.moveTODOQueue = new MoveTODOQueue();
 
@@ -104,9 +104,6 @@ class Pane extends React.Component {
         })
       };
     };
-    let checkFolder = (todo) => {
-    
-    };
     let checkProgress = (todo) => {
       let children = todo.children.map((todo) => {
         if(todo.children.length == 0) {
@@ -125,7 +122,7 @@ class Pane extends React.Component {
         children: children,
       };
     };
-    this.setState({ todo: checkProgress(checkTODO(this.state.todo)) });
+    TODOActionCreator.changeTODO(this.props.boardId, checkProgress(checkTODO(this.props.todo)));
   }
 
   _handleClickFolder(id) {
@@ -150,7 +147,7 @@ class Pane extends React.Component {
         };
       }
     };
-    this.setState({ todo: openFolder(this.state.todo) });
+    TODOActionCreator.openTODOFolder(openFolder(this.props.todo));
   }
 
   _changeContent(id, content) {
@@ -175,7 +172,7 @@ class Pane extends React.Component {
         };
       }
     };
-    this.setState({ todo: updateContent(this.state.todo) });
+    TODOActionCreator.changeTODO(this.props.boardId, updateContent(this.props.todo));
   }
 
   _handleMenuToggle() {
@@ -189,13 +186,14 @@ class Pane extends React.Component {
   }
 
   _handlePaneDelete() {
-    this.props.handlePaneDelete(this.props.id);
+    this.props.handlePaneDelete(this.props.todo.id);
   }
 
   _handleMovingTODOStart(id) {
     this.moveTODOQueue.setMovingTODOid(id);
   }
 
+  //TODO 不完全
   _handleMovingTODOEnter(id) {
     var exchangeTODO = {};
     if(id != this.moveTODOQueue.getMovingTODOid()) {
@@ -264,7 +262,7 @@ class Pane extends React.Component {
         );
       }
     };
-    this.setState({ todo: addTODO(this.state.todo) });
+    TODOActionCreator.changeTODO(this.props.boardId, addTODO(this.props.todo));
   }
 
   _handleTODODelete(id) {
@@ -285,7 +283,7 @@ class Pane extends React.Component {
         })
       };
     }
-    this.setState({ todo: deleteTODO(this.state.todo) });
+    TODOActionCreator.changeTODO(this.props.boardId, deleteTODO(this.props.todo));
   }
 
   _changeIntoFolder(id) {
@@ -295,17 +293,17 @@ class Pane extends React.Component {
 
   render() {
     var list = this.state.checkable ? 
-      <List todos={this.state.todo.children} handleCheck={this._handleCheck} handleClickFolder={this._handleClickFolder.bind(this)} calculateProgress={this.calculateProgress} /> : 
-      <EditableList folderID={this.state.todo.id} todos={this.state.todo.children} handleClickFolder={this._handleClickFolder} changeContent={this._changeContent} handleMovingTODOStart={this._handleMovingTODOStart} handleMovingTODOEnter={this._handleMovingTODOEnter} handleTODOPlus={this._handleTODOPlus} handleTODODelete={this._handleTODODelete} changeIntoFolder={this._changeIntoFolder} />
+      <List todos={this.props.todo.children} handleCheck={this._handleCheck} handleClickFolder={this._handleClickFolder.bind(this)} calculateProgress={this.calculateProgress} /> : 
+      <EditableList folderID={this.props.todo.id} todos={this.props.todo.children} handleClickFolder={this._handleClickFolder} changeContent={this._changeContent} handleMovingTODOStart={this._handleMovingTODOStart} handleMovingTODOEnter={this._handleMovingTODOEnter} handleTODOPlus={this._handleTODOPlus} handleTODODelete={this._handleTODODelete} changeIntoFolder={this._changeIntoFolder} />
     return (
       <div style={styles.container}>
         <div style={styles.pane}>
           <Menu open={this.state.showMenu} handleMenuToggle={this._handleMenuToggle.bind(this)} handlePaneEdit={this._handlePaneEdit.bind(this)} handlePaneDelete={this._handlePaneDelete} />
           <div style={styles.header.own}>
-            <p style={styles.header.p}>{this.state.todo.content}</p>
+            <p style={styles.header.p}>{this.props.todo.content}</p>
             <button style={styles.header.menu} onClick={this._handleMenuToggle.bind(this)}><Glyphicon glyph="cog" /></button>
           </div>
-          <ProgressBar bsStyle="success" style={styles.progress} now={this.calculateProgress(this.state.todo)} />
+          <ProgressBar bsStyle="success" style={styles.progress} now={this.calculateProgress(this.props.todo)} />
           {list}
         </div>
       </div>
@@ -314,7 +312,7 @@ class Pane extends React.Component {
 }
 
 Pane.propTypes = {
-  id: React.PropTypes.number.isRequired,
+  boardId: React.PropTypes.number.isRequired,
   handlePaneDelete: React.PropTypes.func.isRequired,
 };
 
