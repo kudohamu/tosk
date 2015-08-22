@@ -8,6 +8,7 @@ var ActionTypes = Constants.ActionTypes;
 var CHANGE_EVENT = 'change';
 
 var boards = [];
+var _boardsLoading = true;
 
 class BoardStore extends EventEmitter {
   constructor() {
@@ -29,6 +30,10 @@ class BoardStore extends EventEmitter {
   getBoards() {
     return boards;
   }
+
+  getBoardsLoading() {
+    return _boardsLoading;
+  }
 }
 
 let _BoardStore = new BoardStore();
@@ -42,6 +47,7 @@ AppDispatcher.register((payload) => {
     case ActionTypes.BOARDS.INDEX.SUCCESS_RESPONSE:
     case ActionTypes.BOARDS.CREATE.SUCCESS_RESPONSE:
     case ActionTypes.BOARDS.DELETE.SUCCESS_RESPONSE:
+      _boardsLoading = false;
       boards = action.data;
       _BoardStore.emitChange();
       break;

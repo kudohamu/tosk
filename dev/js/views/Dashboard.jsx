@@ -68,7 +68,7 @@ class Dashboard extends React.Component {
       boardId: 0,
       tab: 'Actives',
       boards: [],
-      boardsLoading: true,
+      boardsLoading: BoardStore.getBoardsLoading(),
     }
 
     this.componentDidMount = this.componentDidMount.bind(this);
@@ -78,18 +78,9 @@ class Dashboard extends React.Component {
     this._handleTabClick = this._handleTabClick.bind(this);
     this._handleSidebarClick = this._handleSidebarClick.bind(this);
 
-    let fetchBoards = () => {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          DashboardActionCreator.fetchBoards();
-          resolve();
-        }, 1000);
-      });
-    }
-
-    fetchBoards().then(() => {
-      this.setState({ boardsLoading: false });
-    });
+    setTimeout(() => {
+      DashboardActionCreator.fetchBoards();
+    }, 100);
   }
 
   componentDidMount() {
@@ -103,6 +94,7 @@ class Dashboard extends React.Component {
   _onChange() {
     this.setState({ 
       boards: BoardStore.getBoards(),
+      boardsLoading: BoardStore.getBoardsLoading(),
     });
 
     if(this.state.boards.length != 0) {
