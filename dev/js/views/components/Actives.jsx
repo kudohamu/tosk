@@ -43,10 +43,6 @@ class Actives extends React.Component {
     });
   }
 
-  sendTODO() {
-    this._chan.push("change", {body: "change"});
-  }
-
   _createPane(title) {
     TODOActionCreator.createTODO(this.props.boardId, title);
   }
