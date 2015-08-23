@@ -27,6 +27,15 @@ const TODOActionCreator = {
     });
   },
 
+  removeActionListener: () => {
+    TODOAPIUtils.off('index');
+    TODOAPIUtils.off('created');
+    TODOAPIUtils.off('deleted');
+    TODOAPIUtils.off('changed');
+
+    TODOAPIUtils.leave();
+  },
+
   openTODOFolder: (todo) => {
     AppDispatcher.handleViewAction({
       type: Constants.ActionTypes.TODOS.OPEN_FOLDER,
