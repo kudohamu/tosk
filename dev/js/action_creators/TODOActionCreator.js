@@ -86,6 +86,12 @@ const TODOActionCreator = {
       todo: todo,
     });
   },
+
+  clearTODOs: () => {
+    AppDispatcher.handleViewAction({
+      type: Constants.ActionTypes.TODOS.CLEAR,
+    });
+  }
 };
 
 export default TODOActionCreator;
