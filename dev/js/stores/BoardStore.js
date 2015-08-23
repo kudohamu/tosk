@@ -9,6 +9,7 @@ var CHANGE_EVENT = 'change';
 
 var boards = [];
 var _boardsLoading = true;
+var _currentBoard = 0;
 
 class BoardStore extends EventEmitter {
   constructor() {
@@ -34,6 +35,10 @@ class BoardStore extends EventEmitter {
   getBoardsLoading() {
     return _boardsLoading;
   }
+
+  getCurrentBoard() {
+    return _currentBoard;
+  }
 }
 
 let _BoardStore = new BoardStore();
@@ -49,6 +54,13 @@ AppDispatcher.register((payload) => {
     case ActionTypes.BOARDS.DELETE.SUCCESS_RESPONSE:
       _boardsLoading = false;
       boards = action.data;
+      if(_currentBoard == 0 && boards.length != 0) {
+        _currentBoard = boards[0].id;
+      }
+      _BoardStore.emitChange();
+      break;
+    case ActionTypes.BOARDS.CHANGE_CURRENT:
+      _currentBoard = action.boardId;
       _BoardStore.emitChange();
       break;
   }
