@@ -34,6 +34,7 @@ export default {
       SIGN_OUT: null,
     },
     BOARDS: {
+      CHANGE_CURRENT: null,
       INDEX: {
         SUCCESS_RESPONSE: null,
         ERROR_RESPONSE: null,
