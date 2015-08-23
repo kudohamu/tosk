@@ -3,6 +3,12 @@ import AppDispatcher from '../dispatcher/Dispatcher';
 import BoardAPIUtils from '../utils/BoardAPIUtils';
 
 const DashboardActionCreator = {
+  changeCurrentBoard: (boardId) => {
+    AppDispatcher.handleViewAction({
+      type: Constants.ActionTypes.BOARDS.CHANGE_CURRENT,
+      boardId: boardId,
+    });
+  },
   fetchBoards: () => {
     BoardAPIUtils.index();
   },
