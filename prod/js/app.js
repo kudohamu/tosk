@@ -1517,6 +1517,10 @@ var _componentsSidebarSidebar2 = _interopRequireDefault(_componentsSidebarSideba
 
 var _stylesHeaderGlobalStyles = require('../styles/Header/GlobalStyles');
 
+var _componentsConfirmationModalSmallModal = require('./components/ConfirmationModal/SmallModal');
+
+var _componentsConfirmationModalSmallModal2 = _interopRequireDefault(_componentsConfirmationModalSmallModal);
+
 var _componentsActives = require('./components/Actives');
 
 var _componentsActives2 = _interopRequireDefault(_componentsActives);
@@ -1601,6 +1605,7 @@ var Dashboard = (function (_React$Component) {
     this._handleTabPlus = this._handleTabPlus.bind(this);
     this._handleTabClick = this._handleTabClick.bind(this);
     this._handleSidebarClick = this._handleSidebarClick.bind(this);
+    this._createBoard = this._createBoard.bind(this);
 
     setTimeout(function () {
       _action_creatorsDashboardActionCreator2['default'].fetchBoards();
@@ -1655,46 +1660,66 @@ var Dashboard = (function (_React$Component) {
       this.setState({ tab: tab });
     }
   }, {
+    key: '_createBoard',
+    value: function _createBoard() {
+      var name = _reactAddons2['default'].findDOMNode(this.refs.board_name).value;
+      this._handleTabPlus(name);
+    }
+  }, {
     key: 'render',
     value: function render() {
       var _this = this;
 
-      return this.state.boardsLoading ? _reactAddons2['default'].createElement(_componentsLoading2['default'], null) : _reactAddons2['default'].createElement(
-        'div',
-        { style: styles.container },
-        _reactAddons2['default'].createElement(
-          'div',
-          { style: styles.sidebar },
-          _reactAddons2['default'].createElement(_componentsSidebarSidebar2['default'], { boardId: this.state.boardId, current: this.state.tab, handleSidebarClick: this._handleSidebarClick })
-        ),
-        _reactAddons2['default'].createElement(
-          'div',
-          { style: styles.content },
+      if (this.state.boardsLoading) {
+        return _reactAddons2['default'].createElement(_componentsLoading2['default'], null);
+      } else if (this.state.boards.length == 0) {
+        return _reactAddons2['default'].createElement(
+          _componentsConfirmationModalSmallModal2['default'],
+          { title: 'Board名を入力してください', handleSubmit: this._createBoard, onRequestHide: function () {}, cancelable: false },
           _reactAddons2['default'].createElement(
             'div',
-            { style: styles.tab_area },
-            _reactAddons2['default'].createElement(_componentsTabHeader2['default'], { boardId: this.state.boardId, items: this.state.boards, handleTabPlus: this._handleTabPlus, handleTabClick: this._handleTabClick }),
+            { className: 'form-group' },
+            _reactAddons2['default'].createElement('input', { type: 'text', className: 'form-control input', placeholder: 'Board名', ref: 'board_name' })
+          )
+        );
+      } else {
+        return _reactAddons2['default'].createElement(
+          'div',
+          { style: styles.container },
+          _reactAddons2['default'].createElement(
+            'div',
+            { style: styles.sidebar },
+            _reactAddons2['default'].createElement(_componentsSidebarSidebar2['default'], { boardId: this.state.boardId, current: this.state.tab, handleSidebarClick: this._handleSidebarClick })
+          ),
+          _reactAddons2['default'].createElement(
+            'div',
+            { style: styles.content },
             _reactAddons2['default'].createElement(
               'div',
-              { style: styles.tab_body },
-              (function () {
-                switch (_this.state.tab) {
-                  case 'Actives':
-                    return _reactAddons2['default'].createElement(_componentsActives2['default'], { boardId: _this.state.boardId });
-                  case 'Templates':
-                    return _reactAddons2['default'].createElement(_componentsActives2['default'], null);
-                  case 'Members':
-                    return _reactAddons2['default'].createElement(_componentsInvite2['default'], null);
-                  case 'Settings':
-                    return _reactAddons2['default'].createElement(_componentsSettings2['default'], null);
-                  case 'Logs':
-                    return _reactAddons2['default'].createElement(_componentsLogs2['default'], null);
-                }
-              })()
+              { style: styles.tab_area },
+              _reactAddons2['default'].createElement(_componentsTabHeader2['default'], { boardId: this.state.boardId, items: this.state.boards, handleTabPlus: this._handleTabPlus, handleTabClick: this._handleTabClick }),
+              _reactAddons2['default'].createElement(
+                'div',
+                { style: styles.tab_body },
+                (function () {
+                  switch (_this.state.tab) {
+                    case 'Actives':
+                      return _reactAddons2['default'].createElement(_componentsActives2['default'], { boardId: _this.state.boardId });
+                    case 'Templates':
+                      return _reactAddons2['default'].createElement(_componentsActives2['default'], null);
+                    case 'Members':
+                      return _reactAddons2['default'].createElement(_componentsInvite2['default'], null);
+                    case 'Settings':
+                      return _reactAddons2['default'].createElement(_componentsSettings2['default'], null);
+                    case 'Logs':
+                      return _reactAddons2['default'].createElement(_componentsLogs2['default'], null);
+                  }
+                })()
+              )
             )
           )
-        )
-      );
+        );
+      }
     }
   }]);
 
@@ -1704,7 +1729,7 @@ var Dashboard = (function (_React$Component) {
 exports['default'] = (0, _radium2['default'])(Dashboard);
 module.exports = exports['default'];
 
-},{"../action_creators/DashboardActionCreator":1,"../action_creators/TODOActionCreator":3,"../stores/BoardStore":8,"../styles/Header/GlobalStyles":13,"./components/Actives":23,"./components/Invite":28,"./components/Loading":29,"./components/Logs":30,"./components/Settings":31,"./components/Sidebar/Sidebar":33,"./components/Tab/Header":51,"radium":69,"react-vendor-prefix":193,"react/addons":194}],21:[function(require,module,exports){
+},{"../action_creators/DashboardActionCreator":1,"../action_creators/TODOActionCreator":3,"../stores/BoardStore":8,"../styles/Header/GlobalStyles":13,"./components/Actives":23,"./components/ConfirmationModal/SmallModal":25,"./components/Invite":28,"./components/Loading":29,"./components/Logs":30,"./components/Settings":31,"./components/Sidebar/Sidebar":33,"./components/Tab/Header":51,"radium":69,"react-vendor-prefix":193,"react/addons":194}],21:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2311,9 +2336,20 @@ var styles = _reactVendorPrefix2['default'].prefix({
     margin: '0'
   },
   body: {},
-  submitButton: {
+  buttonWrapper: {
+    display: 'inline-block',
     position: 'absolute',
-    right: '8px',
+    right: '8px'
+  },
+  cancelableButtonWrapper: {
+    display: 'block',
+    position: 'static',
+    right: '0px',
+    width: '70px',
+    marginLeft: 'auto',
+    marginRight: 'auto'
+  },
+  submitButton: {
     width: '70px'
   }
 });
@@ -2330,6 +2366,8 @@ var SmallModal = (function (_React$Component) {
   _createClass(SmallModal, [{
     key: 'render',
     value: function render() {
+      var _this = this;
+
       return _reactAddons2['default'].createElement(
         _reactBootstrap.Modal,
         { bsSize: 'small', 'aria-labelledby': 'contained-modal-title-sm', onRequestHide: this.props.onRequestHide },
@@ -2347,15 +2385,23 @@ var SmallModal = (function (_React$Component) {
             { style: styles.body },
             this.props.children
           ),
+          (function () {
+            if (_this.props.cancelable) {
+              return _reactAddons2['default'].createElement(
+                _reactBootstrap.Button,
+                { bsStyle: 'danger', onClick: _this.props.handleCancel },
+                'Cancel'
+              );
+            }
+          })(),
           _reactAddons2['default'].createElement(
-            _reactBootstrap.Button,
-            { bsStyle: 'danger', onClick: this.props.handleCancel },
-            'Cancel'
-          ),
-          _reactAddons2['default'].createElement(
-            _reactBootstrap.Button,
-            { bsStyle: 'success', style: styles.submitButton, onClick: this.props.handleSubmit },
-            'OK'
+            'div',
+            { style: [styles.buttonWrapper, !this.props.cancelable && styles.cancelableButtonWrapper] },
+            _reactAddons2['default'].createElement(
+              _reactBootstrap.Button,
+              { style: styles.submitButton, bsStyle: 'success', onClick: this.props.handleSubmit },
+              'OK'
+            )
           )
         )
       );
@@ -2367,9 +2413,13 @@ var SmallModal = (function (_React$Component) {
 
 SmallModal.propTypes = {
   title: _reactAddons2['default'].PropTypes.string,
-  handleCancel: _reactAddons2['default'].PropTypes.func.isRequired,
+  handleCancel: _reactAddons2['default'].PropTypes.func,
   handleSubmit: _reactAddons2['default'].PropTypes.func.isRequired,
   onRequestHide: _reactAddons2['default'].PropTypes.func.isRequired
+};
+
+SmallModal.defaultProps = {
+  cancelable: true
 };
 
 exports['default'] = (0, _radium2['default'])(SmallModal);

@@ -10,6 +10,7 @@ import TabHeader from './components/Tab/Header';
 import Sidebar from './components/Sidebar/Sidebar';
 import { HEADER_HEIGHT } from '../styles/Header/GlobalStyles';
 
+import SmallModal from './components/ConfirmationModal/SmallModal';
 import Actives from './components/Actives';
 import Templates from './components/Actives';
 import Members from './components/Invite';
@@ -77,6 +78,7 @@ class Dashboard extends React.Component {
     this._handleTabPlus = this._handleTabPlus.bind(this);
     this._handleTabClick = this._handleTabClick.bind(this);
     this._handleSidebarClick = this._handleSidebarClick.bind(this);
+    this._createBoard = this._createBoard.bind(this);
 
     setTimeout(() => {
       DashboardActionCreator.fetchBoards();
@@ -122,40 +124,54 @@ class Dashboard extends React.Component {
     this.setState({ tab: tab });
   }
 
+  _createBoard() {
+    let name = React.findDOMNode(this.refs.board_name).value;
+    this._handleTabPlus(name);
+  }
+
   render() {
-    return(
-      this.state.boardsLoading ?
-      <Loading />
-      :
-      <div style={styles.container}>
-        <div style={styles.sidebar}>
-          <Sidebar boardId={this.state.boardId} current={this.state.tab} handleSidebarClick={this._handleSidebarClick} />
-        </div>
-        <div style={styles.content}>
-          <div style={styles.tab_area}>
-            <TabHeader boardId={this.state.boardId} items={this.state.boards} handleTabPlus={this._handleTabPlus} handleTabClick={this._handleTabClick} />
-            <div style={styles.tab_body}>
-              {
-                (() => {
-                  switch(this.state.tab) {
-                    case 'Actives':
-                      return (<Actives boardId={this.state.boardId} />);
-                    case 'Templates':
-                      return (<Actives />);
-                    case 'Members':
-                      return (<Members />);
-                    case 'Settings':
-                      return (<Settings />);
-                    case 'Logs':
-                      return (<Logs />);
-                  }
-                })()
-              }
+    if (this.state.boardsLoading) {
+      return (<Loading />);
+    }else if (this.state.boards.length == 0) {
+      return (
+        <SmallModal title='Board名を入力してください' handleSubmit={this._createBoard} onRequestHide={() => {}} cancelable={false} >
+          <div className='form-group'>
+            <input type='text' className='form-control input' placeholder='Board名' ref='board_name' />
+          </div>
+        </SmallModal>
+      );
+    }else {
+      return (
+        <div style={styles.container}>
+          <div style={styles.sidebar}>
+            <Sidebar boardId={this.state.boardId} current={this.state.tab} handleSidebarClick={this._handleSidebarClick} />
+          </div>
+          <div style={styles.content}>
+            <div style={styles.tab_area}>
+              <TabHeader boardId={this.state.boardId} items={this.state.boards} handleTabPlus={this._handleTabPlus} handleTabClick={this._handleTabClick} />
+              <div style={styles.tab_body}>
+                {
+                  (() => {
+                    switch(this.state.tab) {
+                      case 'Actives':
+                        return (<Actives boardId={this.state.boardId} />);
+                      case 'Templates':
+                        return (<Actives />);
+                      case 'Members':
+                        return (<Members />);
+                      case 'Settings':
+                        return (<Settings />);
+                      case 'Logs':
+                        return (<Logs />);
+                    }
+                  })()
+                }
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    );
+      );
+    }
   }
 }
 
