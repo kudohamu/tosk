@@ -20,9 +20,20 @@ var styles = Vendor.prefix({
   body: {
   
   },
-  submitButton: {
+  buttonWrapper: {
+    display:'inline-block',
     position:'absolute',
     right:'8px',
+  },
+  cancelableButtonWrapper: {
+    display:'block',
+    position:'static',
+    right:'0px',
+    width:'70px',
+    marginLeft:'auto',
+    marginRight:'auto',
+  },
+  submitButton: {
     width:'70px',
   }
 });
@@ -39,8 +50,17 @@ class SmallModal extends React.Component {
           <p style={styles.title}>{this.props.title}</p>
           <hr />
           <div style={styles.body}>{this.props.children}</div>
-          <Button bsStyle='danger' onClick={this.props.handleCancel}>Cancel</Button>
-          <Button bsStyle='success' style={styles.submitButton} onClick={this.props.handleSubmit}>OK</Button>
+          {(() => {
+            if (this.props.cancelable) {
+              return (<Button bsStyle='danger' onClick={this.props.handleCancel}>Cancel</Button>);
+            }
+          })()}
+          <div style={[
+            styles.buttonWrapper,
+            !this.props.cancelable && styles.cancelableButtonWrapper
+          ]} >
+            <Button style={styles.submitButton} bsStyle='success' onClick={this.props.handleSubmit}>OK</Button>
+          </div>
         </div>
       </Modal>
     );
@@ -49,9 +69,13 @@ class SmallModal extends React.Component {
 
 SmallModal.propTypes = {
   title: React.PropTypes.string,
-  handleCancel: React.PropTypes.func.isRequired,
+  handleCancel: React.PropTypes.func,
   handleSubmit: React.PropTypes.func.isRequired,
   onRequestHide: React.PropTypes.func.isRequired,
 };
+
+SmallModal.defaultProps = {
+  cancelable: true,
+}
 
 export default Radium(SmallModal);
