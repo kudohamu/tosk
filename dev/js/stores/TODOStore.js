@@ -119,6 +119,10 @@ AppDispatcher.register((payload) => {
   var action = payload.action;
 
   switch(action.type) {
+    case ActionTypes.TODOS.CLEAR:
+      _todos = {};
+      _TODOStore.emitChange();
+      break;
     case ActionTypes.TODOS.INDEX.SUCCESS_RESPONSE:
       action.todos.map((todo) => {
         _todos[todo.id] = todo;
