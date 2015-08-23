@@ -66,9 +66,9 @@ class Dashboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      boardId: 0,
+      boardId: BoardStore.getCurrentBoard(),
       tab: 'Actives',
-      boards: [],
+      boards: BoardStore.getBoards(),
       boardsLoading: BoardStore.getBoardsLoading(),
     }
 
@@ -97,13 +97,11 @@ class Dashboard extends React.Component {
     this.setState({ 
       boards: BoardStore.getBoards(),
       boardsLoading: BoardStore.getBoardsLoading(),
+      boardId: BoardStore.getCurrentBoard(),
     });
 
-    if(this.state.boards.length != 0) {
-      this.setState({
-        boardId: this.state.boards[0].id,
-      });
-      TODOActionCreator.addActionListener(this.state.boardId);
+    if(BoardStore.getCurrentBoard() != 0) {
+      TODOActionCreator.addActionListener(BoardStore.getCurrentBoard());
       TODOActionCreator.getTODOs();
     }
   }
@@ -113,11 +111,11 @@ class Dashboard extends React.Component {
   }
 
   _handleTabClick(boardId) {
-    if(this.state.boardId != boardId) {
-      TODOActionCreator.addActionListener(boardId);
-      TODOActionCreator.getTODOs();
+    if(boardId != this.state.boardId) {
+      TODOActionCreator.removeActionListener();
+      TODOActionCreator.clearTODOs();
+      DashboardActionCreator.changeCurrentBoard(boardId);
     }
-    this.setState({ boardId: boardId });
   }
 
   _handleSidebarClick(tab) {
