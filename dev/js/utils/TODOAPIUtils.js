@@ -14,10 +14,19 @@ export default {
     });
   },
 
+  leave: () => {
+    ChannelStore.getChan().leave().receive("ok", chan => {
+    });
+  },
+
   on: (message, callback) => {
     ChannelStore.getChan().on(message, (payload) => {
       callback(payload);
     });
+  },
+
+  off: (message) => {
+    ChannelStore.getChan().off(message);
   },
 
   push: (message, payload) => {
