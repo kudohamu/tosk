@@ -124,6 +124,7 @@ AppDispatcher.register((payload) => {
       _TODOStore.emitChange();
       break;
     case ActionTypes.TODOS.INDEX.SUCCESS_RESPONSE:
+      _todos = {};
       action.todos.map((todo) => {
         _todos[todo.id] = todo;
       });
