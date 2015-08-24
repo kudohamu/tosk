@@ -8,7 +8,9 @@ import ChannelStore from '../stores/ChannelStore';
 
 export default {
   join: (boardId) => {
-    ChannelStore.setChan(`todos:${boardId}`);
+    const topic = `todos:${boardId}`;
+    ChannelStore.setChan(topic);
+    ChannelStore.registerTopic(topic);
 
     ChannelStore.getChan().join().receive("ok", chan => {
     });
