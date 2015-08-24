@@ -38,7 +38,7 @@ export default {
       {},
       (res) => {
         if (res["body"]["result"] == "ok") {
-          DashboardActionCreator.getBoardsSuccess(res["body"]["boards"]);
+          DashboardActionCreator.deleteBoardsSuccess(res["body"]["boards"]);
         }else {
         }
       }
