@@ -5,7 +5,8 @@ import Vendor from 'react-vendor-prefix';
 import { Button } from 'react-bootstrap';
 
 import SmallModal from './ConfirmationModal/SmallModal';
-import BoardAPIUtils from '../../utils/BoardAPIUtils';
+import DashboardActionCreator from '../../action_creators/DashboardActionCreator';
+import TODOActionCreator from '../../action_creators/TODOActionCreator';
 
 var styles = Vendor.prefix({
 });
@@ -29,7 +30,7 @@ class Settings extends React.Component {
 
   _handleBoardDeleteSubmit() {
     this.setState({ deleteConfirmation: false });
-    BoardAPIUtils.delete(this.props.params.boardId);
+    DashboardActionCreator.deleteBoard(this.props.boardId);
   }
 
   _handleBoardDeleteCancel() {
@@ -55,6 +56,7 @@ class Settings extends React.Component {
 }
 
 Settings.propTypes = {
+  boardId: React.PropTypes.number.isRequired,
 };
 
 export default Radium(Settings);
