@@ -158,7 +158,7 @@ class Dashboard extends React.Component {
                       case 'Members':
                         return (<Members />);
                       case 'Settings':
-                        return (<Settings />);
+                        return (<Settings boardId={this.state.boardId} />);
                       case 'Logs':
                         return (<Logs />);
                     }
