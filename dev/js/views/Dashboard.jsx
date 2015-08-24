@@ -3,6 +3,7 @@ import Radium from 'radium';
 import Vendor from 'react-vendor-prefix';
 
 import BoardStore from '../stores/BoardStore';
+import ChannelStore from '../stores/ChannelStore';
 import TODOActionCreator from '../action_creators/TODOActionCreator';
 import DashboardActionCreator from '../action_creators/DashboardActionCreator';
 
@@ -101,8 +102,13 @@ class Dashboard extends React.Component {
     });
 
     if(BoardStore.getCurrentBoard() != 0) {
+      if(ChannelStore.readTopic() != '') {
+        TODOActionCreator.removeActionListener();
+      }
       TODOActionCreator.addActionListener(BoardStore.getCurrentBoard());
-      TODOActionCreator.getTODOs();
+      setTimeout(() => {
+        TODOActionCreator.getTODOs();
+      }, 100);
     }
   }
 
@@ -112,8 +118,6 @@ class Dashboard extends React.Component {
 
   _handleTabClick(boardId) {
     if(boardId != this.state.boardId) {
-      TODOActionCreator.removeActionListener();
-      TODOActionCreator.clearTODOs();
       DashboardActionCreator.changeCurrentBoard(boardId);
     }
   }
