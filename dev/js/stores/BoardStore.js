@@ -51,11 +51,19 @@ AppDispatcher.register((payload) => {
   switch(action.type) {
     case ActionTypes.BOARDS.INDEX.SUCCESS_RESPONSE:
     case ActionTypes.BOARDS.CREATE.SUCCESS_RESPONSE:
-    case ActionTypes.BOARDS.DELETE.SUCCESS_RESPONSE:
       _boardsLoading = false;
       boards = action.data;
       if(_currentBoard == 0 && boards.length != 0) {
         _currentBoard = boards[0].id;
+      }
+      _BoardStore.emitChange();
+      break;
+    case ActionTypes.BOARDS.DELETE.SUCCESS_RESPONSE:
+      boards = action.data;
+      if(boards.length != 0) {
+        _currentBoard = boards[0].id;
+      }else {
+        _currentBoard = 0;
       }
       _BoardStore.emitChange();
       break;
