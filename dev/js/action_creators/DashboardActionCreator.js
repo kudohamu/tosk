@@ -27,6 +27,9 @@ const DashboardActionCreator = {
       data: data
     });
   },
+  deleteBoard: (id) => {
+    BoardAPIUtils.delete(id);
+  },
   deleteBoardsSuccess: (data) => {
     AppDispatcher.handleServerAction({
       type: Constants.ActionTypes.BOARDS.DELETE.SUCCESS_RESPONSE,
