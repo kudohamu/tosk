@@ -26,7 +26,7 @@ export default {
       },
       (res) => {
         if (res["body"]["result"] == "ok") {
-          DashboardActionCreator.getBoardsSuccess(res["body"]["boards"]);
+          DashboardActionCreator.createBoardsSuccess(res["body"]["boards"]);
         }else {
         }
       }
