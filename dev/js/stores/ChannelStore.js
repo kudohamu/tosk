@@ -9,6 +9,7 @@ const CHANGE_EVENT = 'change';
 
 var _socket = {};
 var _chan = {};
+var _currentTopic = '';
 
 class ChannelStore extends EventEmitter {
   emitChange() {
