@@ -36,6 +36,14 @@ class ChannelStore extends EventEmitter {
   getChan() {
     return _chan;
   }
+
+  registerTopic(topic) {
+    _currentTopic = topic;
+  }
+
+  readTopic() {
+    return _currentTopic;
+  }
 }
 
 let _ChannelStore = new ChannelStore();
