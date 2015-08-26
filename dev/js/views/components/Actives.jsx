@@ -19,7 +19,7 @@ class Actives extends React.Component {
     super(props);
 
     this.state = {
-      todos: {},
+      todos: TODOStore.getTODOs(),
     };
 
     this.componentDidMount = this.componentDidMount.bind(this);
