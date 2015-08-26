@@ -30,7 +30,11 @@ class Menu extends React.Component {
         <div className={dropdownClass} >
           <ul className="dropdown-menu" >
             <MenuItem header>Header</MenuItem>
-            <MenuItem onSelect={this._handlePaneEdit.bind(this)}>編集</MenuItem>
+            <MenuItem onSelect={this._handlePaneEdit.bind(this)}>{
+              this.props.checkable ?
+              '編集モードに切り替え' :
+              'チェックモードに切り替え'
+            }</MenuItem>
             <MenuItem onSelect={this.props.handlePaneDelete}>削除</MenuItem>
           </ul>
         </div>
