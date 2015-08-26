@@ -56,7 +56,6 @@ const TODOActionCreator = {
 
   createTODO: (title) => {
     TODOAPIUtils.push("create", {
-      boardId: boardId,
       title: title,
     });
   },
@@ -70,7 +69,6 @@ const TODOActionCreator = {
 
   deleteTODO: (id) => {
     TODOAPIUtils.push("delete", {
-      boardId: boardId,
       id: id,
     });
   },
@@ -84,7 +82,6 @@ const TODOActionCreator = {
 
   changeTODO: (todo) => {
     TODOAPIUtils.push("change", {
-      boardId: boardId,
       todo: todo,
     });
   },
