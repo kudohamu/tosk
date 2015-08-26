@@ -56,7 +56,7 @@ class Actives extends React.Component {
       <div style={styles.container}>
         {(() => {
           return Object.keys(this.state.todos).map((id) => {
-            return <TODOPane boardId={this.props.boardId} todo={this.state.todos[id]} handlePaneDelete={this._deletePane} />;
+            return <TODOPane todo={this.state.todos[id]} handlePaneDelete={this._deletePane} />;
           });
         })()}
         <AddPane addTODO={this._createPane} />
@@ -66,7 +66,6 @@ class Actives extends React.Component {
 }
 
 Actives.propTypes = {
-  boardId: React.PropTypes.number.isRequired,
 };
 
 export default Radium(Actives);

@@ -156,7 +156,7 @@ class Dashboard extends React.Component {
                   (() => {
                     switch(this.state.tab) {
                       case 'Actives':
-                        return (<Actives boardId={this.state.boardId} />);
+                        return (<Actives />);
                       case 'Templates':
                         return (<Actives />);
                       case 'Members':

@@ -312,7 +312,6 @@ class Pane extends React.Component {
 }
 
 Pane.propTypes = {
-  boardId: React.PropTypes.number.isRequired,
   handlePaneDelete: React.PropTypes.func.isRequired,
 };
 
