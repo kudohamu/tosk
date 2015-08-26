@@ -44,11 +44,11 @@ class Actives extends React.Component {
   }
 
   _createPane(title) {
-    TODOActionCreator.createTODO(this.props.boardId, title);
+    TODOActionCreator.createTODO(title);
   }
 
   _deletePane(id) {
-    TODOActionCreator.deleteTODO(this.props.boardId, id);
+    TODOActionCreator.deleteTODO(id);
   }
 
   render() {

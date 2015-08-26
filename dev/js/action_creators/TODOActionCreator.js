@@ -54,7 +54,7 @@ const TODOActionCreator = {
     });
   },
 
-  createTODO: (boardId, title) => {
+  createTODO: (title) => {
     TODOAPIUtils.push("create", {
       boardId: boardId,
       title: title,
@@ -68,7 +68,7 @@ const TODOActionCreator = {
     });
   },
 
-  deleteTODO: (boardId, id) => {
+  deleteTODO: (id) => {
     TODOAPIUtils.push("delete", {
       boardId: boardId,
       id: id,
@@ -82,7 +82,7 @@ const TODOActionCreator = {
     });
   },
 
-  changeTODO: (boardId, todo) => {
+  changeTODO: (todo) => {
     TODOAPIUtils.push("change", {
       boardId: boardId,
       todo: todo,
