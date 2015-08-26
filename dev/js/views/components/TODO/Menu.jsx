@@ -48,7 +48,8 @@ Menu.propTypes = {
   position: React.PropTypes.shape({
     x: React.PropTypes.number.isRequired,
     y: React.PropTypes.number.isRequired
-  })
+  }),
+  checkable: React.PropTypes.bool.isRequired,
 };
 
 export default Radium(Menu);

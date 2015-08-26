@@ -298,7 +298,7 @@ class Pane extends React.Component {
     return (
       <div style={styles.container}>
         <div style={styles.pane}>
-          <Menu open={this.state.showMenu} handleMenuToggle={this._handleMenuToggle.bind(this)} handlePaneEdit={this._handlePaneEdit.bind(this)} handlePaneDelete={this._handlePaneDelete} />
+          <Menu open={this.state.showMenu} handleMenuToggle={this._handleMenuToggle.bind(this)} handlePaneEdit={this._handlePaneEdit.bind(this)} handlePaneDelete={this._handlePaneDelete} checkable={this.state.checkable} />
           <div style={styles.header.own}>
             <p style={styles.header.p}>{this.props.todo.content}</p>
             <button style={styles.header.menu} onClick={this._handleMenuToggle.bind(this)}><Glyphicon glyph="cog" /></button>
