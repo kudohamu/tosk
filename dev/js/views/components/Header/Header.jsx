@@ -22,9 +22,11 @@ var items = [
   {
     title: 'Dashboard',
   },
+  /*
   {
     title: 'Public Templates',
   },
+  */
   {
     title: 'Profile',
   },

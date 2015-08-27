@@ -23,21 +23,26 @@ var items = [
     iconColor: 'rgba(85,76,210,1)',
     title: 'Templates',
   },
+  /*
   {
     icon: 'user',
     iconColor: 'rgba(111,223,95,1)',
     title: 'Members',
   },
+  */
   {
     icon: 'cog',
     iconColor: 'rgba(236,228,209,1)',
     title: 'Settings',
-  },
+  }
+  /*
+  ,
   {
     icon: 'align-left',
     iconColor: 'rgba(255,255,69,1)',
     title: 'Logs',
   }
+  */
 ];
 
 class Sidebar extends React.Component {
