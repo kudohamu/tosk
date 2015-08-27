@@ -47,6 +47,9 @@ export default {
         SUCCESS_RESPONSE: null,
         ERROR_RESPONSE: null,
       },
+      CHANGE: {
+        SUCCESS_RESPONSE: null,
+      },
     },
     TODOS: {
       OPEN_FOLDER: null,
