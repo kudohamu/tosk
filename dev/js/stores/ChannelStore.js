@@ -9,7 +9,7 @@ const CHANGE_EVENT = 'change';
 
 var _socket = {};
 var _chan = {};
-var _currentTopic = '';
+var _currentTopic = {};
 
 class ChannelStore extends EventEmitter {
   emitChange() {
@@ -29,20 +29,22 @@ class ChannelStore extends EventEmitter {
     _socket.connect();
   }
 
-  setChan(topic) {
-    _chan = _socket.chan(topic, {});
+  setChan(name, topic) {
+    _chan[name] = _socket.chan(topic, {});
   }
 
-  getChan() {
-    return _chan;
+  getChan(name) {
+    return _chan[name];
+    console.log(_chan[name]);
   }
 
-  registerTopic(topic) {
-    _currentTopic = topic;
+  registerTopic(name, topic) {
+    _currentTopic[name] = topic;
   }
 
-  readTopic() {
-    return _currentTopic;
+  readTopic(name) {
+    return _currentTopic[name];
+    console.info(_chan[name]);
   }
 }
 
