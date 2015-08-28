@@ -50,10 +50,9 @@ AppDispatcher.register((payload) => {
 
   switch(action.type) {
     case ActionTypes.BOARDS.INDEX.SUCCESS_RESPONSE:
-    case ActionTypes.BOARDS.CREATE.SUCCESS_RESPONSE:
       _boardsLoading = false;
       _boards = {};
-      action.data.map((board) => {
+      action.boards.map((board) => {
         _boards[board.id] = board;
       });
       if(_currentBoard.length != {} && _boards.length != 0) {
@@ -61,11 +60,12 @@ AppDispatcher.register((payload) => {
       }
       _BoardStore.emitChange();
       break;
+    case ActionTypes.BOARDS.CREATE.SUCCESS_RESPONSE:
+      _boards[action.board.id] = action.board;
+      _BoardStore.emitChange();
+      break;
     case ActionTypes.BOARDS.DELETE.SUCCESS_RESPONSE:
-      _boards = {};
-      action.data.map((board) => {
-        _boards[board.id] = board;
-      });
+      delete _boards[action.id];
       if(_boards.length != 0) {
         _currentBoard = _boards[(Object.keys(_boards))[0]];
       }else {

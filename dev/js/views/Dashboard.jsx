@@ -81,9 +81,8 @@ class Dashboard extends React.Component {
     this._handleSidebarClick = this._handleSidebarClick.bind(this);
     this._createBoard = this._createBoard.bind(this);
 
-    setTimeout(() => {
-      DashboardActionCreator.fetchBoards();
-    }, 100);
+    DashboardActionCreator.addActionListener();
+    DashboardActionCreator.getBoards();
   }
 
   componentDidMount() {
