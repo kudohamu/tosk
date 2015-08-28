@@ -29,8 +29,8 @@ class ChannelStore extends EventEmitter {
     _socket.connect();
   }
 
-  setChan(channel) {
-    _chan = _socket.chan(channel, {});
+  setChan(topic) {
+    _chan = _socket.chan(topic, {});
   }
 
   getChan() {
