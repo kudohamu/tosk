@@ -101,7 +101,7 @@ class Dashboard extends React.Component {
       currentBoard: BoardStore.getCurrentBoard(),
     });
     if(BoardStore.getCurrentBoard() != {}) {
-      if(ChannelStore.readTopic() != '') {
+      if(ChannelStore.readTopic('todo') != undefined) {
         TODOActionCreator.removeActionListener();
       }
       TODOActionCreator.addActionListener(BoardStore.getCurrentBoard().id);
