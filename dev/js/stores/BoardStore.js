@@ -7,9 +7,9 @@ import BoardAPIUtils from '../utils/BoardAPIUtils';
 var ActionTypes = Constants.ActionTypes;
 var CHANGE_EVENT = 'change';
 
-var boards = [];
+var _boards = {};
 var _boardsLoading = true;
-var _currentBoard = 0;
+var _currentBoard = {};
 
 class BoardStore extends EventEmitter {
   constructor() {
@@ -29,7 +29,7 @@ class BoardStore extends EventEmitter {
   }
 
   getBoards() {
-    return boards;
+    return _boards;
   }
 
   getBoardsLoading() {
@@ -52,23 +52,29 @@ AppDispatcher.register((payload) => {
     case ActionTypes.BOARDS.INDEX.SUCCESS_RESPONSE:
     case ActionTypes.BOARDS.CREATE.SUCCESS_RESPONSE:
       _boardsLoading = false;
-      boards = action.data;
-      if(_currentBoard == 0 && boards.length != 0) {
-        _currentBoard = boards[0].id;
+      _boards = {};
+      action.data.map((board) => {
+        _boards[board.id] = board;
+      });
+      if(_currentBoard.length != {} && _boards.length != 0) {
+        _currentBoard = _boards[(Object.keys(_boards))[0]];
       }
       _BoardStore.emitChange();
       break;
     case ActionTypes.BOARDS.DELETE.SUCCESS_RESPONSE:
-      boards = action.data;
-      if(boards.length != 0) {
-        _currentBoard = boards[0].id;
+      _boards = {};
+      action.data.map((board) => {
+        _boards[board.id] = board;
+      });
+      if(_boards.length != 0) {
+        _currentBoard = _boards[(Object.keys(_boards))[0]];
       }else {
-        _currentBoard = 0;
+        _currentBoard = {};
       }
       _BoardStore.emitChange();
       break;
     case ActionTypes.BOARDS.CHANGE_CURRENT:
-      _currentBoard = action.boardId;
+      _currentBoard = _boards[action.boardId];
       _BoardStore.emitChange();
       break;
   }

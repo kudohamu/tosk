@@ -67,7 +67,7 @@ class Dashboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      boardId: BoardStore.getCurrentBoard(),
+      currentBoard: BoardStore.getCurrentBoard(),
       tab: 'Actives',
       boards: BoardStore.getBoards(),
       boardsLoading: BoardStore.getBoardsLoading(),
@@ -98,14 +98,13 @@ class Dashboard extends React.Component {
     this.setState({ 
       boards: BoardStore.getBoards(),
       boardsLoading: BoardStore.getBoardsLoading(),
-      boardId: BoardStore.getCurrentBoard(),
+      currentBoard: BoardStore.getCurrentBoard(),
     });
-
-    if(BoardStore.getCurrentBoard() != 0) {
+    if(BoardStore.getCurrentBoard() != {}) {
       if(ChannelStore.readTopic() != '') {
         TODOActionCreator.removeActionListener();
       }
-      TODOActionCreator.addActionListener(BoardStore.getCurrentBoard());
+      TODOActionCreator.addActionListener(BoardStore.getCurrentBoard().id);
       setTimeout(() => {
         TODOActionCreator.getTODOs();
       }, 100);
@@ -117,7 +116,7 @@ class Dashboard extends React.Component {
   }
 
   _handleTabClick(boardId) {
-    if(boardId != this.state.boardId) {
+    if(boardId != this.state.currentBoard.id) {
       DashboardActionCreator.changeCurrentBoard(boardId);
     }
   }
@@ -146,11 +145,11 @@ class Dashboard extends React.Component {
       return (
         <div style={styles.container}>
           <div style={styles.sidebar}>
-            <Sidebar boardId={this.state.boardId} current={this.state.tab} handleSidebarClick={this._handleSidebarClick} />
+            <Sidebar boardId={this.state.currentBoard.id} current={this.state.tab} handleSidebarClick={this._handleSidebarClick} />
           </div>
           <div style={styles.content}>
             <div style={styles.tab_area}>
-              <TabHeader boardId={this.state.boardId} items={this.state.boards} handleTabPlus={this._handleTabPlus} handleTabClick={this._handleTabClick} />
+              <TabHeader boardId={this.state.currentBoard.id} items={this.state.boards} handleTabPlus={this._handleTabPlus} handleTabClick={this._handleTabClick} />
               <div style={styles.tab_body}>
                 {
                   (() => {
@@ -162,7 +161,7 @@ class Dashboard extends React.Component {
                       case 'Members':
                         return (<Members />);
                       case 'Settings':
-                        return (<Settings boardId={this.state.boardId} />);
+                        return (<Settings boardId={this.state.currentBoard.id} boardName={this.state.currentBoard.name} />);
                       case 'Logs':
                         return (<Logs />);
                     }

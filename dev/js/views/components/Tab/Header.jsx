@@ -64,7 +64,8 @@ class Header extends React.Component {
         }
         <ul className='nav nav-tabs' style={styles.ul}>
           {
-            this.props.items.map((item) => {
+            Object.keys(this.props.items).map((key) => {
+              const item = this.props.items[key];
               return (
                 <Item boardId={item.id} name={item.name} current={this.props.boardId == item.id} handleClick={this.props.handleTabClick} />
               );
