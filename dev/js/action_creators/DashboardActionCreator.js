@@ -1,6 +1,7 @@
 import Constants from '../constants/Constants';
 import AppDispatcher from '../dispatcher/Dispatcher';
 import BoardAPIUtils from '../utils/BoardAPIUtils';
+import TODOActionCreator from './TODOActionCreator';
 
 const DashboardActionCreator = {
   changeCurrentBoard: (boardId) => {
@@ -9,68 +10,91 @@ const DashboardActionCreator = {
       boardId: boardId,
     });
   },
-  getBoardsSuccess: (data) => {
-    AppDispatcher.handleServerAction({
-      type: Constants.ActionTypes.BOARDS.INDEX.SUCCESS_RESPONSE,
-      data: data
-    });
-  },
-  addActionListener: () => {
-    BoardAPIUtils.join();
-
-    //各subscriberの設定
-    BoardAPIUtils.on("index", (payload) => {
-      DashboardActionCreator.getBoardsSuccess(payload["boards"]);
-    });
-
-    BoardAPIUtils.on("created", (payload) => {
-      DashboardActionCreator.createBoardSuccess(payload["board"]);
-    });
-
-    BoardAPIUtils.on("deleted", (payload) => {
-      DashboardActionCreator.deleteBoardSuccess(payload["id"]);
-    });
-  },
-
-  removeActionListener: () => {
-    DashboardAPIUtils.off('index');
-    DashboardAPIUtils.off('created');
-    DashboardAPIUtils.off('deleted');
-
-    DashboardAPIUtils.leave();
-  },
 
   getBoards: () => {
-    BoardAPIUtils.push("index", {});
+    BoardAPIUtils.index();
   },
 
   getBoardsSuccess: (boards) => {
+    boards.map((board) => {
+      DashboardActionCreator.addActionListener(board.id);
+    });
+
     AppDispatcher.handleServerAction({
       type: Constants.ActionTypes.BOARDS.INDEX.SUCCESS_RESPONSE,
       boards: boards
     });
   },
 
-  createBoard: (name) => {
-    BoardAPIUtils.push("create", {
+  addActionListener: (boardId) => {
+    BoardAPIUtils.join(boardId);
+
+    //各イベントハンドラの設定
+    BoardAPIUtils.on(boardId, "index", (payload) => {
+      DashboardActionCreator.getBoardsSuccess(payload["boards"]);
+    });
+
+    BoardAPIUtils.on(boardId, "created", (payload) => {
+      DashboardActionCreator.createBoardSuccess(payload["board"]);
+    });
+
+    BoardAPIUtils.on(boardId, "updated", (payload) => {
+      DashboardActionCreator.updateBoardSuccess(payload["board"]);
+    });
+
+    BoardAPIUtils.on(boardId, "deleted", (payload) => {
+      DashboardActionCreator.deleteBoardSuccess(payload["id"]);
+    });
+
+    TODOActionCreator.addActionListener(boardId);
+  },
+
+  removeActionListener: (boardId) => {
+    BoardAPIUtils.off(boardId, 'index');
+    BoardAPIUtils.off(boardId, 'created');
+    BoardAPIUtils.off(boardId, 'updated');
+    BoardAPIUtils.off(boardId, 'deleted');
+
+    TODOActionCreator.removeActionListener(boardId);
+
+    BoardAPIUtils.leave(boardId);
+  },
+
+  createBoard: (boardId, name) => {
+    BoardAPIUtils.push(boardId, "create", {
       name: name,
     });
   },
 
   createBoardSuccess: (board) => {
+    DashboardActionCreator.addActionListener(board.id);
+
     AppDispatcher.handleServerAction({
       type: Constants.ActionTypes.BOARDS.CREATE.SUCCESS_RESPONSE,
       board: board
     });
   },
 
-  deleteBoard: (id) => {
-    BoardAPIUtils.push("delete", {
-      id: id,
+  updateBoard: (boardId, name) => {
+    BoardAPIUtils.push(boardId, 'update', {
+      name: name,
     });
   },
 
+  updateBoardSuccess: (board) => {
+    AppDispatcher.handleServerAction({
+      type: Constants.ActionTypes.BOARDS.UPDATE.SUCCESS_RESPONSE,
+      board: board
+    });
+  },
+
+  deleteBoard: (boardId) => {
+    BoardAPIUtils.push(boardId, "delete", {});
+  },
+
   deleteBoardSuccess: (id) => {
+    DashboardActionCreator.removeActionListener(id);
+
     AppDispatcher.handleServerAction({
       type: Constants.ActionTypes.BOARDS.DELETE.SUCCESS_RESPONSE,
       id: id

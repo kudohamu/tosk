@@ -81,7 +81,6 @@ class Dashboard extends React.Component {
     this._handleSidebarClick = this._handleSidebarClick.bind(this);
     this._createBoard = this._createBoard.bind(this);
 
-    DashboardActionCreator.addActionListener();
     DashboardActionCreator.getBoards();
   }
 
@@ -100,18 +99,12 @@ class Dashboard extends React.Component {
       currentBoard: BoardStore.getCurrentBoard(),
     });
     if(BoardStore.getCurrentBoard() != {}) {
-      if(ChannelStore.readTopic('todo') != undefined) {
-        TODOActionCreator.removeActionListener();
-      }
-      TODOActionCreator.addActionListener(BoardStore.getCurrentBoard().id);
-      setTimeout(() => {
-        TODOActionCreator.getTODOs();
-      }, 100);
+      TODOActionCreator.getTODOs(BoardStore.getCurrentBoard().id);
     }
   }
 
   _handleTabPlus(name) {
-    DashboardActionCreator.createBoard(name);
+    DashboardActionCreator.createBoard(this.state.currentBoard.id, name);
   }
 
   _handleTabClick(boardId) {
@@ -154,9 +147,9 @@ class Dashboard extends React.Component {
                   (() => {
                     switch(this.state.tab) {
                       case 'Actives':
-                        return (<Actives />);
+                        return (<Actives boardId={this.state.currentBoard.id} />);
                       case 'Templates':
-                        return (<Actives />);
+                        return (<Actives boardId={this.state.currentBoard.id} />);
                       case 'Members':
                         return (<Members />);
                       case 'Settings':

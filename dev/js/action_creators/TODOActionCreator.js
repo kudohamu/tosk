@@ -1,39 +1,35 @@
 import Constants from '../constants/Constants';
 import AppDispatcher from '../dispatcher/Dispatcher';
 
-import TODOAPIUtils from '../utils/TODOAPIUtils';
+import BoardAPIUtils from '../utils/BoardAPIUtils';
 
 const TODOActionCreator = {
   addActionListener: (boardId) => {
-    TODOAPIUtils.join(boardId);
-
-    //各subscriberの設定
-    TODOAPIUtils.on("index", (payload) => {
-      TODOActionCreator.getTODOsSuccess(payload["data"]);
+    //各イベントハンドラの設定
+    BoardAPIUtils.on(boardId, 'todo:index', (payload) => {
+      TODOActionCreator.getTODOsSuccess(payload['todos']);
     });
 
-    TODOAPIUtils.on('created', (payload) => {
-      console.log(payload['todo']);
+    BoardAPIUtils.on(boardId, 'todo:created', (payload) => {
       TODOActionCreator.createTODOSuccess(payload['todo']);
     });
 
-    TODOAPIUtils.on('deleted', (payload) => {
+    BoardAPIUtils.on(boardId, 'todo:deleted', (payload) => {
       TODOActionCreator.deleteTODOSuccess(payload['id']);
     });
     
-    TODOAPIUtils.on('changed', (payload) => {
-      console.log(payload['todo']);
+    BoardAPIUtils.on(boardId, 'todo:changed', (payload) => {
       TODOActionCreator.changeTODOSuccess(payload['todo']);
     });
   },
 
-  removeActionListener: () => {
-    TODOAPIUtils.off('index');
-    TODOAPIUtils.off('created');
-    TODOAPIUtils.off('deleted');
-    TODOAPIUtils.off('changed');
+  removeActionListener: (boardId) => {
+    BoardAPIUtils.off(boardId, 'todo:index');
+    BoardAPIUtils.off(boardId, 'todo:created');
+    BoardAPIUtils.off(boardId, 'todo:deleted');
+    BoardAPIUtils.off(boardId, 'todo:changed');
 
-    TODOAPIUtils.leave();
+    BoardAPIUtils.leave(boardId);
   },
 
   openTODOFolder: (todo) => {
@@ -43,8 +39,8 @@ const TODOActionCreator = {
     });
   },
 
-  getTODOs: () => {
-    TODOAPIUtils.push("index", {});
+  getTODOs: (boardId) => {
+    BoardAPIUtils.push(boardId, 'todo:index', {});
   },
 
   getTODOsSuccess: (todos) => {
@@ -54,8 +50,8 @@ const TODOActionCreator = {
     });
   },
 
-  createTODO: (title) => {
-    TODOAPIUtils.push("create", {
+  createTODO: (boardId, title) => {
+    BoardAPIUtils.push(boardId, 'todo:create', {
       title: title,
     });
   },
@@ -67,8 +63,8 @@ const TODOActionCreator = {
     });
   },
 
-  deleteTODO: (id) => {
-    TODOAPIUtils.push("delete", {
+  deleteTODO: (boardId, id) => {
+    BoardAPIUtils.push(boardId, 'todo:delete', {
       id: id,
     });
   },
@@ -80,8 +76,8 @@ const TODOActionCreator = {
     });
   },
 
-  changeTODO: (todo) => {
-    TODOAPIUtils.push("change", {
+  changeTODO: (boardId, todo) => {
+    BoardAPIUtils.push(boardId, 'todo:change', {
       todo: todo,
     });
   },

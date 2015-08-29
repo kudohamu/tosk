@@ -7,7 +7,7 @@ import BoardAPIUtils from './BoardAPIUtils';
 import ChannelStore from '../stores/ChannelStore';
 import UserStore from '../stores/UserStore';
 
-const CHANNEL_NAME = 'board';
+const channelName = (boardId) => { return `boards:${boardId}` };
 
 export default {
   index: () => {
@@ -49,33 +49,33 @@ export default {
     );
   },
 
-  join: () => {
-    const topic = `boards:${UserStore.getAuthData().id}`;
-    ChannelStore.setChan(CHANNEL_NAME, topic);
-    ChannelStore.registerTopic(CHANNEL_NAME, topic);
+  join: (boardId) => {
+    const topic = `boards:${boardId}`;
+    ChannelStore.setChan(channelName(boardId), topic);
+    ChannelStore.registerTopic(channelName(boardId), topic);
 
-    ChannelStore.getChan(CHANNEL_NAME).join().receive("ok", chan => {
+    ChannelStore.getChan(channelName(boardId)).join().receive("ok", chan => {
     });
   },
 
-  leave: () => {
-    ChannelStore.getChan(CHANNEL_NAME).leave().receive("ok", chan => {
+  leave: (boardId) => {
+    ChannelStore.getChan(channelName(boardId)).leave().receive("ok", chan => {
     });
   },
 
-  on: (message, callback) => {
-    ChannelStore.getChan(CHANNEL_NAME).on(message, (payload) => {
+  on: (boardId, message, callback) => {
+    ChannelStore.getChan(channelName(boardId)).on(message, (payload) => {
       callback(payload);
     });
   },
 
-  off: (message) => {
-    ChannelStore.getChan(CHANNEL_NAME).off(message);
+  off: (boardId, message) => {
+    ChannelStore.getChan(channelName(boardId)).off(message);
   },
 
-  push: (message, payload) => {
+  push: (boardId, message, payload) => {
     setTimeout(() => {
-      ChannelStore.getChan(CHANNEL_NAME).push(message, payload);
+      ChannelStore.getChan(channelName(boardId)).push(message, payload);
     }, 100);
   }
 }

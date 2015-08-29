@@ -122,7 +122,7 @@ class Pane extends React.Component {
         children: children,
       };
     };
-    TODOActionCreator.changeTODO(checkProgress(checkTODO(this.props.todo)));
+    TODOActionCreator.changeTODO(this.props.boardId, checkProgress(checkTODO(this.props.todo)));
   }
 
   _handleClickFolder(id) {
@@ -172,7 +172,7 @@ class Pane extends React.Component {
         };
       }
     };
-    TODOActionCreator.changeTODO(updateContent(this.props.todo));
+    TODOActionCreator.changeTODO(this.props.boardId, updateContent(this.props.todo));
   }
 
   _handleMenuToggle() {
@@ -262,7 +262,7 @@ class Pane extends React.Component {
         );
       }
     };
-    TODOActionCreator.changeTODO(addTODO(this.props.todo));
+    TODOActionCreator.changeTODO(this.props.boardId, addTODO(this.props.todo));
   }
 
   _handleTODODelete(id) {
@@ -283,7 +283,7 @@ class Pane extends React.Component {
         })
       };
     }
-    TODOActionCreator.changeTODO(deleteTODO(this.props.todo));
+    TODOActionCreator.changeTODO(this.props.boardId, deleteTODO(this.props.todo));
   }
 
   _changeIntoFolder(id) {
@@ -312,6 +312,7 @@ class Pane extends React.Component {
 }
 
 Pane.propTypes = {
+  boardId: React.PropTypes.number.isRequired,
   handlePaneDelete: React.PropTypes.func.isRequired,
 };
 
