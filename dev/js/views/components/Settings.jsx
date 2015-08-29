@@ -54,6 +54,7 @@ class Settings extends React.Component {
   }
 
   _handleBoardNameUpdate() {
+    DashboardActionCreator.updateBoard(this.props.boardId, React.findDOMNode(this.refs.boardName).children[0].children[0].value);
   }
 
   render() {
