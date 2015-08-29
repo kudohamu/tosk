@@ -2,8 +2,11 @@ import React from 'react/addons';
 import Radium from 'radium';
 import Vendor from 'react-vendor-prefix';
 import {XRegExp} from 'xregexp';
+
+import BoardStore from '../../../stores/BoardStore';
 import PageActionCreator from '../../../action_creators/PageActionCreator';
 import UserActionCreator from '../../../action_creators/UserActionCreator';
+import DashboardActionCreator from '../../../action_creators/DashboardActionCreator';
 
 import Item from './Item';
 
@@ -47,6 +50,9 @@ class Header extends React.Component {
 
   _handleClick(next_page) {
     if(next_page == 'SignOut') {
+      Object.keys(BoardStore.getBoards()).map((id) => {
+        DashboardActionCreator.removeActionListener(id);
+      });
       UserActionCreator.signOut();
       PageActionCreator.setPage('top');
     }
