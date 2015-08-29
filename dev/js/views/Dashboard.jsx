@@ -13,7 +13,7 @@ import { HEADER_HEIGHT } from '../styles/Header/GlobalStyles';
 
 import SmallModal from './components/ConfirmationModal/SmallModal';
 import Actives from './components/Actives';
-import Templates from './components/Actives';
+import Templates from './components/Templates';
 import Members from './components/Invite';
 import Settings from './components/Settings';
 import Logs from './components/Logs';
@@ -98,13 +98,13 @@ class Dashboard extends React.Component {
       boardsLoading: BoardStore.getBoardsLoading(),
       currentBoard: BoardStore.getCurrentBoard(),
     });
-    if(BoardStore.getCurrentBoard() != {}) {
+    if(Object.keys(BoardStore.getCurrentBoard()).length != 0) {
       TODOActionCreator.getTODOs(BoardStore.getCurrentBoard().id);
     }
   }
 
   _handleTabPlus(name) {
-    DashboardActionCreator.createBoard(this.state.currentBoard.id, name);
+    DashboardActionCreator.createBoard(name);
   }
 
   _handleTabClick(boardId) {
@@ -125,7 +125,7 @@ class Dashboard extends React.Component {
   render() {
     if (this.state.boardsLoading) {
       return (<Loading />);
-    }else if (this.state.boards.length == 0) {
+    }else if (Object.keys(this.state.currentBoard).length == 0) {
       return (
         <SmallModal title='Board名を入力してください' handleSubmit={this._createBoard} onRequestHide={() => {}} cancelable={false} >
           <div className='form-group'>
@@ -149,7 +149,7 @@ class Dashboard extends React.Component {
                       case 'Actives':
                         return (<Actives boardId={this.state.currentBoard.id} />);
                       case 'Templates':
-                        return (<Actives boardId={this.state.currentBoard.id} />);
+                        return (<Templates boardId={this.state.currentBoard.id} />);
                       case 'Members':
                         return (<Members />);
                       case 'Settings':

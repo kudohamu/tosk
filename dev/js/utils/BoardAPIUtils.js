@@ -30,7 +30,7 @@ export default {
       },
       (res) => {
         if (res["body"]["result"] == "ok") {
-          DashboardActionCreator.createBoardsSuccess(res["body"]["boards"]);
+          DashboardActionCreator.createBoardSuccess(res["body"]["board"]);
         }else {
         }
       }

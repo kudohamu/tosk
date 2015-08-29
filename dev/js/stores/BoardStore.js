@@ -55,13 +55,16 @@ AppDispatcher.register((payload) => {
       action.boards.map((board) => {
         _boards[board.id] = board;
       });
-      if(_currentBoard.length != {} && _boards.length != 0) {
+      if(Object.keys(_boards).length != 0) {
         _currentBoard = _boards[(Object.keys(_boards))[0]];
       }
       _BoardStore.emitChange();
       break;
     case ActionTypes.BOARDS.CREATE.SUCCESS_RESPONSE:
       _boards[action.board.id] = action.board;
+      if(Object.keys(_currentBoard).length == 0) {
+        _currentBoard = action.board;
+      }
       _BoardStore.emitChange();
       break;
     case ActionTypes.BOARDS.UPDATE.SUCCESS_RESPONSE:

@@ -60,10 +60,8 @@ const DashboardActionCreator = {
     BoardAPIUtils.leave(boardId);
   },
 
-  createBoard: (boardId, name) => {
-    BoardAPIUtils.push(boardId, "create", {
-      name: name,
-    });
+  createBoard: (name) => {
+    BoardAPIUtils.create(name);
   },
 
   createBoardSuccess: (board) => {
