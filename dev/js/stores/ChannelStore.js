@@ -4,6 +4,8 @@ import { EventEmitter } from 'events';
 
 import {Socket} from 'libphoenix';
 
+import  UserStore from './UserStore';
+
 const ActionTypes = Constants.ActionTypes;
 const CHANGE_EVENT = 'change';
 
@@ -30,12 +32,12 @@ class ChannelStore extends EventEmitter {
   }
 
   setChan(name, topic) {
-    _chan[name] = _socket.chan(topic, {});
+    const auth = UserStore.getAuthData();
+    _chan[name] = _socket.chan(topic, { id : auth.id, token: auth.token });
   }
 
   getChan(name) {
     return _chan[name];
-    console.log(_chan[name]);
   }
 
   registerTopic(name, topic) {
@@ -44,7 +46,6 @@ class ChannelStore extends EventEmitter {
 
   readTopic(name) {
     return _currentTopic[name];
-    console.info(_chan[name]);
   }
 }
 
