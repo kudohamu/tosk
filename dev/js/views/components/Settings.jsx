@@ -7,6 +7,7 @@ import { Button, Input } from 'react-bootstrap';
 import SmallModal from './ConfirmationModal/SmallModal';
 import DashboardActionCreator from '../../action_creators/DashboardActionCreator';
 import TODOActionCreator from '../../action_creators/TODOActionCreator';
+import BoardStore from '../../stores/BoardStore';
 
 var styles = Vendor.prefix({
   container: {
@@ -32,12 +33,41 @@ class Settings extends React.Component {
 
     this.state = {
       deleteConfirmation: false,
+      board: BoardStore.getCurrentBoard(),
     };
 
+    this.componentDidMount = this.componentDidMount.bind(this);
+    this.componentWillUnmount = this.componentWillUnmount.bind(this);
+    this._onChange = this._onChange.bind(this);
+    this._handleInput = this._handleInput.bind(this);
     this._handleDeleteButtonClick = this._handleDeleteButtonClick.bind(this);
     this._handleBoardDeleteSubmit = this._handleBoardDeleteSubmit.bind(this);
     this._handleBoardDeleteCancel = this._handleBoardDeleteCancel.bind(this);
     this._handleBoardNameUpdate = this._handleBoardNameUpdate.bind(this);
+  }
+
+  componentDidMount() {
+    BoardStore.addChangeListener(this._onChange);
+  }
+
+  componentWillUnmount() {
+    BoardStore.removeChangeListener(this._onChange);
+  }
+
+  _onChange() {
+    this.state = {
+      board: BoardStore.getCurrentBoard(),
+    };
+
+  }
+
+  _handleInput(e) {
+    this.setState({
+      board: {
+        id: this.state.board.id,
+        name: e.target.value,
+      }
+    });
   }
 
   _handleDeleteButtonClick() {
@@ -54,7 +84,7 @@ class Settings extends React.Component {
   }
 
   _handleBoardNameUpdate() {
-    DashboardActionCreator.updateBoard(this.props.boardId, React.findDOMNode(this.refs.boardName).children[0].children[0].value);
+    DashboardActionCreator.updateBoard(this.props.boardId, this.state.board.name);
   }
 
   render() {
@@ -69,7 +99,7 @@ class Settings extends React.Component {
           :''
         }
         <div style={styles.boardNameContainer}>
-          <Input type='text' style={styles.boardName} bsSize='large' placeholder='Board名' buttonAfter={<Button type='text' bsStyle='success' onClick={this._handleBoardNameUpdate} >変更</Button>} defaultValue={this.props.boardName} ref='boardName' />
+          <Input type='text' style={styles.boardName} bsSize='large' placeholder='Board名' buttonAfter={<Button type='text' bsStyle='success' onClick={this._handleBoardNameUpdate} >変更</Button>} value={this.state.board.name} onChange={this._handleInput} />
         </div>
         <h3>Boardの削除</h3>
         <hr />
@@ -83,7 +113,6 @@ class Settings extends React.Component {
 
 Settings.propTypes = {
   boardId: React.PropTypes.number.isRequired,
-  boardName: React.PropTypes.string.isRequired,
 };
 
 export default Radium(Settings);
