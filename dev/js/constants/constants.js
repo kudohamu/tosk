@@ -47,7 +47,7 @@ export default {
         SUCCESS_RESPONSE: null,
         ERROR_RESPONSE: null,
       },
-      CHANGE: {
+      UPDATE: {
         SUCCESS_RESPONSE: null,
       },
     },
