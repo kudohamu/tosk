@@ -19,6 +19,10 @@ var _utilsBoardAPIUtils = require('../utils/BoardAPIUtils');
 
 var _utilsBoardAPIUtils2 = _interopRequireDefault(_utilsBoardAPIUtils);
 
+var _TODOActionCreator = require('./TODOActionCreator');
+
+var _TODOActionCreator2 = _interopRequireDefault(_TODOActionCreator);
+
 var DashboardActionCreator = {
   changeCurrentBoard: function changeCurrentBoard(boardId) {
     _dispatcherDispatcher2['default'].handleViewAction({
@@ -26,39 +30,103 @@ var DashboardActionCreator = {
       boardId: boardId
     });
   },
-  fetchBoards: function fetchBoards() {
+
+  getBoards: function getBoards() {
     _utilsBoardAPIUtils2['default'].index();
   },
-  createBoard: function createBoard(name) {
-    _utilsBoardAPIUtils2['default'].create(name);
-  },
-  getBoardsSuccess: function getBoardsSuccess(data) {
+
+  getBoardsSuccess: function getBoardsSuccess(boards) {
+    boards.map(function (board) {
+      DashboardActionCreator.addActionListener(board.id);
+    });
+
     _dispatcherDispatcher2['default'].handleServerAction({
       type: _constantsConstants2['default'].ActionTypes.BOARDS.INDEX.SUCCESS_RESPONSE,
-      data: data
+      boards: boards
     });
   },
-  createBoardsSuccess: function createBoardsSuccess(data) {
+
+  addActionListener: function addActionListener(boardId) {
+    _utilsBoardAPIUtils2['default'].join(boardId);
+
+    //各イベントハンドラの設定
+    _utilsBoardAPIUtils2['default'].on(boardId, 'index', function (payload) {
+      DashboardActionCreator.getBoardsSuccess(payload['boards']);
+    });
+
+    _utilsBoardAPIUtils2['default'].on(boardId, 'created', function (payload) {
+      DashboardActionCreator.createBoardSuccess(payload['board']);
+    });
+
+    _utilsBoardAPIUtils2['default'].on(boardId, 'updated', function (payload) {
+      DashboardActionCreator.updateBoardSuccess(payload['board']);
+    });
+
+    _utilsBoardAPIUtils2['default'].on(boardId, 'deleted', function (payload) {
+      DashboardActionCreator.deleteBoardSuccess(payload['id']);
+    });
+
+    _TODOActionCreator2['default'].addActionListener(boardId);
+  },
+
+  removeActionListener: function removeActionListener(boardId) {
+    _utilsBoardAPIUtils2['default'].off(boardId, 'index');
+    _utilsBoardAPIUtils2['default'].off(boardId, 'created');
+    _utilsBoardAPIUtils2['default'].off(boardId, 'updated');
+    _utilsBoardAPIUtils2['default'].off(boardId, 'deleted');
+
+    _TODOActionCreator2['default'].removeActionListener(boardId);
+
+    _utilsBoardAPIUtils2['default'].leave(boardId);
+  },
+
+  createBoard: function createBoard(boardId, name) {
+    _utilsBoardAPIUtils2['default'].push(boardId, 'create', {
+      name: name
+    });
+  },
+
+  createBoardSuccess: function createBoardSuccess(board) {
+    DashboardActionCreator.addActionListener(board.id);
+
     _dispatcherDispatcher2['default'].handleServerAction({
       type: _constantsConstants2['default'].ActionTypes.BOARDS.CREATE.SUCCESS_RESPONSE,
-      data: data
+      board: board
     });
   },
-  deleteBoard: function deleteBoard(id) {
-    _utilsBoardAPIUtils2['default']['delete'](id);
+
+  updateBoard: function updateBoard(boardId, name) {
+    _utilsBoardAPIUtils2['default'].push(boardId, 'update', {
+      name: name
+    });
   },
-  deleteBoardsSuccess: function deleteBoardsSuccess(data) {
+
+  updateBoardSuccess: function updateBoardSuccess(board) {
+    _dispatcherDispatcher2['default'].handleServerAction({
+      type: _constantsConstants2['default'].ActionTypes.BOARDS.UPDATE.SUCCESS_RESPONSE,
+      board: board
+    });
+  },
+
+  deleteBoard: function deleteBoard(boardId) {
+    _utilsBoardAPIUtils2['default'].push(boardId, 'delete', {});
+  },
+
+  deleteBoardSuccess: function deleteBoardSuccess(id) {
+    DashboardActionCreator.removeActionListener(id);
+
     _dispatcherDispatcher2['default'].handleServerAction({
       type: _constantsConstants2['default'].ActionTypes.BOARDS.DELETE.SUCCESS_RESPONSE,
-      data: data
+      id: id
     });
   }
+
 };
 
 exports['default'] = DashboardActionCreator;
 module.exports = exports['default'];
 
-},{"../constants/Constants":6,"../dispatcher/Dispatcher":7,"../utils/BoardAPIUtils":16}],2:[function(require,module,exports){
+},{"../constants/Constants":6,"../dispatcher/Dispatcher":7,"../utils/BoardAPIUtils":16,"./TODOActionCreator":3}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -104,41 +172,37 @@ var _dispatcherDispatcher = require('../dispatcher/Dispatcher');
 
 var _dispatcherDispatcher2 = _interopRequireDefault(_dispatcherDispatcher);
 
-var _utilsTODOAPIUtils = require('../utils/TODOAPIUtils');
+var _utilsBoardAPIUtils = require('../utils/BoardAPIUtils');
 
-var _utilsTODOAPIUtils2 = _interopRequireDefault(_utilsTODOAPIUtils);
+var _utilsBoardAPIUtils2 = _interopRequireDefault(_utilsBoardAPIUtils);
 
 var TODOActionCreator = {
   addActionListener: function addActionListener(boardId) {
-    _utilsTODOAPIUtils2['default'].join(boardId);
-
-    //各subscriberの設定
-    _utilsTODOAPIUtils2['default'].on('index', function (payload) {
-      TODOActionCreator.getTODOsSuccess(payload['data']);
+    //各イベントハンドラの設定
+    _utilsBoardAPIUtils2['default'].on(boardId, 'todo:index', function (payload) {
+      TODOActionCreator.getTODOsSuccess(payload['todos']);
     });
 
-    _utilsTODOAPIUtils2['default'].on('created', function (payload) {
-      console.log(payload['todo']);
+    _utilsBoardAPIUtils2['default'].on(boardId, 'todo:created', function (payload) {
       TODOActionCreator.createTODOSuccess(payload['todo']);
     });
 
-    _utilsTODOAPIUtils2['default'].on('deleted', function (payload) {
+    _utilsBoardAPIUtils2['default'].on(boardId, 'todo:deleted', function (payload) {
       TODOActionCreator.deleteTODOSuccess(payload['id']);
     });
 
-    _utilsTODOAPIUtils2['default'].on('changed', function (payload) {
-      console.log(payload['todo']);
+    _utilsBoardAPIUtils2['default'].on(boardId, 'todo:changed', function (payload) {
       TODOActionCreator.changeTODOSuccess(payload['todo']);
     });
   },
 
-  removeActionListener: function removeActionListener() {
-    _utilsTODOAPIUtils2['default'].off('index');
-    _utilsTODOAPIUtils2['default'].off('created');
-    _utilsTODOAPIUtils2['default'].off('deleted');
-    _utilsTODOAPIUtils2['default'].off('changed');
+  removeActionListener: function removeActionListener(boardId) {
+    _utilsBoardAPIUtils2['default'].off(boardId, 'todo:index');
+    _utilsBoardAPIUtils2['default'].off(boardId, 'todo:created');
+    _utilsBoardAPIUtils2['default'].off(boardId, 'todo:deleted');
+    _utilsBoardAPIUtils2['default'].off(boardId, 'todo:changed');
 
-    _utilsTODOAPIUtils2['default'].leave();
+    _utilsBoardAPIUtils2['default'].leave(boardId);
   },
 
   openTODOFolder: function openTODOFolder(todo) {
@@ -148,8 +212,8 @@ var TODOActionCreator = {
     });
   },
 
-  getTODOs: function getTODOs() {
-    _utilsTODOAPIUtils2['default'].push('index', {});
+  getTODOs: function getTODOs(boardId) {
+    _utilsBoardAPIUtils2['default'].push(boardId, 'todo:index', {});
   },
 
   getTODOsSuccess: function getTODOsSuccess(todos) {
@@ -160,8 +224,7 @@ var TODOActionCreator = {
   },
 
   createTODO: function createTODO(boardId, title) {
-    _utilsTODOAPIUtils2['default'].push('create', {
-      boardId: boardId,
+    _utilsBoardAPIUtils2['default'].push(boardId, 'todo:create', {
       title: title
     });
   },
@@ -174,8 +237,7 @@ var TODOActionCreator = {
   },
 
   deleteTODO: function deleteTODO(boardId, id) {
-    _utilsTODOAPIUtils2['default'].push('delete', {
-      boardId: boardId,
+    _utilsBoardAPIUtils2['default'].push(boardId, 'todo:delete', {
       id: id
     });
   },
@@ -188,8 +250,7 @@ var TODOActionCreator = {
   },
 
   changeTODO: function changeTODO(boardId, todo) {
-    _utilsTODOAPIUtils2['default'].push('change', {
-      boardId: boardId,
+    _utilsBoardAPIUtils2['default'].push(boardId, 'todo:change', {
       todo: todo
     });
   },
@@ -211,7 +272,7 @@ var TODOActionCreator = {
 exports['default'] = TODOActionCreator;
 module.exports = exports['default'];
 
-},{"../constants/Constants":6,"../dispatcher/Dispatcher":7,"../utils/TODOAPIUtils":17}],4:[function(require,module,exports){
+},{"../constants/Constants":6,"../dispatcher/Dispatcher":7,"../utils/BoardAPIUtils":16}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -362,6 +423,9 @@ exports["default"] = {
       DELETE: {
         SUCCESS_RESPONSE: null,
         ERROR_RESPONSE: null
+      },
+      UPDATE: {
+        SUCCESS_RESPONSE: null
       }
     },
     TODOS: {
@@ -478,9 +542,9 @@ var _utilsBoardAPIUtils2 = _interopRequireDefault(_utilsBoardAPIUtils);
 var ActionTypes = _constantsConstants2['default'].ActionTypes;
 var CHANGE_EVENT = 'change';
 
-var boards = [];
+var _boards = {};
 var _boardsLoading = true;
-var _currentBoard = 0;
+var _currentBoard = {};
 
 var BoardStore = (function (_EventEmitter) {
   function BoardStore() {
@@ -509,7 +573,7 @@ var BoardStore = (function (_EventEmitter) {
   }, {
     key: 'getBoards',
     value: function getBoards() {
-      return boards;
+      return _boards;
     }
   }, {
     key: 'getBoardsLoading',
@@ -535,25 +599,35 @@ _dispatcherDispatcher2['default'].register(function (payload) {
 
   switch (action.type) {
     case ActionTypes.BOARDS.INDEX.SUCCESS_RESPONSE:
-    case ActionTypes.BOARDS.CREATE.SUCCESS_RESPONSE:
       _boardsLoading = false;
-      boards = action.data;
-      if (_currentBoard == 0 && boards.length != 0) {
-        _currentBoard = boards[0].id;
+      _boards = {};
+      action.boards.map(function (board) {
+        _boards[board.id] = board;
+      });
+      if (_currentBoard.length != {} && _boards.length != 0) {
+        _currentBoard = _boards[Object.keys(_boards)[0]];
       }
       _BoardStore.emitChange();
       break;
+    case ActionTypes.BOARDS.CREATE.SUCCESS_RESPONSE:
+      _boards[action.board.id] = action.board;
+      _BoardStore.emitChange();
+      break;
+    case ActionTypes.BOARDS.UPDATE.SUCCESS_RESPONSE:
+      _boards[action.board.id] = action.board;
+      _BoardStore.emitChange();
+      break;
     case ActionTypes.BOARDS.DELETE.SUCCESS_RESPONSE:
-      boards = action.data;
-      if (boards.length != 0) {
-        _currentBoard = boards[0].id;
+      delete _boards[action.id];
+      if (_boards.length != 0) {
+        _currentBoard = _boards[Object.keys(_boards)[0]];
       } else {
-        _currentBoard = 0;
+        _currentBoard = {};
       }
       _BoardStore.emitChange();
       break;
     case ActionTypes.BOARDS.CHANGE_CURRENT:
-      _currentBoard = action.boardId;
+      _currentBoard = _boards[action.boardId];
       _BoardStore.emitChange();
       break;
   }
@@ -589,12 +663,16 @@ var _events = require('events');
 
 var _libphoenix = require('libphoenix');
 
+var _UserStore = require('./UserStore');
+
+var _UserStore2 = _interopRequireDefault(_UserStore);
+
 var ActionTypes = _constantsConstants2['default'].ActionTypes;
 var CHANGE_EVENT = 'change';
 
 var _socket = {};
 var _chan = {};
-var _currentTopic = '';
+var _currentTopic = {};
 
 var ChannelStore = (function (_EventEmitter) {
   function ChannelStore() {
@@ -628,23 +706,24 @@ var ChannelStore = (function (_EventEmitter) {
     }
   }, {
     key: 'setChan',
-    value: function setChan(channel) {
-      _chan = _socket.chan(channel, {});
+    value: function setChan(name, topic) {
+      var auth = _UserStore2['default'].getAuthData();
+      _chan[name] = _socket.chan(topic, { id: auth.id, token: auth.token });
     }
   }, {
     key: 'getChan',
-    value: function getChan() {
-      return _chan;
+    value: function getChan(name) {
+      return _chan[name];
     }
   }, {
     key: 'registerTopic',
-    value: function registerTopic(topic) {
-      _currentTopic = topic;
+    value: function registerTopic(name, topic) {
+      _currentTopic[name] = topic;
     }
   }, {
     key: 'readTopic',
-    value: function readTopic() {
-      return _currentTopic;
+    value: function readTopic(name) {
+      return _currentTopic[name];
     }
   }]);
 
@@ -666,7 +745,7 @@ _dispatcherDispatcher2['default'].register(function (payload) {
 });
 module.exports = exports['default'];
 
-},{"../constants/Constants":6,"../dispatcher/Dispatcher":7,"events":56,"libphoenix":62}],10:[function(require,module,exports){
+},{"../constants/Constants":6,"../dispatcher/Dispatcher":7,"./UserStore":12,"events":56,"libphoenix":62}],10:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1329,6 +1408,18 @@ var _BoardAPIUtils = require('./BoardAPIUtils');
 
 var _BoardAPIUtils2 = _interopRequireDefault(_BoardAPIUtils);
 
+var _storesChannelStore = require('../stores/ChannelStore');
+
+var _storesChannelStore2 = _interopRequireDefault(_storesChannelStore);
+
+var _storesUserStore = require('../stores/UserStore');
+
+var _storesUserStore2 = _interopRequireDefault(_storesUserStore);
+
+var channelName = function channelName(boardId) {
+  return 'boards:' + boardId;
+};
+
 exports['default'] = {
   index: function index() {
     _APIUtils2['default'].authGet('boards', function (res) {
@@ -1352,11 +1443,39 @@ exports['default'] = {
         _action_creatorsDashboardActionCreator2['default'].deleteBoardsSuccess(res['body']['boards']);
       } else {}
     });
+  },
+
+  join: function join(boardId) {
+    var topic = 'boards:' + boardId;
+    _storesChannelStore2['default'].setChan(channelName(boardId), topic);
+    _storesChannelStore2['default'].registerTopic(channelName(boardId), topic);
+
+    _storesChannelStore2['default'].getChan(channelName(boardId)).join().receive('ok', function (chan) {});
+  },
+
+  leave: function leave(boardId) {
+    _storesChannelStore2['default'].getChan(channelName(boardId)).leave().receive('ok', function (chan) {});
+  },
+
+  on: function on(boardId, message, callback) {
+    _storesChannelStore2['default'].getChan(channelName(boardId)).on(message, function (payload) {
+      callback(payload);
+    });
+  },
+
+  off: function off(boardId, message) {
+    _storesChannelStore2['default'].getChan(channelName(boardId)).off(message);
+  },
+
+  push: function push(boardId, message, payload) {
+    setTimeout(function () {
+      _storesChannelStore2['default'].getChan(channelName(boardId)).push(message, payload);
+    }, 100);
   }
 };
 module.exports = exports['default'];
 
-},{"../action_creators/DashboardActionCreator":1,"../constants/Constants":6,"../dispatcher/Dispatcher":7,"./APIUtils":15,"./BoardAPIUtils":16,"superagent":367}],17:[function(require,module,exports){
+},{"../action_creators/DashboardActionCreator":1,"../constants/Constants":6,"../dispatcher/Dispatcher":7,"../stores/ChannelStore":9,"../stores/UserStore":12,"./APIUtils":15,"./BoardAPIUtils":16,"superagent":367}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1389,32 +1508,34 @@ var _storesChannelStore = require('../stores/ChannelStore');
 
 var _storesChannelStore2 = _interopRequireDefault(_storesChannelStore);
 
+var CHANNEL_NAME = 'todo';
+
 exports['default'] = {
   join: function join(boardId) {
     var topic = 'todos:' + boardId;
-    _storesChannelStore2['default'].setChan(topic);
-    _storesChannelStore2['default'].registerTopic(topic);
+    _storesChannelStore2['default'].setChan(CHANNEL_NAME, topic);
+    _storesChannelStore2['default'].registerTopic(CHANNEL_NAME, topic);
 
-    _storesChannelStore2['default'].getChan().join().receive('ok', function (chan) {});
+    _storesChannelStore2['default'].getChan(CHANNEL_NAME).join().receive('ok', function (chan) {});
   },
 
   leave: function leave() {
-    _storesChannelStore2['default'].getChan().leave().receive('ok', function (chan) {});
+    _storesChannelStore2['default'].getChan(CHANNEL_NAME).leave().receive('ok', function (chan) {});
   },
 
   on: function on(message, callback) {
-    _storesChannelStore2['default'].getChan().on(message, function (payload) {
+    _storesChannelStore2['default'].getChan(CHANNEL_NAME).on(message, function (payload) {
       callback(payload);
     });
   },
 
   off: function off(message) {
-    _storesChannelStore2['default'].getChan().off(message);
+    _storesChannelStore2['default'].getChan(CHANNEL_NAME).off(message);
   },
 
   push: function push(message, payload) {
     setTimeout(function () {
-      _storesChannelStore2['default'].getChan().push(message, payload);
+      _storesChannelStore2['default'].getChan(CHANNEL_NAME).push(message, payload);
     }, 100);
   }
 };
@@ -1670,7 +1791,7 @@ var Dashboard = (function (_React$Component) {
 
     _get(Object.getPrototypeOf(Dashboard.prototype), 'constructor', this).call(this, props);
     this.state = {
-      boardId: _storesBoardStore2['default'].getCurrentBoard(),
+      currentBoard: _storesBoardStore2['default'].getCurrentBoard(),
       tab: 'Actives',
       boards: _storesBoardStore2['default'].getBoards(),
       boardsLoading: _storesBoardStore2['default'].getBoardsLoading()
@@ -1684,9 +1805,7 @@ var Dashboard = (function (_React$Component) {
     this._handleSidebarClick = this._handleSidebarClick.bind(this);
     this._createBoard = this._createBoard.bind(this);
 
-    setTimeout(function () {
-      _action_creatorsDashboardActionCreator2['default'].fetchBoards();
-    }, 100);
+    _action_creatorsDashboardActionCreator2['default'].getBoards();
   }
 
   _inherits(Dashboard, _React$Component);
@@ -1707,28 +1826,21 @@ var Dashboard = (function (_React$Component) {
       this.setState({
         boards: _storesBoardStore2['default'].getBoards(),
         boardsLoading: _storesBoardStore2['default'].getBoardsLoading(),
-        boardId: _storesBoardStore2['default'].getCurrentBoard()
+        currentBoard: _storesBoardStore2['default'].getCurrentBoard()
       });
-
-      if (_storesBoardStore2['default'].getCurrentBoard() != 0) {
-        if (_storesChannelStore2['default'].readTopic() != '') {
-          _action_creatorsTODOActionCreator2['default'].removeActionListener();
-        }
-        _action_creatorsTODOActionCreator2['default'].addActionListener(_storesBoardStore2['default'].getCurrentBoard());
-        setTimeout(function () {
-          _action_creatorsTODOActionCreator2['default'].getTODOs();
-        }, 100);
+      if (_storesBoardStore2['default'].getCurrentBoard() != {}) {
+        _action_creatorsTODOActionCreator2['default'].getTODOs(_storesBoardStore2['default'].getCurrentBoard().id);
       }
     }
   }, {
     key: '_handleTabPlus',
     value: function _handleTabPlus(name) {
-      _action_creatorsDashboardActionCreator2['default'].createBoard(name);
+      _action_creatorsDashboardActionCreator2['default'].createBoard(this.state.currentBoard.id, name);
     }
   }, {
     key: '_handleTabClick',
     value: function _handleTabClick(boardId) {
-      if (boardId != this.state.boardId) {
+      if (boardId != this.state.currentBoard.id) {
         _action_creatorsDashboardActionCreator2['default'].changeCurrentBoard(boardId);
       }
     }
@@ -1767,7 +1879,7 @@ var Dashboard = (function (_React$Component) {
           _reactAddons2['default'].createElement(
             'div',
             { style: styles.sidebar },
-            _reactAddons2['default'].createElement(_componentsSidebarSidebar2['default'], { boardId: this.state.boardId, current: this.state.tab, handleSidebarClick: this._handleSidebarClick })
+            _reactAddons2['default'].createElement(_componentsSidebarSidebar2['default'], { boardId: this.state.currentBoard.id, current: this.state.tab, handleSidebarClick: this._handleSidebarClick })
           ),
           _reactAddons2['default'].createElement(
             'div',
@@ -1775,20 +1887,20 @@ var Dashboard = (function (_React$Component) {
             _reactAddons2['default'].createElement(
               'div',
               { style: styles.tab_area },
-              _reactAddons2['default'].createElement(_componentsTabHeader2['default'], { boardId: this.state.boardId, items: this.state.boards, handleTabPlus: this._handleTabPlus, handleTabClick: this._handleTabClick }),
+              _reactAddons2['default'].createElement(_componentsTabHeader2['default'], { boardId: this.state.currentBoard.id, items: this.state.boards, handleTabPlus: this._handleTabPlus, handleTabClick: this._handleTabClick }),
               _reactAddons2['default'].createElement(
                 'div',
                 { style: styles.tab_body },
                 (function () {
                   switch (_this.state.tab) {
                     case 'Actives':
-                      return _reactAddons2['default'].createElement(_componentsActives2['default'], { boardId: _this.state.boardId });
+                      return _reactAddons2['default'].createElement(_componentsActives2['default'], { boardId: _this.state.currentBoard.id });
                     case 'Templates':
-                      return _reactAddons2['default'].createElement(_componentsActives2['default'], null);
+                      return _reactAddons2['default'].createElement(_componentsActives2['default'], { boardId: _this.state.currentBoard.id });
                     case 'Members':
                       return _reactAddons2['default'].createElement(_componentsInvite2['default'], null);
                     case 'Settings':
-                      return _reactAddons2['default'].createElement(_componentsSettings2['default'], { boardId: _this.state.boardId });
+                      return _reactAddons2['default'].createElement(_componentsSettings2['default'], { boardId: _this.state.currentBoard.id, boardName: _this.state.currentBoard.name });
                     case 'Logs':
                       return _reactAddons2['default'].createElement(_componentsLogs2['default'], null);
                   }
@@ -2204,7 +2316,7 @@ var Actives = (function (_React$Component) {
     _get(Object.getPrototypeOf(Actives.prototype), 'constructor', this).call(this, props);
 
     this.state = {
-      todos: {}
+      todos: _storesTODOStore2['default'].getTODOs()
     };
 
     this.componentDidMount = this.componentDidMount.bind(this);
@@ -2230,7 +2342,7 @@ var Actives = (function (_React$Component) {
     key: '_onChange',
     value: function _onChange() {
       this.setState({
-        todos: _storesTODOStore2['default'].getTODOs()
+        todos: _storesTODOStore2['default'].getTODOs(this.props.boardId)
       });
     }
   }, {
@@ -2532,6 +2644,10 @@ var _reactVendorPrefix2 = _interopRequireDefault(_reactVendorPrefix);
 
 var _xregexp = require('xregexp');
 
+var _storesBoardStore = require('../../../stores/BoardStore');
+
+var _storesBoardStore2 = _interopRequireDefault(_storesBoardStore);
+
 var _action_creatorsPageActionCreator = require('../../../action_creators/PageActionCreator');
 
 var _action_creatorsPageActionCreator2 = _interopRequireDefault(_action_creatorsPageActionCreator);
@@ -2539,6 +2655,10 @@ var _action_creatorsPageActionCreator2 = _interopRequireDefault(_action_creators
 var _action_creatorsUserActionCreator = require('../../../action_creators/UserActionCreator');
 
 var _action_creatorsUserActionCreator2 = _interopRequireDefault(_action_creatorsUserActionCreator);
+
+var _action_creatorsDashboardActionCreator = require('../../../action_creators/DashboardActionCreator');
+
+var _action_creatorsDashboardActionCreator2 = _interopRequireDefault(_action_creatorsDashboardActionCreator);
 
 var _Item = require('./Item');
 
@@ -2556,9 +2676,13 @@ var items = [{
   title: 'Tosk'
 }, {
   title: 'Dashboard'
-}, {
-  title: 'Public Templates'
-}, {
+},
+/*
+{
+  title: 'Public Templates',
+},
+*/
+{
   title: 'Profile'
 }, {
   title: 'Settings'
@@ -2581,6 +2705,9 @@ var Header = (function (_React$Component) {
     key: '_handleClick',
     value: function _handleClick(next_page) {
       if (next_page == 'SignOut') {
+        Object.keys(_storesBoardStore2['default'].getBoards()).map(function (id) {
+          _action_creatorsDashboardActionCreator2['default'].removeActionListener(id);
+        });
         _action_creatorsUserActionCreator2['default'].signOut();
         _action_creatorsPageActionCreator2['default'].setPage('top');
       }
@@ -2619,7 +2746,7 @@ Header.propTypes = {
 exports['default'] = (0, _radium2['default'])(Header);
 module.exports = exports['default'];
 
-},{"../../../action_creators/PageActionCreator":2,"../../../action_creators/UserActionCreator":4,"./Item":27,"radium":69,"react-vendor-prefix":193,"react/addons":194,"xregexp":370}],27:[function(require,module,exports){
+},{"../../../action_creators/DashboardActionCreator":1,"../../../action_creators/PageActionCreator":2,"../../../action_creators/UserActionCreator":4,"../../../stores/BoardStore":8,"./Item":27,"radium":69,"react-vendor-prefix":193,"react/addons":194,"xregexp":370}],27:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2944,7 +3071,23 @@ var _action_creatorsTODOActionCreator = require('../../action_creators/TODOActio
 
 var _action_creatorsTODOActionCreator2 = _interopRequireDefault(_action_creatorsTODOActionCreator);
 
-var styles = _reactVendorPrefix2['default'].prefix({});
+var styles = _reactVendorPrefix2['default'].prefix({
+  container: {
+    padding: '10px'
+  },
+  boardNameContainer: {
+    width: '400px',
+    margin: '0 auto'
+  },
+  boardName: {
+    display: 'inline-block',
+    width: '400px'
+  },
+  deleteBoardContainer: {
+    margin: '0 auto',
+    width: '140px'
+  }
+});
 
 var Settings = (function (_React$Component) {
   function Settings(props) {
@@ -2959,6 +3102,7 @@ var Settings = (function (_React$Component) {
     this._handleDeleteButtonClick = this._handleDeleteButtonClick.bind(this);
     this._handleBoardDeleteSubmit = this._handleBoardDeleteSubmit.bind(this);
     this._handleBoardDeleteCancel = this._handleBoardDeleteCancel.bind(this);
+    this._handleBoardNameUpdate = this._handleBoardNameUpdate.bind(this);
   }
 
   _inherits(Settings, _React$Component);
@@ -2980,11 +3124,16 @@ var Settings = (function (_React$Component) {
       this.setState({ deleteConfirmation: false });
     }
   }, {
+    key: '_handleBoardNameUpdate',
+    value: function _handleBoardNameUpdate() {
+      _action_creatorsDashboardActionCreator2['default'].updateBoard(this.props.boardId, _reactAddons2['default'].findDOMNode(this.refs.boardName).children[0].children[0].value);
+    }
+  }, {
     key: 'render',
     value: function render() {
       return _reactAddons2['default'].createElement(
         'div',
-        null,
+        { style: styles.container },
         this.state.deleteConfirmation ? _reactAddons2['default'].createElement(
           _ConfirmationModalSmallModal2['default'],
           { title: 'Boardを削除しますか？', handleSubmit: this._handleBoardDeleteSubmit, handleCancel: this._handleBoardDeleteCancel, onRequestHide: this._handleBoardDeleteCancel },
@@ -3000,14 +3149,28 @@ var Settings = (function (_React$Component) {
           )
         ) : '',
         _reactAddons2['default'].createElement(
-          'h1',
-          null,
-          'Settings'
+          'div',
+          { style: styles.boardNameContainer },
+          _reactAddons2['default'].createElement(_reactBootstrap.Input, { type: 'text', style: styles.boardName, bsSize: 'large', placeholder: 'Board名', buttonAfter: _reactAddons2['default'].createElement(
+              _reactBootstrap.Button,
+              { type: 'text', bsStyle: 'success', onClick: this._handleBoardNameUpdate },
+              '変更'
+            ), defaultValue: this.props.boardName, ref: 'boardName' })
         ),
         _reactAddons2['default'].createElement(
-          _reactBootstrap.Button,
-          { bsStyle: 'danger', onClick: this._handleDeleteButtonClick },
-          'Boardを削除する'
+          'h3',
+          null,
+          'Boardの削除'
+        ),
+        _reactAddons2['default'].createElement('hr', null),
+        _reactAddons2['default'].createElement(
+          'div',
+          { style: styles.deleteBoardContainer },
+          _reactAddons2['default'].createElement(
+            _reactBootstrap.Button,
+            { bsStyle: 'danger', onClick: this._handleDeleteButtonClick },
+            '削除する'
+          )
         )
       );
     }
@@ -3017,7 +3180,8 @@ var Settings = (function (_React$Component) {
 })(_reactAddons2['default'].Component);
 
 Settings.propTypes = {
-  boardId: _reactAddons2['default'].PropTypes.number.isRequired
+  boardId: _reactAddons2['default'].PropTypes.number.isRequired,
+  boardName: _reactAddons2['default'].PropTypes.string.isRequired
 };
 
 exports['default'] = (0, _radium2['default'])(Settings);
@@ -3181,19 +3345,28 @@ var items = [{
   icon: 'bookmark',
   iconColor: 'rgba(85,76,210,1)',
   title: 'Templates'
-}, {
+},
+/*
+{
   icon: 'user',
   iconColor: 'rgba(111,223,95,1)',
-  title: 'Members'
-}, {
+  title: 'Members',
+},
+*/
+{
   icon: 'cog',
   iconColor: 'rgba(236,228,209,1)',
   title: 'Settings'
-}, {
+}
+/*
+,
+{
   icon: 'align-left',
   iconColor: 'rgba(255,255,69,1)',
-  title: 'Logs'
-}];
+  title: 'Logs',
+}
+*/
+];
 
 var Sidebar = (function (_React$Component) {
   function Sidebar() {
@@ -4691,7 +4864,7 @@ var Menu = (function (_React$Component) {
             _reactAddons2['default'].createElement(
               _reactBootstrap.MenuItem,
               { onSelect: this._handlePaneEdit.bind(this) },
-              '編集'
+              this.props.checkable ? '編集モードに切り替え' : 'チェックモードに切り替え'
             ),
             _reactAddons2['default'].createElement(
               _reactBootstrap.MenuItem,
@@ -4716,7 +4889,8 @@ Menu.propTypes = {
   position: _reactAddons2['default'].PropTypes.shape({
     x: _reactAddons2['default'].PropTypes.number.isRequired,
     y: _reactAddons2['default'].PropTypes.number.isRequired
-  })
+  }),
+  checkable: _reactAddons2['default'].PropTypes.bool.isRequired
 };
 
 exports['default'] = (0, _radium2['default'])(Menu);
@@ -5314,7 +5488,7 @@ var Pane = (function (_React$Component) {
         _reactAddons2['default'].createElement(
           'div',
           { style: styles.pane },
-          _reactAddons2['default'].createElement(_Menu2['default'], { open: this.state.showMenu, handleMenuToggle: this._handleMenuToggle.bind(this), handlePaneEdit: this._handlePaneEdit.bind(this), handlePaneDelete: this._handlePaneDelete }),
+          _reactAddons2['default'].createElement(_Menu2['default'], { open: this.state.showMenu, handleMenuToggle: this._handleMenuToggle.bind(this), handlePaneEdit: this._handlePaneEdit.bind(this), handlePaneDelete: this._handlePaneDelete, checkable: this.state.checkable }),
           _reactAddons2['default'].createElement(
             'div',
             { style: styles.header.own },
@@ -5586,7 +5760,8 @@ var Header = (function (_React$Component) {
         _react2['default'].createElement(
           'ul',
           { className: 'nav nav-tabs', style: styles.ul },
-          this.props.items.map(function (item) {
+          Object.keys(this.props.items).map(function (key) {
+            var item = _this.props.items[key];
             return _react2['default'].createElement(_Item2['default'], { boardId: item.id, name: item.name, current: _this.props.boardId == item.id, handleClick: _this.props.handleTabClick });
           }),
           _react2['default'].createElement(_Plus2['default'], { handleTabPlus: this._onClick })
