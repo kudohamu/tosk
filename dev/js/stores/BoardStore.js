@@ -73,7 +73,7 @@ AppDispatcher.register((payload) => {
       break;
     case ActionTypes.BOARDS.DELETE.SUCCESS_RESPONSE:
       delete _boards[action.id];
-      if(_boards.length != 0) {
+      if(Object.keys(_boards).length != 0) {
         _currentBoard = _boards[(Object.keys(_boards))[0]];
       }else {
         _currentBoard = {};
