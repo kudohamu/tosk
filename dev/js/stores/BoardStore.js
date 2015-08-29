@@ -64,6 +64,10 @@ AppDispatcher.register((payload) => {
       _boards[action.board.id] = action.board;
       _BoardStore.emitChange();
       break;
+    case ActionTypes.BOARDS.UPDATE.SUCCESS_RESPONSE:
+      _boards[action.board.id] = action.board;
+      _BoardStore.emitChange();
+      break;
     case ActionTypes.BOARDS.DELETE.SUCCESS_RESPONSE:
       delete _boards[action.id];
       if(_boards.length != 0) {
