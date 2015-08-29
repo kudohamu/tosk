@@ -2,10 +2,9 @@ import React from 'react/addons';
 import Radium from 'radium';
 import Vendor from 'react-vendor-prefix';
 
-import UserStore from '../../stores/UserStore';
 import TODOActionCreator from '../../action_creators/TODOActionCreator';
+import BoardStore from '../../stores/BoardStore';
 import TODOStore from '../../stores/TODOStore';
-import TODOAPIUtils from '../../utils/TODOAPIUtils';
 import TODOPane from './TODO/Pane';
 import AddPane from './TODO/AddPane';
 
@@ -19,21 +18,24 @@ class Actives extends React.Component {
     super(props);
 
     this.state = {
-      todos: TODOStore.getTODOs(),
+      todos: TODOStore.getTODOs(this.props.boardId),
     };
 
     this.componentDidMount = this.componentDidMount.bind(this);
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
     this._onChange = this._onChange.bind(this);
-    this._createPane = this._createPane.bind(this);
-    this._deletePane = this._deletePane.bind(this);
+    this._onSelect = this._onSelect.bind(this);
+
+    TODOActionCreator.getTODOs(this.props.boardId);
   }
 
   componentDidMount() {
+    BoardStore.addSelectListener(this._onSelect);
     TODOStore.addChangeListener(this._onChange);
   }
 
   componentWillUnmount() {
+    BoardStore.removeSelectListener(this._onSelect);
     TODOStore.removeChangeListener(this._onChange);
   }
 
@@ -43,12 +45,8 @@ class Actives extends React.Component {
     });
   }
 
-  _createPane(title) {
-    TODOActionCreator.createTODO(this.props.boardId, title);
-  }
-
-  _deletePane(id) {
-    TODOActionCreator.deleteTODO(this.props.boardId, id);
+  _onSelect() {
+    TODOActionCreator.getTODOs(BoardStore.getCurrentBoard().id);
   }
 
   render() {
@@ -56,10 +54,10 @@ class Actives extends React.Component {
       <div style={styles.container}>
         {(() => {
           return Object.keys(this.state.todos).map((id) => {
-            return <TODOPane boardId={this.props.boardId} todo={this.state.todos[id]} handlePaneDelete={this._deletePane} />;
+            return <TODOPane boardId={this.props.boardId} todo={this.state.todos[id]} handlePaneDelete={this.props.deletePane} />;
           });
         })()}
-        <AddPane addTODO={this._createPane} />
+        <AddPane addTODO={this.props.createPane} />
       </div>
     );
   }
@@ -67,6 +65,8 @@ class Actives extends React.Component {
 
 Actives.propTypes = {
   boardId: React.PropTypes.number.isRequired,
+  createPane: React.PropTypes.func.isRequired,
+  deletePane: React.PropTypes.func.isRequired,
 };
 
 export default Radium(Actives);

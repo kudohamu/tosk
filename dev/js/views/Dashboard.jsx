@@ -98,9 +98,6 @@ class Dashboard extends React.Component {
       boardsLoading: BoardStore.getBoardsLoading(),
       currentBoard: BoardStore.getCurrentBoard(),
     });
-    if(Object.keys(BoardStore.getCurrentBoard()).length != 0) {
-      TODOActionCreator.getTODOs(BoardStore.getCurrentBoard().id);
-    }
   }
 
   _handleTabPlus(name) {
