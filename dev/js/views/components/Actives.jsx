@@ -18,7 +18,7 @@ class Actives extends React.Component {
     super(props);
 
     this.state = {
-      todos: TODOStore.getTODOs(this.props.boardId),
+      todos: TODOStore.getTODOs(),
     };
 
     this.componentDidMount = this.componentDidMount.bind(this);
@@ -41,7 +41,7 @@ class Actives extends React.Component {
 
   _onChange() {
     this.setState({
-      todos: TODOStore.getTODOs(this.props.boardId),
+      todos: TODOStore.getTODOs(),
     });
   }
 
