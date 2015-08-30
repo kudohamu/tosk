@@ -22,8 +22,12 @@ export default class TODOStore extends EventEmitter {
     this.removeListener(CHANGE_EVENT, callback);
   }
   
-  getTODOs() {
-    return _todos;
+  getTODOs(active = true) {
+    return Object.keys(_todos).filter((id) => {
+      return _todos[id].active == active;
+    }).map((id) => {
+      return _todos[id];
+    });
   }
 
   getTODO(id) {

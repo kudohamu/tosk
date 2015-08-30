@@ -39,8 +39,10 @@ const TODOActionCreator = {
     });
   },
 
-  getTODOs: (boardId) => {
-    BoardAPIUtils.push(boardId, 'todo:index', {});
+  getTODOs: (boardId, active = true) => {
+    BoardAPIUtils.push(boardId, 'todo:index', {
+      active: active,
+    });
   },
 
   getTODOsSuccess: (todos) => {
@@ -50,9 +52,10 @@ const TODOActionCreator = {
     });
   },
 
-  createTODO: (boardId, title) => {
+  createTODO: (boardId, title, active) => {
     BoardAPIUtils.push(boardId, 'todo:create', {
       title: title,
+      active: active,
     });
   },
 

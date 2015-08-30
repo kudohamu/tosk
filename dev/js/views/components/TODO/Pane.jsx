@@ -98,6 +98,7 @@ class Pane extends React.Component {
         id: todo.id,
         content: todo.content,
         checked: (id == todo.id) ? !todo.checked : todo.checked,
+        active: todo.active,
         open: todo.open,
         children: todo.children.map((todo) => {
           return checkTODO(todo);
@@ -119,6 +120,7 @@ class Pane extends React.Component {
         checked: children.reduce(function(acc, todo) {
           return acc && todo.checked;
         }, true),
+        active: todo.active,
         children: children,
       };
     };
@@ -132,6 +134,7 @@ class Pane extends React.Component {
           id: todo.id,
           content: todo.content,
           checked: todo.checked,
+          active: todo.active,
           open: !todo.open,
           children: todo.children
         };
@@ -140,6 +143,7 @@ class Pane extends React.Component {
           id: todo.id,
           content: todo.content,
           checked: todo.checked,
+          active: todo.active,
           open: todo.open,
           children: todo.children.map((todo) => {
             return openFolder(todo);
@@ -157,6 +161,7 @@ class Pane extends React.Component {
           id: todo.id,
           content: content,
           checked: todo.checked,
+          active: todo.active,
           open: todo.open,
           children: todo.children
         };
@@ -165,6 +170,7 @@ class Pane extends React.Component {
           id: todo.id,
           content: todo.content,
           checked: todo.checked,
+          active: todo.active,
           open: todo.open,
           children: todo.children.map((todo) => {
             return updateContent(todo);
@@ -224,6 +230,7 @@ class Pane extends React.Component {
           id: this.state.todo.id,
           content: this.state.todo.content,
           checked: this.state.todo.checked,
+          active: todo.active,
           children: todos,
         }
       });
@@ -238,6 +245,7 @@ class Pane extends React.Component {
             id: todo.id,
             content: todo.content,
             checked: todo.checked,
+            active: todo.active,
             open: todo.open,
             children: todo.children.concat([{
               id: '',
@@ -254,6 +262,7 @@ class Pane extends React.Component {
             id: todo.id,
             content: todo.content,
             checked: todo.checked,
+            active: todo.active,
             open: todo.open,
             children: todo.children.map((todo) => {
               return addTODO(todo);
@@ -271,6 +280,7 @@ class Pane extends React.Component {
         id: todo.id,
         content: todo.content,
         checked: todo.checked,
+        active: todo.active,
         open: todo.open,
         children: todo.children.filter((todo) => {
           if(id == todo.id) {
@@ -292,9 +302,10 @@ class Pane extends React.Component {
   }
 
   render() {
-    var list = this.state.checkable ? 
+    var list = this.props.active && this.state.checkable ? 
       <List todos={this.props.todo.children} handleCheck={this._handleCheck} handleClickFolder={this._handleClickFolder.bind(this)} calculateProgress={this.calculateProgress} /> : 
       <EditableList folderID={this.props.todo.id} todos={this.props.todo.children} handleClickFolder={this._handleClickFolder} changeContent={this._changeContent} handleMovingTODOStart={this._handleMovingTODOStart} handleMovingTODOEnter={this._handleMovingTODOEnter} handleTODOPlus={this._handleTODOPlus} handleTODODelete={this._handleTODODelete} changeIntoFolder={this._changeIntoFolder} />
+
     return (
       <div style={styles.container}>
         <div style={styles.pane}>
@@ -314,6 +325,10 @@ class Pane extends React.Component {
 Pane.propTypes = {
   boardId: React.PropTypes.number.isRequired,
   handlePaneDelete: React.PropTypes.func.isRequired,
+};
+
+Pane.defaultProps = {
+  active: true,
 };
 
 export default Radium(Pane);

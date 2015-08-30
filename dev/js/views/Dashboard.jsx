@@ -80,6 +80,8 @@ class Dashboard extends React.Component {
     this._handleTabClick = this._handleTabClick.bind(this);
     this._handleSidebarClick = this._handleSidebarClick.bind(this);
     this._createBoard = this._createBoard.bind(this);
+    this._createPane = this._createPane.bind(this);
+    this._deletePane = this._deletePane.bind(this);
 
     DashboardActionCreator.getBoards();
   }
@@ -119,6 +121,18 @@ class Dashboard extends React.Component {
     this._handleTabPlus(name);
   }
 
+
+  /**
+   * TODOに関して
+   **/
+  _createPane(title, active = true) {
+    TODOActionCreator.createTODO(this.state.currentBoard.id, title, active);
+  }
+
+  _deletePane(id) {
+    TODOActionCreator.deleteTODO(this.state.currentBoard.id, id);
+  }
+
   render() {
     if (this.state.boardsLoading) {
       return (<Loading />);
@@ -144,9 +158,9 @@ class Dashboard extends React.Component {
                   (() => {
                     switch(this.state.tab) {
                       case 'Actives':
-                        return (<Actives boardId={this.state.currentBoard.id} />);
+                        return (<Actives boardId={this.state.currentBoard.id} createPane={this._createPane} deletePane={this._deletePane} />);
                       case 'Templates':
-                        return (<Templates boardId={this.state.currentBoard.id} />);
+                        return (<Templates boardId={this.state.currentBoard.id} createPane={this._createPane} deletePane={this._deletePane} />);
                       case 'Members':
                         return (<Members />);
                       case 'Settings':
