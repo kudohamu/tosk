@@ -80,10 +80,8 @@ var DashboardActionCreator = {
     _utilsBoardAPIUtils2['default'].leave(boardId);
   },
 
-  createBoard: function createBoard(boardId, name) {
-    _utilsBoardAPIUtils2['default'].push(boardId, 'create', {
-      name: name
-    });
+  createBoard: function createBoard(name) {
+    _utilsBoardAPIUtils2['default'].create(name);
   },
 
   createBoardSuccess: function createBoardSuccess(board) {
@@ -213,7 +211,11 @@ var TODOActionCreator = {
   },
 
   getTODOs: function getTODOs(boardId) {
-    _utilsBoardAPIUtils2['default'].push(boardId, 'todo:index', {});
+    var active = arguments[1] === undefined ? true : arguments[1];
+
+    _utilsBoardAPIUtils2['default'].push(boardId, 'todo:index', {
+      active: active
+    });
   },
 
   getTODOsSuccess: function getTODOsSuccess(todos) {
@@ -223,9 +225,10 @@ var TODOActionCreator = {
     });
   },
 
-  createTODO: function createTODO(boardId, title) {
+  createTODO: function createTODO(boardId, title, active) {
     _utilsBoardAPIUtils2['default'].push(boardId, 'todo:create', {
-      title: title
+      title: title,
+      active: active
     });
   },
 
@@ -324,7 +327,7 @@ exports['default'] = {
 };
 module.exports = exports['default'];
 
-},{"../constants/Constants":6,"../dispatcher/Dispatcher":7,"../utils/UserAPIUtils":18}],5:[function(require,module,exports){
+},{"../constants/Constants":6,"../dispatcher/Dispatcher":7,"../utils/UserAPIUtils":17}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -541,6 +544,7 @@ var _utilsBoardAPIUtils2 = _interopRequireDefault(_utilsBoardAPIUtils);
 
 var ActionTypes = _constantsConstants2['default'].ActionTypes;
 var CHANGE_EVENT = 'change';
+var SELECT_EVENT = 'index';
 
 var _boards = {};
 var _boardsLoading = true;
@@ -557,8 +561,8 @@ var BoardStore = (function (_EventEmitter) {
 
   _createClass(BoardStore, [{
     key: 'emitChange',
-    value: function emitChange() {
-      this.emit(CHANGE_EVENT);
+    value: function emitChange(eventName) {
+      this.emit(eventName);
     }
   }, {
     key: 'addChangeListener',
@@ -569,6 +573,18 @@ var BoardStore = (function (_EventEmitter) {
     key: 'removeChangeListener',
     value: function removeChangeListener(callback) {
       this.removeListener(CHANGE_EVENT, callback);
+    }
+  }, {
+    key: 'addSelectListener',
+
+    //ボード選択のみのイベントリスナ
+    value: function addSelectListener(callback) {
+      this.on(SELECT_EVENT, callback);
+    }
+  }, {
+    key: 'removeSelectListener',
+    value: function removeSelectListener(callback) {
+      this.removeListener(SELECT_EVENT, callback);
     }
   }, {
     key: 'getBoards',
@@ -604,31 +620,38 @@ _dispatcherDispatcher2['default'].register(function (payload) {
       action.boards.map(function (board) {
         _boards[board.id] = board;
       });
-      if (_currentBoard.length != {} && _boards.length != 0) {
+      if (Object.keys(_boards).length != 0) {
         _currentBoard = _boards[Object.keys(_boards)[0]];
+        _BoardStore.emitChange(SELECT_EVENT);
       }
-      _BoardStore.emitChange();
+      _BoardStore.emitChange(CHANGE_EVENT);
       break;
     case ActionTypes.BOARDS.CREATE.SUCCESS_RESPONSE:
       _boards[action.board.id] = action.board;
-      _BoardStore.emitChange();
+      if (Object.keys(_currentBoard).length == 0) {
+        _currentBoard = action.board;
+        _BoardStore.emitChange(SELECT_EVENT);
+      }
+      _BoardStore.emitChange(CHANGE_EVENT);
       break;
     case ActionTypes.BOARDS.UPDATE.SUCCESS_RESPONSE:
       _boards[action.board.id] = action.board;
-      _BoardStore.emitChange();
+      _BoardStore.emitChange(CHANGE_EVENT);
       break;
     case ActionTypes.BOARDS.DELETE.SUCCESS_RESPONSE:
       delete _boards[action.id];
-      if (_boards.length != 0) {
+      if (Object.keys(_boards).length != 0) {
         _currentBoard = _boards[Object.keys(_boards)[0]];
+        _BoardStore.emitChange(SELECT_EVENT);
       } else {
         _currentBoard = {};
       }
-      _BoardStore.emitChange();
+      _BoardStore.emitChange(CHANGE_EVENT);
       break;
     case ActionTypes.BOARDS.CHANGE_CURRENT:
       _currentBoard = _boards[action.boardId];
-      _BoardStore.emitChange();
+      _BoardStore.emitChange(SELECT_EVENT);
+      _BoardStore.emitChange(CHANGE_EVENT);
       break;
   }
 });
@@ -836,7 +859,7 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x2, _x3, _x4) { var _again = true; _function: while (_again) { var object = _x2, property = _x3, receiver = _x4; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x2 = parent; _x3 = property; _x4 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -859,71 +882,6 @@ var _events = require('events');
 
 var ActionTypes = _constantsConstants2['default'].ActionTypes;
 var CHANGE_EVENT = 'change';
-
-var sampleTODO = {
-  id: 1,
-  content: 'Webアプリ作成',
-  checked: false,
-  children: [{
-    id: 12,
-    content: 'デザイン決め',
-    checked: false,
-    children: []
-  }, {
-    id: 2,
-    content: 'モデル設計',
-    checked: true,
-    children: []
-  }, {
-    id: 3,
-    content: 'API設計',
-    checked: false,
-    open: false,
-    children: [{
-      id: 11,
-      content: 'huga',
-      checked: false,
-      children: []
-    }]
-  }, {
-    id: 4,
-    content: 'モデル作成',
-    checked: false,
-    open: false,
-    children: [{
-      id: 6,
-      content: 'モデル生成',
-      checked: false,
-      children: []
-    }, {
-      id: 7,
-      content: 'テスト作成',
-      checked: false,
-      children: []
-    }, {
-      id: 8,
-      content: 'マイグレーション作成',
-      checked: false,
-      open: false,
-      children: [{
-        id: 10,
-        content: 'hoge',
-        checked: false,
-        children: []
-      }]
-    }, {
-      id: 9,
-      content: 'バリデーション作成',
-      checked: false,
-      children: []
-    }]
-  }, {
-    id: 5,
-    content: 'コントローラ作成',
-    checked: false,
-    children: []
-  }]
-};
 
 var _todos = {};
 
@@ -954,7 +912,13 @@ var TODOStore = (function (_EventEmitter) {
   }, {
     key: 'getTODOs',
     value: function getTODOs() {
-      return _todos;
+      var active = arguments[0] === undefined ? true : arguments[0];
+
+      return Object.keys(_todos).filter(function (id) {
+        return _todos[id].active == active;
+      }).map(function (id) {
+        return _todos[id];
+      });
     }
   }, {
     key: 'getTODO',
@@ -1433,7 +1397,7 @@ exports['default'] = {
       board: { name: name }
     }, function (res) {
       if (res['body']['result'] == 'ok') {
-        _action_creatorsDashboardActionCreator2['default'].createBoardsSuccess(res['body']['boards']);
+        _action_creatorsDashboardActionCreator2['default'].createBoardSuccess(res['body']['board']);
       } else {}
     });
   },
@@ -1476,72 +1440,6 @@ exports['default'] = {
 module.exports = exports['default'];
 
 },{"../action_creators/DashboardActionCreator":1,"../constants/Constants":6,"../dispatcher/Dispatcher":7,"../stores/ChannelStore":9,"../stores/UserStore":12,"./APIUtils":15,"./BoardAPIUtils":16,"superagent":367}],17:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _superagent = require('superagent');
-
-var _superagent2 = _interopRequireDefault(_superagent);
-
-var _constantsConstants = require('../constants/Constants');
-
-var _constantsConstants2 = _interopRequireDefault(_constantsConstants);
-
-var _dispatcherDispatcher = require('../dispatcher/Dispatcher');
-
-var _dispatcherDispatcher2 = _interopRequireDefault(_dispatcherDispatcher);
-
-var _APIUtils = require('./APIUtils');
-
-var _APIUtils2 = _interopRequireDefault(_APIUtils);
-
-var _storesTODOStore = require('../stores/TODOStore');
-
-var _storesTODOStore2 = _interopRequireDefault(_storesTODOStore);
-
-var _storesChannelStore = require('../stores/ChannelStore');
-
-var _storesChannelStore2 = _interopRequireDefault(_storesChannelStore);
-
-var CHANNEL_NAME = 'todo';
-
-exports['default'] = {
-  join: function join(boardId) {
-    var topic = 'todos:' + boardId;
-    _storesChannelStore2['default'].setChan(CHANNEL_NAME, topic);
-    _storesChannelStore2['default'].registerTopic(CHANNEL_NAME, topic);
-
-    _storesChannelStore2['default'].getChan(CHANNEL_NAME).join().receive('ok', function (chan) {});
-  },
-
-  leave: function leave() {
-    _storesChannelStore2['default'].getChan(CHANNEL_NAME).leave().receive('ok', function (chan) {});
-  },
-
-  on: function on(message, callback) {
-    _storesChannelStore2['default'].getChan(CHANNEL_NAME).on(message, function (payload) {
-      callback(payload);
-    });
-  },
-
-  off: function off(message) {
-    _storesChannelStore2['default'].getChan(CHANNEL_NAME).off(message);
-  },
-
-  push: function push(message, payload) {
-    setTimeout(function () {
-      _storesChannelStore2['default'].getChan(CHANNEL_NAME).push(message, payload);
-    }, 100);
-  }
-};
-module.exports = exports['default'];
-
-},{"../constants/Constants":6,"../dispatcher/Dispatcher":7,"../stores/ChannelStore":9,"../stores/TODOStore":11,"./APIUtils":15,"superagent":367}],18:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1606,7 +1504,7 @@ exports['default'] = {
 };
 module.exports = exports['default'];
 
-},{"../action_creators/UserActionCreator":4,"../action_creators/users/SignInActionCreator":5,"../constants/Constants":6,"../dispatcher/Dispatcher":7,"./APIUtils":15,"superagent":367}],19:[function(require,module,exports){
+},{"../action_creators/UserActionCreator":4,"../action_creators/users/SignInActionCreator":5,"../constants/Constants":6,"../dispatcher/Dispatcher":7,"./APIUtils":15,"superagent":367}],18:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1660,7 +1558,7 @@ var App = (function (_React$Component) {
 exports['default'] = App;
 module.exports = exports['default'];
 
-},{"react":366,"react-router":178}],20:[function(require,module,exports){
+},{"react":366,"react-router":178}],19:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1669,7 +1567,7 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x2, _x3, _x4) { var _again = true; _function: while (_again) { var object = _x2, property = _x3, receiver = _x4; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x2 = parent; _x3 = property; _x4 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -1723,7 +1621,9 @@ var _componentsActives = require('./components/Actives');
 
 var _componentsActives2 = _interopRequireDefault(_componentsActives);
 
-var _componentsActives3 = _interopRequireDefault(_componentsActives);
+var _componentsTemplates = require('./components/Templates');
+
+var _componentsTemplates2 = _interopRequireDefault(_componentsTemplates);
 
 var _componentsInvite = require('./components/Invite');
 
@@ -1804,6 +1704,8 @@ var Dashboard = (function (_React$Component) {
     this._handleTabClick = this._handleTabClick.bind(this);
     this._handleSidebarClick = this._handleSidebarClick.bind(this);
     this._createBoard = this._createBoard.bind(this);
+    this._createPane = this._createPane.bind(this);
+    this._deletePane = this._deletePane.bind(this);
 
     _action_creatorsDashboardActionCreator2['default'].getBoards();
   }
@@ -1828,14 +1730,11 @@ var Dashboard = (function (_React$Component) {
         boardsLoading: _storesBoardStore2['default'].getBoardsLoading(),
         currentBoard: _storesBoardStore2['default'].getCurrentBoard()
       });
-      if (_storesBoardStore2['default'].getCurrentBoard() != {}) {
-        _action_creatorsTODOActionCreator2['default'].getTODOs(_storesBoardStore2['default'].getCurrentBoard().id);
-      }
     }
   }, {
     key: '_handleTabPlus',
     value: function _handleTabPlus(name) {
-      _action_creatorsDashboardActionCreator2['default'].createBoard(this.state.currentBoard.id, name);
+      _action_creatorsDashboardActionCreator2['default'].createBoard(name);
     }
   }, {
     key: '_handleTabClick',
@@ -1856,13 +1755,30 @@ var Dashboard = (function (_React$Component) {
       this._handleTabPlus(name);
     }
   }, {
+    key: '_createPane',
+
+    /**
+     * TODOに関して
+     **/
+    value: function _createPane(title) {
+      var active = arguments[1] === undefined ? true : arguments[1];
+
+      console.log(active);
+      _action_creatorsTODOActionCreator2['default'].createTODO(this.state.currentBoard.id, title, active);
+    }
+  }, {
+    key: '_deletePane',
+    value: function _deletePane(id) {
+      _action_creatorsTODOActionCreator2['default'].deleteTODO(this.state.currentBoard.id, id);
+    }
+  }, {
     key: 'render',
     value: function render() {
       var _this = this;
 
       if (this.state.boardsLoading) {
         return _reactAddons2['default'].createElement(_componentsLoading2['default'], null);
-      } else if (this.state.boards.length == 0) {
+      } else if (Object.keys(this.state.currentBoard).length == 0) {
         return _reactAddons2['default'].createElement(
           _componentsConfirmationModalSmallModal2['default'],
           { title: 'Board名を入力してください', handleSubmit: this._createBoard, onRequestHide: function () {}, cancelable: false },
@@ -1894,9 +1810,9 @@ var Dashboard = (function (_React$Component) {
                 (function () {
                   switch (_this.state.tab) {
                     case 'Actives':
-                      return _reactAddons2['default'].createElement(_componentsActives2['default'], { boardId: _this.state.currentBoard.id });
+                      return _reactAddons2['default'].createElement(_componentsActives2['default'], { boardId: _this.state.currentBoard.id, createPane: _this._createPane, deletePane: _this._deletePane });
                     case 'Templates':
-                      return _reactAddons2['default'].createElement(_componentsActives2['default'], { boardId: _this.state.currentBoard.id });
+                      return _reactAddons2['default'].createElement(_componentsTemplates2['default'], { boardId: _this.state.currentBoard.id, createPane: _this._createPane, deletePane: _this._deletePane });
                     case 'Members':
                       return _reactAddons2['default'].createElement(_componentsInvite2['default'], null);
                     case 'Settings':
@@ -1919,7 +1835,7 @@ var Dashboard = (function (_React$Component) {
 exports['default'] = (0, _radium2['default'])(Dashboard);
 module.exports = exports['default'];
 
-},{"../action_creators/DashboardActionCreator":1,"../action_creators/TODOActionCreator":3,"../stores/BoardStore":8,"../stores/ChannelStore":9,"../styles/Header/GlobalStyles":13,"./components/Actives":23,"./components/ConfirmationModal/SmallModal":25,"./components/Invite":28,"./components/Loading":29,"./components/Logs":30,"./components/Settings":31,"./components/Sidebar/Sidebar":33,"./components/Tab/Header":51,"radium":69,"react-vendor-prefix":193,"react/addons":194}],21:[function(require,module,exports){
+},{"../action_creators/DashboardActionCreator":1,"../action_creators/TODOActionCreator":3,"../stores/BoardStore":8,"../stores/ChannelStore":9,"../styles/Header/GlobalStyles":13,"./components/Actives":22,"./components/ConfirmationModal/SmallModal":24,"./components/Invite":27,"./components/Loading":28,"./components/Logs":29,"./components/Settings":30,"./components/Sidebar/Sidebar":32,"./components/Tab/Header":50,"./components/Templates":53,"radium":69,"react-vendor-prefix":193,"react/addons":194}],20:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2020,7 +1936,7 @@ LoginedApp.propTypes = {
 exports['default'] = (0, _radium2['default'])(LoginedApp);
 module.exports = exports['default'];
 
-},{"../stores/ChannelStore":9,"../styles/Header/GlobalStyles":13,"./Dashboard":20,"./components/Header/Header":26,"radium":69,"react":366,"react-vendor-prefix":193}],22:[function(require,module,exports){
+},{"../stores/ChannelStore":9,"../styles/Header/GlobalStyles":13,"./Dashboard":19,"./components/Header/Header":25,"radium":69,"react":366,"react-vendor-prefix":193}],21:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2252,7 +2168,7 @@ var Top = (function (_React$Component) {
 exports['default'] = (0, _radium2['default'])(Top);
 module.exports = exports['default'];
 
-},{"../action_creators/PageActionCreator":2,"../stores/UserStore":12,"../styles/form":14,"../utils/UserAPIUtils":18,"./components/AlertBox":24,"radium":69,"react-bootstrap":134,"react-mixin":151,"react-vendor-prefix":193,"react/addons":194}],23:[function(require,module,exports){
+},{"../action_creators/PageActionCreator":2,"../stores/UserStore":12,"../styles/form":14,"../utils/UserAPIUtils":17,"./components/AlertBox":23,"radium":69,"react-bootstrap":134,"react-mixin":151,"react-vendor-prefix":193,"react/addons":194}],22:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2281,21 +2197,17 @@ var _reactVendorPrefix = require('react-vendor-prefix');
 
 var _reactVendorPrefix2 = _interopRequireDefault(_reactVendorPrefix);
 
-var _storesUserStore = require('../../stores/UserStore');
-
-var _storesUserStore2 = _interopRequireDefault(_storesUserStore);
-
 var _action_creatorsTODOActionCreator = require('../../action_creators/TODOActionCreator');
 
 var _action_creatorsTODOActionCreator2 = _interopRequireDefault(_action_creatorsTODOActionCreator);
 
+var _storesBoardStore = require('../../stores/BoardStore');
+
+var _storesBoardStore2 = _interopRequireDefault(_storesBoardStore);
+
 var _storesTODOStore = require('../../stores/TODOStore');
 
 var _storesTODOStore2 = _interopRequireDefault(_storesTODOStore);
-
-var _utilsTODOAPIUtils = require('../../utils/TODOAPIUtils');
-
-var _utilsTODOAPIUtils2 = _interopRequireDefault(_utilsTODOAPIUtils);
 
 var _TODOPane = require('./TODO/Pane');
 
@@ -2322,8 +2234,9 @@ var Actives = (function (_React$Component) {
     this.componentDidMount = this.componentDidMount.bind(this);
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
     this._onChange = this._onChange.bind(this);
-    this._createPane = this._createPane.bind(this);
-    this._deletePane = this._deletePane.bind(this);
+    this._onSelect = this._onSelect.bind(this);
+
+    _action_creatorsTODOActionCreator2['default'].getTODOs(this.props.boardId);
   }
 
   _inherits(Actives, _React$Component);
@@ -2331,29 +2244,26 @@ var Actives = (function (_React$Component) {
   _createClass(Actives, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
+      _storesBoardStore2['default'].addSelectListener(this._onSelect);
       _storesTODOStore2['default'].addChangeListener(this._onChange);
     }
   }, {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
+      _storesBoardStore2['default'].removeSelectListener(this._onSelect);
       _storesTODOStore2['default'].removeChangeListener(this._onChange);
     }
   }, {
     key: '_onChange',
     value: function _onChange() {
       this.setState({
-        todos: _storesTODOStore2['default'].getTODOs(this.props.boardId)
+        todos: _storesTODOStore2['default'].getTODOs()
       });
     }
   }, {
-    key: '_createPane',
-    value: function _createPane(title) {
-      _action_creatorsTODOActionCreator2['default'].createTODO(this.props.boardId, title);
-    }
-  }, {
-    key: '_deletePane',
-    value: function _deletePane(id) {
-      _action_creatorsTODOActionCreator2['default'].deleteTODO(this.props.boardId, id);
+    key: '_onSelect',
+    value: function _onSelect() {
+      _action_creatorsTODOActionCreator2['default'].getTODOs(_storesBoardStore2['default'].getCurrentBoard().id);
     }
   }, {
     key: 'render',
@@ -2365,10 +2275,10 @@ var Actives = (function (_React$Component) {
         { style: styles.container },
         (function () {
           return Object.keys(_this.state.todos).map(function (id) {
-            return _reactAddons2['default'].createElement(_TODOPane2['default'], { boardId: _this.props.boardId, todo: _this.state.todos[id], handlePaneDelete: _this._deletePane });
+            return _reactAddons2['default'].createElement(_TODOPane2['default'], { boardId: _this.props.boardId, todo: _this.state.todos[id], handlePaneDelete: _this.props.deletePane });
           });
         })(),
-        _reactAddons2['default'].createElement(_TODOAddPane2['default'], { addTODO: this._createPane })
+        _reactAddons2['default'].createElement(_TODOAddPane2['default'], { addTODO: this.props.createPane })
       );
     }
   }]);
@@ -2377,13 +2287,15 @@ var Actives = (function (_React$Component) {
 })(_reactAddons2['default'].Component);
 
 Actives.propTypes = {
-  boardId: _reactAddons2['default'].PropTypes.number.isRequired
+  boardId: _reactAddons2['default'].PropTypes.number.isRequired,
+  createPane: _reactAddons2['default'].PropTypes.func.isRequired,
+  deletePane: _reactAddons2['default'].PropTypes.func.isRequired
 };
 
 exports['default'] = (0, _radium2['default'])(Actives);
 module.exports = exports['default'];
 
-},{"../../action_creators/TODOActionCreator":3,"../../stores/TODOStore":11,"../../stores/UserStore":12,"../../utils/TODOAPIUtils":17,"./TODO/AddPane":34,"./TODO/Pane":49,"radium":69,"react-vendor-prefix":193,"react/addons":194}],24:[function(require,module,exports){
+},{"../../action_creators/TODOActionCreator":3,"../../stores/BoardStore":8,"../../stores/TODOStore":11,"./TODO/AddPane":33,"./TODO/Pane":48,"radium":69,"react-vendor-prefix":193,"react/addons":194}],23:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2479,7 +2391,7 @@ AlertBox.propTypes = {
 exports['default'] = (0, _radium2['default'])(AlertBox);
 module.exports = exports['default'];
 
-},{"radium":69,"react-bootstrap":134,"react-vendor-prefix":193,"react/addons":194}],25:[function(require,module,exports){
+},{"radium":69,"react-bootstrap":134,"react-vendor-prefix":193,"react/addons":194}],24:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2613,7 +2525,7 @@ SmallModal.defaultProps = {
 exports['default'] = (0, _radium2['default'])(SmallModal);
 module.exports = exports['default'];
 
-},{"radium":69,"react-bootstrap":134,"react-vendor-prefix":193,"react/addons":194}],26:[function(require,module,exports){
+},{"radium":69,"react-bootstrap":134,"react-vendor-prefix":193,"react/addons":194}],25:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2746,7 +2658,7 @@ Header.propTypes = {
 exports['default'] = (0, _radium2['default'])(Header);
 module.exports = exports['default'];
 
-},{"../../../action_creators/DashboardActionCreator":1,"../../../action_creators/PageActionCreator":2,"../../../action_creators/UserActionCreator":4,"../../../stores/BoardStore":8,"./Item":27,"radium":69,"react-vendor-prefix":193,"react/addons":194,"xregexp":370}],27:[function(require,module,exports){
+},{"../../../action_creators/DashboardActionCreator":1,"../../../action_creators/PageActionCreator":2,"../../../action_creators/UserActionCreator":4,"../../../stores/BoardStore":8,"./Item":26,"radium":69,"react-vendor-prefix":193,"react/addons":194,"xregexp":370}],26:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2848,7 +2760,7 @@ Item.propTypes = {
 exports['default'] = (0, _radium2['default'])(Item);
 module.exports = exports['default'];
 
-},{"radium":69,"react-vendor-prefix":193,"react/addons":194}],28:[function(require,module,exports){
+},{"radium":69,"react-vendor-prefix":193,"react/addons":194}],27:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2903,7 +2815,7 @@ Invite.propTypes = {};
 exports['default'] = (0, _radium2['default'])(Invite);
 module.exports = exports['default'];
 
-},{"radium":69,"react-vendor-prefix":193,"react/addons":194}],29:[function(require,module,exports){
+},{"radium":69,"react-vendor-prefix":193,"react/addons":194}],28:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2973,7 +2885,7 @@ Loading.propTypes = {};
 exports['default'] = (0, _radium2['default'])(Loading);
 module.exports = exports['default'];
 
-},{"radium":69,"react-vendor-prefix":193,"react/addons":194}],30:[function(require,module,exports){
+},{"radium":69,"react-vendor-prefix":193,"react/addons":194}],29:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3028,7 +2940,7 @@ Logs.propTypes = {};
 exports['default'] = (0, _radium2['default'])(Logs);
 module.exports = exports['default'];
 
-},{"radium":69,"react-vendor-prefix":193,"react/addons":194}],31:[function(require,module,exports){
+},{"radium":69,"react-vendor-prefix":193,"react/addons":194}],30:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3071,6 +2983,10 @@ var _action_creatorsTODOActionCreator = require('../../action_creators/TODOActio
 
 var _action_creatorsTODOActionCreator2 = _interopRequireDefault(_action_creatorsTODOActionCreator);
 
+var _storesBoardStore = require('../../stores/BoardStore');
+
+var _storesBoardStore2 = _interopRequireDefault(_storesBoardStore);
+
 var styles = _reactVendorPrefix2['default'].prefix({
   container: {
     padding: '10px'
@@ -3096,9 +3012,14 @@ var Settings = (function (_React$Component) {
     _get(Object.getPrototypeOf(Settings.prototype), 'constructor', this).call(this, props);
 
     this.state = {
-      deleteConfirmation: false
+      deleteConfirmation: false,
+      board: _storesBoardStore2['default'].getCurrentBoard()
     };
 
+    this.componentDidMount = this.componentDidMount.bind(this);
+    this.componentWillUnmount = this.componentWillUnmount.bind(this);
+    this._onChange = this._onChange.bind(this);
+    this._handleInput = this._handleInput.bind(this);
     this._handleDeleteButtonClick = this._handleDeleteButtonClick.bind(this);
     this._handleBoardDeleteSubmit = this._handleBoardDeleteSubmit.bind(this);
     this._handleBoardDeleteCancel = this._handleBoardDeleteCancel.bind(this);
@@ -3108,6 +3029,33 @@ var Settings = (function (_React$Component) {
   _inherits(Settings, _React$Component);
 
   _createClass(Settings, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      _storesBoardStore2['default'].addChangeListener(this._onChange);
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      _storesBoardStore2['default'].removeChangeListener(this._onChange);
+    }
+  }, {
+    key: '_onChange',
+    value: function _onChange() {
+      this.state = {
+        board: _storesBoardStore2['default'].getCurrentBoard()
+      };
+    }
+  }, {
+    key: '_handleInput',
+    value: function _handleInput(e) {
+      this.setState({
+        board: {
+          id: this.state.board.id,
+          name: e.target.value
+        }
+      });
+    }
+  }, {
     key: '_handleDeleteButtonClick',
     value: function _handleDeleteButtonClick() {
       this.setState({ deleteConfirmation: true });
@@ -3126,7 +3074,7 @@ var Settings = (function (_React$Component) {
   }, {
     key: '_handleBoardNameUpdate',
     value: function _handleBoardNameUpdate() {
-      _action_creatorsDashboardActionCreator2['default'].updateBoard(this.props.boardId, _reactAddons2['default'].findDOMNode(this.refs.boardName).children[0].children[0].value);
+      _action_creatorsDashboardActionCreator2['default'].updateBoard(this.props.boardId, this.state.board.name);
     }
   }, {
     key: 'render',
@@ -3155,7 +3103,7 @@ var Settings = (function (_React$Component) {
               _reactBootstrap.Button,
               { type: 'text', bsStyle: 'success', onClick: this._handleBoardNameUpdate },
               '変更'
-            ), defaultValue: this.props.boardName, ref: 'boardName' })
+            ), value: this.state.board.name, onChange: this._handleInput })
         ),
         _reactAddons2['default'].createElement(
           'h3',
@@ -3180,14 +3128,13 @@ var Settings = (function (_React$Component) {
 })(_reactAddons2['default'].Component);
 
 Settings.propTypes = {
-  boardId: _reactAddons2['default'].PropTypes.number.isRequired,
-  boardName: _reactAddons2['default'].PropTypes.string.isRequired
+  boardId: _reactAddons2['default'].PropTypes.number.isRequired
 };
 
 exports['default'] = (0, _radium2['default'])(Settings);
 module.exports = exports['default'];
 
-},{"../../action_creators/DashboardActionCreator":1,"../../action_creators/TODOActionCreator":3,"./ConfirmationModal/SmallModal":25,"radium":69,"react-bootstrap":134,"react-vendor-prefix":193,"react/addons":194}],32:[function(require,module,exports){
+},{"../../action_creators/DashboardActionCreator":1,"../../action_creators/TODOActionCreator":3,"../../stores/BoardStore":8,"./ConfirmationModal/SmallModal":24,"radium":69,"react-bootstrap":134,"react-vendor-prefix":193,"react/addons":194}],31:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3295,7 +3242,7 @@ Item.propTypes = {
 exports['default'] = (0, _radium2['default'])(Item);
 module.exports = exports['default'];
 
-},{"radium":69,"react-bootstrap":134,"react-vendor-prefix":193,"react/addons":194}],33:[function(require,module,exports){
+},{"radium":69,"react-bootstrap":134,"react-vendor-prefix":193,"react/addons":194}],32:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3405,7 +3352,7 @@ Sidebar.propTypes = {
 exports['default'] = (0, _radium2['default'])(Sidebar);
 module.exports = exports['default'];
 
-},{"./Item":32,"radium":69,"react-vendor-prefix":193,"react/addons":194,"xregexp":370}],34:[function(require,module,exports){
+},{"./Item":31,"radium":69,"react-vendor-prefix":193,"react/addons":194,"xregexp":370}],33:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3548,7 +3495,7 @@ AddPane.propTypes = {
 exports['default'] = (0, _radium2['default'])(AddPane);
 module.exports = exports['default'];
 
-},{"./InputView":42,"radium":69,"react-bootstrap":134,"react-vendor-prefix":193,"react/addons":194}],35:[function(require,module,exports){
+},{"./InputView":41,"radium":69,"react-bootstrap":134,"react-vendor-prefix":193,"react/addons":194}],34:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3628,7 +3575,7 @@ Base.defaultProps = {
 exports['default'] = (0, _radium2['default'])(Base);
 module.exports = exports['default'];
 
-},{"radium":69,"react-vendor-prefix":193,"react/addons":194}],36:[function(require,module,exports){
+},{"radium":69,"react-vendor-prefix":193,"react/addons":194}],35:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3733,7 +3680,7 @@ BaseFolder.propTypes = {
 exports['default'] = (0, _radium2['default'])(BaseFolder);
 module.exports = exports['default'];
 
-},{"./Base":35,"radium":69,"react-bootstrap":134,"react-vendor-prefix":193,"react/addons":194}],37:[function(require,module,exports){
+},{"./Base":34,"radium":69,"react-bootstrap":134,"react-vendor-prefix":193,"react/addons":194}],36:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3845,7 +3792,7 @@ CheckableTODO.propTypes = {
 exports['default'] = (0, _radium2['default'])(CheckableTODO);
 module.exports = exports['default'];
 
-},{"./Base":35,"radium":69,"react-vendor-prefix":193,"react/addons":194}],38:[function(require,module,exports){
+},{"./Base":34,"radium":69,"react-vendor-prefix":193,"react/addons":194}],37:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3953,7 +3900,7 @@ ConfirmationModal.propTypes = {
 exports['default'] = (0, _radium2['default'])(ConfirmationModal);
 module.exports = exports['default'];
 
-},{"radium":69,"react-bootstrap":134,"react-vendor-prefix":193,"react/addons":194}],39:[function(require,module,exports){
+},{"radium":69,"react-bootstrap":134,"react-vendor-prefix":193,"react/addons":194}],38:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4157,7 +4104,7 @@ EditableFolder.propTypes = {
 exports['default'] = (0, _radium2['default'])(EditableFolder);
 module.exports = exports['default'];
 
-},{"./Base":35,"./ConfirmationModal":38,"./InputView":42,"./MovableFolder":46,"./MovableView":47,"radium":69,"react-bootstrap":134,"react-vendor-prefix":193,"react/addons":194}],40:[function(require,module,exports){
+},{"./Base":34,"./ConfirmationModal":37,"./InputView":41,"./MovableFolder":45,"./MovableView":46,"radium":69,"react-bootstrap":134,"react-vendor-prefix":193,"react/addons":194}],39:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4261,7 +4208,7 @@ EditableList.propTypes = {
 exports['default'] = (0, _radium2['default'])(EditableList);
 module.exports = exports['default'];
 
-},{"./EditableFolder":39,"./EditableTODO":41,"./PlusView":50,"radium":69,"react-bootstrap":134,"react-vendor-prefix":193,"react/addons":194}],41:[function(require,module,exports){
+},{"./EditableFolder":38,"./EditableTODO":40,"./PlusView":49,"radium":69,"react-bootstrap":134,"react-vendor-prefix":193,"react/addons":194}],40:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4461,7 +4408,7 @@ EditableTODO.propTypes = {
 exports['default'] = (0, _radium2['default'])(EditableTODO);
 module.exports = exports['default'];
 
-},{"./Base":35,"./InputView":42,"./MovableView":47,"radium":69,"react-bootstrap":134,"react-vendor-prefix":193,"react/addons":194}],42:[function(require,module,exports){
+},{"./Base":34,"./InputView":41,"./MovableView":46,"radium":69,"react-bootstrap":134,"react-vendor-prefix":193,"react/addons":194}],41:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4607,7 +4554,7 @@ InputView.defaultProps = {
 exports['default'] = (0, _radium2['default'])(InputView);
 module.exports = exports['default'];
 
-},{"radium":69,"react-bootstrap":134,"react-vendor-prefix":193,"react/addons":194}],43:[function(require,module,exports){
+},{"radium":69,"react-bootstrap":134,"react-vendor-prefix":193,"react/addons":194}],42:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4700,7 +4647,7 @@ List.propTypes = {
 exports['default'] = (0, _radium2['default'])(List);
 module.exports = exports['default'];
 
-},{"./CheckableTODO":37,"./ListHeader":44,"radium":69,"react-bootstrap":134,"react-vendor-prefix":193,"react/addons":194}],44:[function(require,module,exports){
+},{"./CheckableTODO":36,"./ListHeader":43,"radium":69,"react-bootstrap":134,"react-vendor-prefix":193,"react/addons":194}],43:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4784,7 +4731,7 @@ ListHeader.propTypes = {
 exports['default'] = (0, _radium2['default'])(ListHeader);
 module.exports = exports['default'];
 
-},{"./BaseFolder":36,"./InputView":42,"radium":69,"react-bootstrap":134,"react-vendor-prefix":193,"react/addons":194}],45:[function(require,module,exports){
+},{"./BaseFolder":35,"./InputView":41,"radium":69,"react-bootstrap":134,"react-vendor-prefix":193,"react/addons":194}],44:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4896,7 +4843,7 @@ Menu.propTypes = {
 exports['default'] = (0, _radium2['default'])(Menu);
 module.exports = exports['default'];
 
-},{"radium":69,"react-bootstrap":134,"react-vendor-prefix":193,"react/addons":194}],46:[function(require,module,exports){
+},{"radium":69,"react-bootstrap":134,"react-vendor-prefix":193,"react/addons":194}],45:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4997,7 +4944,7 @@ MovableFolder.defaultProps = {
 exports['default'] = (0, _radium2['default'])(MovableFolder);
 module.exports = exports['default'];
 
-},{"./BaseFolder":36,"radium":69,"react-vendor-prefix":193,"react/addons":194}],47:[function(require,module,exports){
+},{"./BaseFolder":35,"radium":69,"react-vendor-prefix":193,"react/addons":194}],46:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -5081,7 +5028,7 @@ MovableView.defaultProps = {
 };
 module.exports = exports['default'];
 
-},{"./Base":35,"react-vendor-prefix":193,"react/addons":194}],48:[function(require,module,exports){
+},{"./Base":34,"react-vendor-prefix":193,"react/addons":194}],47:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5128,7 +5075,7 @@ var MoveTODOQueue = (function () {
 exports["default"] = MoveTODOQueue;
 module.exports = exports["default"];
 
-},{}],49:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -5277,6 +5224,7 @@ var Pane = (function (_React$Component) {
           id: todo.id,
           content: todo.content,
           checked: id == todo.id ? !todo.checked : todo.checked,
+          active: todo.active,
           open: todo.open,
           children: todo.children.map(function (todo) {
             return checkTODO(todo);
@@ -5298,6 +5246,7 @@ var Pane = (function (_React$Component) {
           checked: children.reduce(function (acc, todo) {
             return acc && todo.checked;
           }, true),
+          active: todo.active,
           children: children
         };
       };
@@ -5312,6 +5261,7 @@ var Pane = (function (_React$Component) {
             id: todo.id,
             content: todo.content,
             checked: todo.checked,
+            active: todo.active,
             open: !todo.open,
             children: todo.children
           };
@@ -5320,6 +5270,7 @@ var Pane = (function (_React$Component) {
             id: todo.id,
             content: todo.content,
             checked: todo.checked,
+            active: todo.active,
             open: todo.open,
             children: todo.children.map(function (todo) {
               return openFolder(todo);
@@ -5338,6 +5289,7 @@ var Pane = (function (_React$Component) {
             id: todo.id,
             content: content,
             checked: todo.checked,
+            active: todo.active,
             open: todo.open,
             children: todo.children
           };
@@ -5346,6 +5298,7 @@ var Pane = (function (_React$Component) {
             id: todo.id,
             content: todo.content,
             checked: todo.checked,
+            active: todo.active,
             open: todo.open,
             children: todo.children.map(function (todo) {
               return updateContent(todo);
@@ -5413,6 +5366,7 @@ var Pane = (function (_React$Component) {
             id: this.state.todo.id,
             content: this.state.todo.content,
             checked: this.state.todo.checked,
+            active: todo.active,
             children: todos
           }
         });
@@ -5427,6 +5381,7 @@ var Pane = (function (_React$Component) {
             id: todo.id,
             content: todo.content,
             checked: todo.checked,
+            active: todo.active,
             open: todo.open,
             children: todo.children.concat([{
               id: '',
@@ -5441,6 +5396,7 @@ var Pane = (function (_React$Component) {
             id: todo.id,
             content: todo.content,
             checked: todo.checked,
+            active: todo.active,
             open: todo.open,
             children: todo.children.map(function (todo) {
               return addTODO(todo);
@@ -5458,6 +5414,7 @@ var Pane = (function (_React$Component) {
           id: todo.id,
           content: todo.content,
           checked: todo.checked,
+          active: todo.active,
           open: todo.open,
           children: todo.children.filter(function (todo) {
             if (id == todo.id) {
@@ -5481,7 +5438,8 @@ var Pane = (function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var list = this.state.checkable ? _reactAddons2['default'].createElement(_List2['default'], { todos: this.props.todo.children, handleCheck: this._handleCheck, handleClickFolder: this._handleClickFolder.bind(this), calculateProgress: this.calculateProgress }) : _reactAddons2['default'].createElement(_EditableList2['default'], { folderID: this.props.todo.id, todos: this.props.todo.children, handleClickFolder: this._handleClickFolder, changeContent: this._changeContent, handleMovingTODOStart: this._handleMovingTODOStart, handleMovingTODOEnter: this._handleMovingTODOEnter, handleTODOPlus: this._handleTODOPlus, handleTODODelete: this._handleTODODelete, changeIntoFolder: this._changeIntoFolder });
+      var list = this.props.active && this.state.checkable ? _reactAddons2['default'].createElement(_List2['default'], { todos: this.props.todo.children, handleCheck: this._handleCheck, handleClickFolder: this._handleClickFolder.bind(this), calculateProgress: this.calculateProgress }) : _reactAddons2['default'].createElement(_EditableList2['default'], { folderID: this.props.todo.id, todos: this.props.todo.children, handleClickFolder: this._handleClickFolder, changeContent: this._changeContent, handleMovingTODOStart: this._handleMovingTODOStart, handleMovingTODOEnter: this._handleMovingTODOEnter, handleTODOPlus: this._handleTODOPlus, handleTODODelete: this._handleTODODelete, changeIntoFolder: this._changeIntoFolder });
+
       return _reactAddons2['default'].createElement(
         'div',
         { style: styles.container },
@@ -5518,10 +5476,14 @@ Pane.propTypes = {
   handlePaneDelete: _reactAddons2['default'].PropTypes.func.isRequired
 };
 
+Pane.defaultProps = {
+  active: true
+};
+
 exports['default'] = (0, _radium2['default'])(Pane);
 module.exports = exports['default'];
 
-},{"../../../action_creators/TODOActionCreator":3,"../../../stores/TODOStore":11,"./EditableList":40,"./List":43,"./Menu":45,"./MoveTODOQueue":48,"radium":69,"react-bootstrap":134,"react-vendor-prefix":193,"react/addons":194}],50:[function(require,module,exports){
+},{"../../../action_creators/TODOActionCreator":3,"../../../stores/TODOStore":11,"./EditableList":39,"./List":42,"./Menu":44,"./MoveTODOQueue":47,"radium":69,"react-bootstrap":134,"react-vendor-prefix":193,"react/addons":194}],49:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -5649,7 +5611,7 @@ PlusView.propTypes = {
 exports['default'] = (0, _radium2['default'])(PlusView);
 module.exports = exports['default'];
 
-},{"./Base":35,"./InputView":42,"radium":69,"react-bootstrap":134,"react-vendor-prefix":193,"react/addons":194}],51:[function(require,module,exports){
+},{"./Base":34,"./InputView":41,"radium":69,"react-bootstrap":134,"react-vendor-prefix":193,"react/addons":194}],50:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -5783,7 +5745,7 @@ Header.propTypes = {
 exports['default'] = (0, _radium2['default'])(Header);
 module.exports = exports['default'];
 
-},{"../ConfirmationModal/SmallModal":25,"./Item":52,"./Plus":53,"radium":69,"react":366,"react-bootstrap":134,"react-vendor-prefix":193}],52:[function(require,module,exports){
+},{"../ConfirmationModal/SmallModal":24,"./Item":51,"./Plus":52,"radium":69,"react":366,"react-bootstrap":134,"react-vendor-prefix":193}],51:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -5881,7 +5843,7 @@ Item.propTypes = {
 exports['default'] = (0, _radium2['default'])(Item);
 module.exports = exports['default'];
 
-},{"radium":69,"react":366,"react-vendor-prefix":193}],53:[function(require,module,exports){
+},{"radium":69,"react":366,"react-vendor-prefix":193}],52:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -5969,7 +5931,142 @@ Plus.propTypes = {
 exports['default'] = (0, _radium2['default'])(Plus);
 module.exports = exports['default'];
 
-},{"radium":69,"react-bootstrap":134,"react-vendor-prefix":193,"react/addons":194}],54:[function(require,module,exports){
+},{"radium":69,"react-bootstrap":134,"react-vendor-prefix":193,"react/addons":194}],53:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _reactAddons = require('react/addons');
+
+var _reactAddons2 = _interopRequireDefault(_reactAddons);
+
+var _radium = require('radium');
+
+var _radium2 = _interopRequireDefault(_radium);
+
+var _reactVendorPrefix = require('react-vendor-prefix');
+
+var _reactVendorPrefix2 = _interopRequireDefault(_reactVendorPrefix);
+
+var _action_creatorsTODOActionCreator = require('../../action_creators/TODOActionCreator');
+
+var _action_creatorsTODOActionCreator2 = _interopRequireDefault(_action_creatorsTODOActionCreator);
+
+var _storesBoardStore = require('../../stores/BoardStore');
+
+var _storesBoardStore2 = _interopRequireDefault(_storesBoardStore);
+
+var _storesTODOStore = require('../../stores/TODOStore');
+
+var _storesTODOStore2 = _interopRequireDefault(_storesTODOStore);
+
+var _TODOPane = require('./TODO/Pane');
+
+var _TODOPane2 = _interopRequireDefault(_TODOPane);
+
+var _TODOAddPane = require('./TODO/AddPane');
+
+var _TODOAddPane2 = _interopRequireDefault(_TODOAddPane);
+
+var TEMPLATE = false;
+
+var styles = _reactVendorPrefix2['default'].prefix({
+  container: {}
+});
+
+var Templates = (function (_React$Component) {
+  function Templates(props) {
+    _classCallCheck(this, Templates);
+
+    _get(Object.getPrototypeOf(Templates.prototype), 'constructor', this).call(this, props);
+
+    this.state = {
+      todos: _storesTODOStore2['default'].getTODOs(TEMPLATE)
+    };
+
+    this.componentDidMount = this.componentDidMount.bind(this);
+    this.componentWillUnmount = this.componentWillUnmount.bind(this);
+    this._onChange = this._onChange.bind(this);
+    this._onSelect = this._onSelect.bind(this);
+    this._createPane = this._createPane.bind(this);
+
+    _action_creatorsTODOActionCreator2['default'].getTODOs(this.props.boardId, TEMPLATE);
+  }
+
+  _inherits(Templates, _React$Component);
+
+  _createClass(Templates, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      _storesBoardStore2['default'].addSelectListener(this._onSelect);
+      _storesTODOStore2['default'].addChangeListener(this._onChange);
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      _storesBoardStore2['default'].removeSelectListener(this._onSelect);
+      _storesTODOStore2['default'].removeChangeListener(this._onChange);
+    }
+  }, {
+    key: '_onChange',
+    value: function _onChange() {
+      this.setState({
+        todos: _storesTODOStore2['default'].getTODOs(TEMPLATE)
+      });
+    }
+  }, {
+    key: '_onSelect',
+    value: function _onSelect() {
+      _action_creatorsTODOActionCreator2['default'].getTODOs(_storesBoardStore2['default'].getCurrentBoard().id, TEMPLATE);
+    }
+  }, {
+    key: '_createPane',
+    value: function _createPane(title) {
+      this.props.createPane(title, TEMPLATE);
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this = this;
+
+      return _reactAddons2['default'].createElement(
+        'div',
+        { style: styles.container },
+        (function () {
+          return Object.keys(_this.state.todos).map(function (id) {
+            return _reactAddons2['default'].createElement(_TODOPane2['default'], { boardId: _this.props.boardId, todo: _this.state.todos[id], handlePaneDelete: _this.props.deletePane, active: false });
+          });
+        })(),
+        _reactAddons2['default'].createElement(_TODOAddPane2['default'], { addTODO: this._createPane })
+      );
+    }
+  }]);
+
+  return Templates;
+})(_reactAddons2['default'].Component);
+
+Templates.propTypes = {
+  boardId: _reactAddons2['default'].PropTypes.number.isRequired,
+  createPane: _reactAddons2['default'].PropTypes.func.isRequired,
+  deletePane: _reactAddons2['default'].PropTypes.func.isRequired
+};
+
+exports['default'] = (0, _radium2['default'])(Templates);
+module.exports = exports['default'];
+
+},{"../../action_creators/TODOActionCreator":3,"../../stores/BoardStore":8,"../../stores/TODOStore":11,"./TODO/AddPane":33,"./TODO/Pane":48,"radium":69,"react-vendor-prefix":193,"react/addons":194}],54:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -6134,7 +6231,7 @@ var Main = (function (_React$Component) {
 
 _react2['default'].render(_react2['default'].createElement(Main, null), document.body);
 
-},{"../action_creators/PageActionCreator":2,"../stores/PageStore":10,"../stores/UserStore":12,"./App":19,"./Dashboard":20,"./LoginedApp":21,"./Top":22,"./components/Loading":29,"./users/SignUp":55,"react":366,"react-vendor-prefix":193}],55:[function(require,module,exports){
+},{"../action_creators/PageActionCreator":2,"../stores/PageStore":10,"../stores/UserStore":12,"./App":18,"./Dashboard":19,"./LoginedApp":20,"./Top":21,"./components/Loading":28,"./users/SignUp":55,"react":366,"react-vendor-prefix":193}],55:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -6414,7 +6511,7 @@ var SignUp = (function (_React$Component) {
 exports['default'] = (0, _radium2['default'])(SignUp);
 module.exports = exports['default'];
 
-},{"../../action_creators/PageActionCreator":2,"../../action_creators/UserActionCreator":4,"../../constants/Constants":6,"../../stores/UserStore":12,"../../styles/form":14,"../../utils/UserAPIUtils":18,"../components/AlertBox":24,"radium":69,"react-bootstrap":134,"react-deep-link-state":149,"react-mixin":151,"react-vendor-prefix":193,"react/addons":194}],56:[function(require,module,exports){
+},{"../../action_creators/PageActionCreator":2,"../../action_creators/UserActionCreator":4,"../../constants/Constants":6,"../../stores/UserStore":12,"../../styles/form":14,"../../utils/UserAPIUtils":17,"../components/AlertBox":23,"radium":69,"react-bootstrap":134,"react-deep-link-state":149,"react-mixin":151,"react-vendor-prefix":193,"react/addons":194}],56:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
