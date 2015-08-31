@@ -1,6 +1,8 @@
 import keyMirror from 'keymirror-nested';
 
 export default {
+  TITLE: 'Tosk',
+
   RootUrl: {
     SERVER: "http://localhost:4000/api",
     CLIENT: "http://localhost:3000/#"
