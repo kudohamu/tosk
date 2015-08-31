@@ -96,7 +96,16 @@ const TODOActionCreator = {
     AppDispatcher.handleViewAction({
       type: Constants.ActionTypes.TODOS.CLEAR,
     });
-  }
+  },
+
+  //テンプレートTODOをアクティブ化する
+  activateTemplate: (boardId, template) => {
+    BoardAPIUtils.push(boardId, 'todo:create', {
+      title: template.content,
+      active: true,
+      children: template.children,
+    });
+  },
 };
 
 export default TODOActionCreator;
