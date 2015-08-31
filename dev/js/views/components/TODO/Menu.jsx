@@ -25,17 +25,31 @@ class Menu extends React.Component {
 
   render() {
     var dropdownClass = this.props.open ? "dropdown open" : "dropdown";
+
+    const menuItems = (
+      this.props.active ?
+      //actives用メニュー
+      <MenuItem onSelect={this._handlePaneEdit.bind(this)}>{
+        this.props.checkable ?
+        '編集モードに切り替え' :
+        'チェックモードに切り替え'
+      }</MenuItem>
+      :
+      //templates用メニュー
+      <MenuItem onSelect={this.props.handleActivatePane}>アクティブ化する</MenuItem>
+    );
+
+    //共通メニュー
+    const commonMenuItems = (
+      <MenuItem onSelect={this.props.handlePaneDelete}>削除</MenuItem>
+    );
+
     return (
       <div style={styles.container} onClick={this._handleMenuToggle.bind(this)} style={styles.dropdown}>
         <div className={dropdownClass} >
           <ul className="dropdown-menu" >
-            <MenuItem header>Header</MenuItem>
-            <MenuItem onSelect={this._handlePaneEdit.bind(this)}>{
-              this.props.checkable ?
-              '編集モードに切り替え' :
-              'チェックモードに切り替え'
-            }</MenuItem>
-            <MenuItem onSelect={this.props.handlePaneDelete}>削除</MenuItem>
+            { menuItems }
+            { commonMenuItems }
           </ul>
         </div>
       </div>
@@ -49,11 +63,13 @@ Menu.propTypes = {
   handleMenuToggle: React.PropTypes.func.isRequired,
   handlePaneEdit: React.PropTypes.func.isRequired,
   handlePaneDelete: React.PropTypes.func.isRequired,
+  handleActivatePane: React.PropTypes.func,
   position: React.PropTypes.shape({
     x: React.PropTypes.number.isRequired,
     y: React.PropTypes.number.isRequired
   }),
   checkable: React.PropTypes.bool.isRequired,
+  active: React.PropTypes.bool.isRequired,
 };
 
 export default Radium(Menu);
