@@ -269,6 +269,15 @@ var TODOActionCreator = {
     _dispatcherDispatcher2['default'].handleViewAction({
       type: _constantsConstants2['default'].ActionTypes.TODOS.CLEAR
     });
+  },
+
+  //テンプレートTODOをアクティブ化する
+  activateTemplate: function activateTemplate(boardId, template) {
+    _utilsBoardAPIUtils2['default'].push(boardId, 'todo:create', {
+      title: template.content,
+      active: true,
+      children: template.children
+    });
   }
 };
 
@@ -1706,6 +1715,7 @@ var Dashboard = (function (_React$Component) {
     this._createBoard = this._createBoard.bind(this);
     this._createPane = this._createPane.bind(this);
     this._deletePane = this._deletePane.bind(this);
+    this._activatePane = this._activatePane.bind(this);
 
     _action_creatorsDashboardActionCreator2['default'].getBoards();
   }
@@ -1763,13 +1773,17 @@ var Dashboard = (function (_React$Component) {
     value: function _createPane(title) {
       var active = arguments[1] === undefined ? true : arguments[1];
 
-      console.log(active);
       _action_creatorsTODOActionCreator2['default'].createTODO(this.state.currentBoard.id, title, active);
     }
   }, {
     key: '_deletePane',
     value: function _deletePane(id) {
       _action_creatorsTODOActionCreator2['default'].deleteTODO(this.state.currentBoard.id, id);
+    }
+  }, {
+    key: '_activatePane',
+    value: function _activatePane(template) {
+      _action_creatorsTODOActionCreator2['default'].activateTemplate(this.state.currentBoard.id, template);
     }
   }, {
     key: 'render',
@@ -1812,7 +1826,7 @@ var Dashboard = (function (_React$Component) {
                     case 'Actives':
                       return _reactAddons2['default'].createElement(_componentsActives2['default'], { boardId: _this.state.currentBoard.id, createPane: _this._createPane, deletePane: _this._deletePane });
                     case 'Templates':
-                      return _reactAddons2['default'].createElement(_componentsTemplates2['default'], { boardId: _this.state.currentBoard.id, createPane: _this._createPane, deletePane: _this._deletePane });
+                      return _reactAddons2['default'].createElement(_componentsTemplates2['default'], { boardId: _this.state.currentBoard.id, createPane: _this._createPane, deletePane: _this._deletePane, activatePane: _this._activatePane });
                     case 'Members':
                       return _reactAddons2['default'].createElement(_componentsInvite2['default'], null);
                     case 'Settings':
@@ -4794,6 +4808,28 @@ var Menu = (function (_React$Component) {
     key: 'render',
     value: function render() {
       var dropdownClass = this.props.open ? 'dropdown open' : 'dropdown';
+
+      var menuItems = this.props.active ?
+      //actives用メニュー
+      _reactAddons2['default'].createElement(
+        _reactBootstrap.MenuItem,
+        { onSelect: this._handlePaneEdit.bind(this) },
+        this.props.checkable ? '編集モードに切り替え' : 'チェックモードに切り替え'
+      ) :
+      //templates用メニュー
+      _reactAddons2['default'].createElement(
+        _reactBootstrap.MenuItem,
+        { onSelect: this.props.handleActivatePane },
+        'アクティブ化する'
+      );
+
+      //共通メニュー
+      var commonMenuItems = _reactAddons2['default'].createElement(
+        _reactBootstrap.MenuItem,
+        { onSelect: this.props.handlePaneDelete },
+        '削除'
+      );
+
       return _reactAddons2['default'].createElement(
         'div',
         { style: styles.container, onClick: this._handleMenuToggle.bind(this), style: styles.dropdown },
@@ -4803,21 +4839,8 @@ var Menu = (function (_React$Component) {
           _reactAddons2['default'].createElement(
             'ul',
             { className: 'dropdown-menu' },
-            _reactAddons2['default'].createElement(
-              _reactBootstrap.MenuItem,
-              { header: true },
-              'Header'
-            ),
-            _reactAddons2['default'].createElement(
-              _reactBootstrap.MenuItem,
-              { onSelect: this._handlePaneEdit.bind(this) },
-              this.props.checkable ? '編集モードに切り替え' : 'チェックモードに切り替え'
-            ),
-            _reactAddons2['default'].createElement(
-              _reactBootstrap.MenuItem,
-              { onSelect: this.props.handlePaneDelete },
-              '削除'
-            )
+            menuItems,
+            commonMenuItems
           )
         )
       );
@@ -4833,11 +4856,13 @@ Menu.propTypes = {
   handleMenuToggle: _reactAddons2['default'].PropTypes.func.isRequired,
   handlePaneEdit: _reactAddons2['default'].PropTypes.func.isRequired,
   handlePaneDelete: _reactAddons2['default'].PropTypes.func.isRequired,
+  handleActivatePane: _reactAddons2['default'].PropTypes.func,
   position: _reactAddons2['default'].PropTypes.shape({
     x: _reactAddons2['default'].PropTypes.number.isRequired,
     y: _reactAddons2['default'].PropTypes.number.isRequired
   }),
-  checkable: _reactAddons2['default'].PropTypes.bool.isRequired
+  checkable: _reactAddons2['default'].PropTypes.bool.isRequired,
+  active: _reactAddons2['default'].PropTypes.bool.isRequired
 };
 
 exports['default'] = (0, _radium2['default'])(Menu);
@@ -5205,6 +5230,7 @@ var Pane = (function (_React$Component) {
     this._handleTODOPlus = this._handleTODOPlus.bind(this);
     this._handleTODODelete = this._handleTODODelete.bind(this);
     this._changeIntoFolder = this._changeIntoFolder.bind(this);
+    this._activatePane = this._activatePane.bind(this);
   }
 
   _inherits(Pane, _React$Component);
@@ -5436,6 +5462,11 @@ var Pane = (function (_React$Component) {
       this._handleTODOPlus(id, '');
     }
   }, {
+    key: '_activatePane',
+    value: function _activatePane() {
+      this.props.activatePane(this.props.todo);
+    }
+  }, {
     key: 'render',
     value: function render() {
       var list = this.props.active && this.state.checkable ? _reactAddons2['default'].createElement(_List2['default'], { todos: this.props.todo.children, handleCheck: this._handleCheck, handleClickFolder: this._handleClickFolder.bind(this), calculateProgress: this.calculateProgress }) : _reactAddons2['default'].createElement(_EditableList2['default'], { folderID: this.props.todo.id, todos: this.props.todo.children, handleClickFolder: this._handleClickFolder, changeContent: this._changeContent, handleMovingTODOStart: this._handleMovingTODOStart, handleMovingTODOEnter: this._handleMovingTODOEnter, handleTODOPlus: this._handleTODOPlus, handleTODODelete: this._handleTODODelete, changeIntoFolder: this._changeIntoFolder });
@@ -5446,7 +5477,7 @@ var Pane = (function (_React$Component) {
         _reactAddons2['default'].createElement(
           'div',
           { style: styles.pane },
-          _reactAddons2['default'].createElement(_Menu2['default'], { open: this.state.showMenu, handleMenuToggle: this._handleMenuToggle.bind(this), handlePaneEdit: this._handlePaneEdit.bind(this), handlePaneDelete: this._handlePaneDelete, checkable: this.state.checkable }),
+          _reactAddons2['default'].createElement(_Menu2['default'], { open: this.state.showMenu, handleMenuToggle: this._handleMenuToggle.bind(this), handlePaneEdit: this._handlePaneEdit.bind(this), handlePaneDelete: this._handlePaneDelete, handleActivatePane: this._activatePane, checkable: this.state.checkable, active: this.props.active }),
           _reactAddons2['default'].createElement(
             'div',
             { style: styles.header.own },
@@ -5473,7 +5504,8 @@ var Pane = (function (_React$Component) {
 
 Pane.propTypes = {
   boardId: _reactAddons2['default'].PropTypes.number.isRequired,
-  handlePaneDelete: _reactAddons2['default'].PropTypes.func.isRequired
+  handlePaneDelete: _reactAddons2['default'].PropTypes.func.isRequired,
+  activatePane: _reactAddons2['default'].PropTypes.func
 };
 
 Pane.defaultProps = {
@@ -6046,7 +6078,7 @@ var Templates = (function (_React$Component) {
         { style: styles.container },
         (function () {
           return Object.keys(_this.state.todos).map(function (id) {
-            return _reactAddons2['default'].createElement(_TODOPane2['default'], { boardId: _this.props.boardId, todo: _this.state.todos[id], handlePaneDelete: _this.props.deletePane, active: false });
+            return _reactAddons2['default'].createElement(_TODOPane2['default'], { boardId: _this.props.boardId, todo: _this.state.todos[id], handlePaneDelete: _this.props.deletePane, active: false, activatePane: _this.props.activatePane });
           });
         })(),
         _reactAddons2['default'].createElement(_TODOAddPane2['default'], { addTODO: this._createPane })
@@ -6060,7 +6092,8 @@ var Templates = (function (_React$Component) {
 Templates.propTypes = {
   boardId: _reactAddons2['default'].PropTypes.number.isRequired,
   createPane: _reactAddons2['default'].PropTypes.func.isRequired,
-  deletePane: _reactAddons2['default'].PropTypes.func.isRequired
+  deletePane: _reactAddons2['default'].PropTypes.func.isRequired,
+  activatePane: _reactAddons2['default'].PropTypes.func.isRequired
 };
 
 exports['default'] = (0, _radium2['default'])(Templates);
