@@ -165,7 +165,7 @@ class Dashboard extends React.Component {
                       case 'Actives':
                         return (<Actives boardId={this.state.currentBoard.id} createPane={this._createPane} deletePane={this._deletePane} />);
                       case 'Templates':
-                        return (<Templates boardId={this.state.currentBoard.id} createPane={this._createPane} deletePane={this._deletePane} />);
+                        return (<Templates boardId={this.state.currentBoard.id} createPane={this._createPane} deletePane={this._deletePane} activatePane={this._activatePane} />);
                       case 'Members':
                         return (<Members />);
                       case 'Settings':

@@ -86,6 +86,7 @@ class Pane extends React.Component {
     this._handleTODOPlus = this._handleTODOPlus.bind(this);
     this._handleTODODelete = this._handleTODODelete.bind(this);
     this._changeIntoFolder = this._changeIntoFolder.bind(this);
+    this._activatePane = this._activatePane.bind(this);
   }
 
   calculateProgress(todo) {
@@ -301,6 +302,10 @@ class Pane extends React.Component {
     this._handleTODOPlus(id, '');
   }
 
+  _activatePane() {
+    this.props.activatePane(this.props.todo);
+  }
+
   render() {
     var list = this.props.active && this.state.checkable ? 
       <List todos={this.props.todo.children} handleCheck={this._handleCheck} handleClickFolder={this._handleClickFolder.bind(this)} calculateProgress={this.calculateProgress} /> : 
@@ -309,7 +314,7 @@ class Pane extends React.Component {
     return (
       <div style={styles.container}>
         <div style={styles.pane}>
-          <Menu open={this.state.showMenu} handleMenuToggle={this._handleMenuToggle.bind(this)} handlePaneEdit={this._handlePaneEdit.bind(this)} handlePaneDelete={this._handlePaneDelete} checkable={this.state.checkable} />
+          <Menu open={this.state.showMenu} handleMenuToggle={this._handleMenuToggle.bind(this)} handlePaneEdit={this._handlePaneEdit.bind(this)} handlePaneDelete={this._handlePaneDelete} handleActivatePane={this._activatePane} checkable={this.state.checkable} active={this.props.active} />
           <div style={styles.header.own}>
             <p style={styles.header.p}>{this.props.todo.content}</p>
             <button style={styles.header.menu} onClick={this._handleMenuToggle.bind(this)}><Glyphicon glyph="cog" /></button>
@@ -325,6 +330,7 @@ class Pane extends React.Component {
 Pane.propTypes = {
   boardId: React.PropTypes.number.isRequired,
   handlePaneDelete: React.PropTypes.func.isRequired,
+  activatePane: React.PropTypes.func,
 };
 
 Pane.defaultProps = {
