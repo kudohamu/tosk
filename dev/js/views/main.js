@@ -63,9 +63,9 @@ class Main extends React.Component {
 
     checkAutoLogin().then((authData) => {
       if(authData.id && authData.token) {
-        PageActionCreator.setPage('dashboard');
+        PageActionCreator.setPage('Dashboard');
       }else {
-        PageActionCreator.setPage('top');
+        PageActionCreator.setPage('Top');
       }
     });
   }
@@ -90,11 +90,11 @@ class Main extends React.Component {
         {
           (() => {
             switch(this.state.page) {
-              case 'top':
+              case 'Top':
                 return (<Top />);
               case 'loading':
                 return (<Loading />);
-              case 'sign_up':
+              case 'SignUp':
                 return (<SignUp />);
               default:
                 return (<LoginedApp current_page={this.state.page} />);

@@ -94,7 +94,7 @@ class Top extends React.Component {
 
     checkAutoLogin().then((authData) => {
       if(authData.id && authData.token) {
-        PageActionCreator.setPage('dashboard');
+        PageActionCreator.setPage('Dashboard');
       }
     });
   }
@@ -126,7 +126,7 @@ class Top extends React.Component {
             </div>
             <Input type='checkbox' label='次回から自動でログインする' style={styles.autoLoginCheckbox} checkedLink={this.linkState('autoLogin')} />
             <Button bsStyle='success' style={styles.submit} onClick={this._handleSubmit}>ログイン</Button>
-            <a style={styles.createAccountLink} onClick={(() => {PageActionCreator.setPage('sign_up')})}>アカウントを作成</a>
+            <a style={styles.createAccountLink} onClick={(() => {PageActionCreator.setPage('SignUp')})}>アカウントを作成</a>
             <br />
             <br />
             <br />

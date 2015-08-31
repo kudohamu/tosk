@@ -37,7 +37,7 @@ class LoginedApp extends React.Component {
         {
           (() => {
             switch(this.props.current_page) {
-              case 'dashboard':
+              case 'Dashboard':
                 return (<Dashboard />);
             }
           })()

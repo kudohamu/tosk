@@ -2,12 +2,14 @@ import React from 'react/addons';
 import Radium from 'radium';
 import Vendor from 'react-vendor-prefix';
 
+import Constants from '../../../constants/constants';
+
 var styles = Vendor.prefix({
   container: {
     flexFlow:'row nowrap',
     //width:'130px',
     height:'30px',
-    padding:'0px 15px',
+    padding:'0px 60px',
     borderRight:'solid 1px rgba(255,255,255,.3)',
     
     ':hover': {
@@ -45,7 +47,10 @@ class Item extends React.Component {
 
   render() {
     return (
-      <div style={styles.container} onClick={this._handleClick}>
+      <div style={[
+        styles.container,
+        this.props.title == Constants.TITLE && { padding:'0px 30px' }
+      ]} onClick={this._handleClick}>
         <p style={[
           styles.p,
           this.props.current && styles.current.p

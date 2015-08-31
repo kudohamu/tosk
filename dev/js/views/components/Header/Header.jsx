@@ -3,6 +3,7 @@ import Radium from 'radium';
 import Vendor from 'react-vendor-prefix';
 import {XRegExp} from 'xregexp';
 
+import Constants from '../../../constants/constants';
 import BoardStore from '../../../stores/BoardStore';
 import PageActionCreator from '../../../action_creators/PageActionCreator';
 import UserActionCreator from '../../../action_creators/UserActionCreator';
@@ -20,7 +21,7 @@ var styles = Vendor.prefix({
 
 var items = [
   {
-    title: 'Tosk',
+    title: Constants.TITLE,
   },
   {
     title: 'Dashboard',
@@ -30,9 +31,11 @@ var items = [
     title: 'Public Templates',
   },
   */
+  /*
   {
     title: 'Profile',
   },
+  */
   {
     title: 'Settings',
   },
@@ -46,6 +49,7 @@ class Header extends React.Component {
     super();
 
     this._handleClick = this._handleClick.bind(this);
+    this.pageCheck = this.pageCheck.bind(this);
   }
 
   _handleClick(next_page) {
@@ -54,12 +58,12 @@ class Header extends React.Component {
         DashboardActionCreator.removeActionListener(id);
       });
       UserActionCreator.signOut();
-      PageActionCreator.setPage('top');
+      PageActionCreator.setPage('Top');
     }
   }
 
   pageCheck(page) {
-    if(page == 'tosk') {
+    if(page == Constants.TITLE) {
       return true;
     }else {
       return page == this.props.current_page;
@@ -72,7 +76,7 @@ class Header extends React.Component {
         {
           items.map((item) => {
             return (
-              <Item title={item.title} handleClick={this._handleClick} current={this.pageCheck(item.path)} />
+              <Item title={item.title} handleClick={this._handleClick} current={this.pageCheck(item.title)} />
             );
           })
         }
