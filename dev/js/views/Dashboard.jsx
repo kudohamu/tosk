@@ -82,6 +82,7 @@ class Dashboard extends React.Component {
     this._createBoard = this._createBoard.bind(this);
     this._createPane = this._createPane.bind(this);
     this._deletePane = this._deletePane.bind(this);
+    this._activatePane = this._activatePane.bind(this);
 
     DashboardActionCreator.getBoards();
   }
@@ -131,6 +132,10 @@ class Dashboard extends React.Component {
 
   _deletePane(id) {
     TODOActionCreator.deleteTODO(this.state.currentBoard.id, id);
+  }
+
+  _activatePane(template) {
+    TODOActionCreator.activateTemplate(this.state.currentBoard.id, template);
   }
 
   render() {
