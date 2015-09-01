@@ -5,6 +5,7 @@ import Vendor from 'react-vendor-prefix';
 import ChannelStore from '../stores/ChannelStore';
 import Header from './components/Header/Header';
 import Dashboard from './Dashboard';
+import Settings from './Settings';
 import { HEADER_HEIGHT } from '../styles/Header/GlobalStyles';
 
 let styles = Vendor.prefix({
@@ -39,6 +40,8 @@ class LoginedApp extends React.Component {
             switch(this.props.current_page) {
               case 'Dashboard':
                 return (<Dashboard />);
+              case 'Settings':
+                return (<Settings />);
             }
           })()
         }
