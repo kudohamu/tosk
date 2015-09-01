@@ -10,6 +10,7 @@ import UserActionCreator from '../../../action_creators/UserActionCreator';
 import DashboardActionCreator from '../../../action_creators/DashboardActionCreator';
 
 import Item from './Item';
+import Title from './Title';
 
 var styles = Vendor.prefix({
   container: {
@@ -20,9 +21,6 @@ var styles = Vendor.prefix({
 });
 
 var items = [
-  {
-    title: Constants.TITLE,
-  },
   {
     title: 'Dashboard',
   },
@@ -49,7 +47,6 @@ class Header extends React.Component {
     super();
 
     this._handleClick = this._handleClick.bind(this);
-    this.pageCheck = this.pageCheck.bind(this);
   }
 
   _handleClick(next_page) {
@@ -59,24 +56,19 @@ class Header extends React.Component {
       });
       UserActionCreator.signOut();
       PageActionCreator.setPage('Top');
-    }
-  }
-
-  pageCheck(page) {
-    if(page == Constants.TITLE) {
-      return true;
     }else {
-      return page == this.props.current_page;
+      PageActionCreator.setPage(next_page);
     }
   }
 
   render() {
     return (
       <div style={styles.container}>
+        <Title />
         {
           items.map((item) => {
             return (
-              <Item title={item.title} handleClick={this._handleClick} current={this.pageCheck(item.title)} />
+              <Item page={item.title} handleClick={this._handleClick} current={item.title == this.props.current_page} >{item.title}</Item>
             );
           })
         }

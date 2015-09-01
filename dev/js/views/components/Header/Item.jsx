@@ -42,7 +42,7 @@ class Item extends React.Component {
   }
 
   _handleClick() {
-    this.props.handleClick(this.props.title);
+    this.props.handleClick(this.props.page);
   }
 
   render() {
@@ -54,16 +54,16 @@ class Item extends React.Component {
         <p style={[
           styles.p,
           this.props.current && styles.current.p
-        ]}>{this.props.title}</p>
+        ]}>{this.props.children}</p>
       </div>
     );
   }
 }
 
 Item.propTypes = {
-  title: React.PropTypes.string.isRequired,
-  handleClick: React.PropTypes.func.isRequired,
+  page: React.PropTypes.string.isRequired,
   current: React.PropTypes.bool.isRequired,
+  handleClick: React.PropTypes.func.isRequired,
 };
 
 export default Radium(Item);
