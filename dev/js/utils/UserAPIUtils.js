@@ -1,9 +1,11 @@
 import request from 'superagent';
 import Constants from '../constants/Constants';
 import AppDispatcher from '../dispatcher/Dispatcher';
+
 import SignInActionCreator from '../action_creators/users/SignInActionCreator';
 import UserActionCreator from '../action_creators/UserActionCreator';
 import APIUtils from './APIUtils';
+import UserStore from '../stores/UserStore';
 
 export default {
   signUp: (user) => {
@@ -41,5 +43,17 @@ export default {
         }
       }
     );
-  }
+  },
+
+  show: () => {
+    APIUtils.authGet(
+      'user',
+      (res) => {
+        if (res['body']['result'] == 'ok') {
+          UserActionCreator.showSuccess(res['body']['user']);
+        }else {
+        }
+      }
+    );
+  },
 }
