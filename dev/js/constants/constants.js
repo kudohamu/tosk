@@ -34,6 +34,9 @@ export default {
         ERROR_RESPONSE: null,
       },
       SIGN_OUT: null,
+      SHOW: {
+        SUCCESS_RESPONSE: null,
+      },
     },
     BOARDS: {
       CHANGE_CURRENT: null,
