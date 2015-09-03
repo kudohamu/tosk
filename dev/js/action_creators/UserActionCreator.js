@@ -30,6 +30,17 @@ export default {
     AppDispatcher.handleViewAction({
       type: Constants.ActionTypes.USER.SIGN_OUT,
     })
-  }
+  },
+
+  show: () => {
+    UserAPIUtils.show();
+  },
+
+  showSuccess: (user) => {
+    AppDispatcher.handleServerAction({
+      type: Constants.ActionTypes.USER.SHOW.SUCCESS_RESPONSE,
+      user: user,
+    });
+  },
 };
 
