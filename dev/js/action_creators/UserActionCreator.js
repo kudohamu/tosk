@@ -10,12 +10,12 @@ export default {
       data: data
     });
   },
-  signUp: (data) => {
-    UserAPIUtils.signUp(data);
+  create: (user) => {
+    UserAPIUtils.create(user);
   },
-  signUpSuccess: (id, token) => {
+  createSuccess: (id, token) => {
     AppDispatcher.handleServerAction({
-      type: Constants.ActionTypes.USER.SIGN_UP.SUCCESS_RESPONSE,
+      type: Constants.ActionTypes.USER.CREATE.SUCCESS_RESPONSE,
       id: id,
       token: token,
     });
