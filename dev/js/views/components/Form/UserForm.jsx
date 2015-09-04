@@ -54,6 +54,8 @@ class UserForm extends React.Component {
       disabled: 'disabled',
     };
 
+    this.componentDidMount = this.componentDidMount.bind(this);
+    this._handleInput = this._handleInput.bind(this);
     this._handleInputIcon = this._handleInputIcon.bind(this);
     this._handleInputName = this._handleInputName.bind(this);
     this._handleInputMail = this._handleInputMail.bind(this);
@@ -61,6 +63,20 @@ class UserForm extends React.Component {
     this._handleInputPasswordConfirmation = this._handleInputPasswordConfirmation.bind(this);
     this._checkResultOfValidation = this._checkResultOfValidation.bind(this);
     this._handleSubmit = this._handleSubmit.bind(this);
+  }
+  
+  componentDidMount() {
+    this._handleInput();
+  }
+
+  _handleInput() {
+    this._handleInputIcon();
+    this._handleInputName();
+    this._handleInputMail();
+    if (this.props.needPassword) {
+      this._handleInputPassword();
+      this._handleInputPasswordConfirmation();
+    }
   }
 
   /*
