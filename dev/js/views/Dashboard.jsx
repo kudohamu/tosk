@@ -84,7 +84,9 @@ class Dashboard extends React.Component {
     this._deletePane = this._deletePane.bind(this);
     this._activatePane = this._activatePane.bind(this);
 
-    DashboardActionCreator.getBoards();
+    if (this.state.boardsLoading) {
+      DashboardActionCreator.getBoards();
+    }
   }
 
   componentDidMount() {
