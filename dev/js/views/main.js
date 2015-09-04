@@ -12,28 +12,6 @@ import SignUp from './SignUp';
 import Dashboard from './Dashboard';
 import Loading from './components/Loading';
 
-/*
-let Route = Router.Route;
-let DefaultRoute = Router.DefaultRoute;
-
-var routes = (
-  <Route name="app" handler={App} path="/">
-    <DefaultRoute handler={Top} />
-    <Route path="user/sign_up" handler={SignUp} />
-    <Route name="account" handler={LoginedApp} path="account">
-      <Route name='loadingDashboard' path="dashboard" Handler={Dashboard} />
-      <Route name='dashboard' path="dashboard/:boardId" Handler={Dashboard}>
-        <Route name="actives" handler={Actives} />
-        <Route name="templates" handler={Dashboard} />
-        <Route name="invite" handler={Invite} />
-        <Route name="settings" handler={Settings} />
-        <Route name="logs" handler={Logs} />
-      </Route>
-    </Route>
-  </Route>
-);
-*/
-
 var styles = Vendor.prefix({
   app: {
     width:'100%',
