@@ -42,5 +42,16 @@ export default {
       user: user,
     });
   },
+
+  update: (user) => {
+    UserAPIUtils.update(user);
+  },
+
+  updateSuccess: (user) => {
+    AppDispatcher.handleServerAction({
+      type: Constants.ActionTypes.USER.UPDATE.SUCCESS_RESPONSE,
+      user: user,
+    });
+  },
 };
 
