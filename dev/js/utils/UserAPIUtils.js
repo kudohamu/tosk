@@ -4,11 +4,12 @@ import AppDispatcher from '../dispatcher/Dispatcher';
 
 import SignInActionCreator from '../action_creators/users/SignInActionCreator';
 import UserActionCreator from '../action_creators/UserActionCreator';
+import PageActionCreator from '../action_creators/PageActionCreator';
 import APIUtils from './APIUtils';
 import UserStore from '../stores/UserStore';
 
 export default {
-  signUp: (user) => {
+  create: (user) => {
     APIUtils.post(
       'user',
       {
