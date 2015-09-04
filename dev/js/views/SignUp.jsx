@@ -1,13 +1,13 @@
 import React from 'react/addons';
 import Radium from 'radium';
 import Vendor from 'react-vendor-prefix';
-import FormStyle from '../../styles/form';
-import Constants from '../../constants/Constants';
+import FormStyle from '../styles/form';
+import Constants from '../constants/Constants';
 
-import UserStore from '../../stores/UserStore';
-import UserActionCreator from '../../action_creators/UserActionCreator';
+import UserStore from '../stores/UserStore';
+import UserActionCreator from '../action_creators/UserActionCreator';
 
-import UserForm from '../components/Form/UserForm';
+import UserForm from './components/Form/UserForm';
 
 var styles = Vendor.prefix({
   SignUp: {

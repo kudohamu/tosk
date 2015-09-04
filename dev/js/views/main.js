@@ -8,7 +8,7 @@ import PageActionCreator from '../action_creators/PageActionCreator';
 import App from './App';
 import LoginedApp from './LoginedApp';
 import Top from './Top';
-import SignUp from './users/SignUp';
+import SignUp from './SignUp';
 import Dashboard from './Dashboard';
 import Loading from './components/Loading';
 
