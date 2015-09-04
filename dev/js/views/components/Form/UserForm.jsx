@@ -71,8 +71,9 @@ class UserForm extends React.Component {
    *   true : アイコンが選択されていないとエラー
    *   false: アイコンが選択されていないと初期状態に戻す
    */
-  _handleInputIcon(e) {
-    if (e.target.files.length == 0) {
+  _handleInputIcon() {
+    const icon = React.findDOMNode(this.refs.icon).children[0];
+    if (icon.files.length == 0) {
       if (this.props.needIcon) {
         this.setState({
           icon: {
@@ -95,8 +96,8 @@ class UserForm extends React.Component {
         })
       }
     }else {
-      const file = e.target.files[0];
-      const filePath = e.target.value;
+      const file = icon.files[0];
+      const filePath = icon.value;
       if (file.size <= 70000) {
         var reader = new FileReader();
         reader.onload = (upload) => {
