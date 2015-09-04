@@ -56,11 +56,11 @@ class UserForm extends React.Component {
 
     this.componentDidMount = this.componentDidMount.bind(this);
     this._handleInput = this._handleInput.bind(this);
-    this._handleInputIcon = this._handleInputIcon.bind(this);
-    this._handleInputName = this._handleInputName.bind(this);
-    this._handleInputMail = this._handleInputMail.bind(this);
-    this._handleInputPassword = this._handleInputPassword.bind(this);
-    this._handleInputPasswordConfirmation = this._handleInputPasswordConfirmation.bind(this);
+    this._validateIcon = this._validateIcon.bind(this);
+    this._validateName = this._validateName.bind(this);
+    this._validateMail = this._validateMail.bind(this);
+    this._validatePassword = this._validatePassword.bind(this);
+    this._validatePasswordConfirmation = this._validatePasswordConfirmation.bind(this);
     this._checkResultOfValidation = this._checkResultOfValidation.bind(this);
     this._handleSubmit = this._handleSubmit.bind(this);
   }
@@ -70,12 +70,12 @@ class UserForm extends React.Component {
   }
 
   _handleInput() {
-    this._handleInputIcon();
-    this._handleInputName();
-    this._handleInputMail();
+    this._validateIcon();
+    this._validateName();
+    this._validateMail();
     if (this.props.needPassword) {
-      this._handleInputPassword();
-      this._handleInputPasswordConfirmation();
+      this._validatePassword();
+      this._validatePasswordConfirmation();
     }
   }
 
@@ -87,7 +87,7 @@ class UserForm extends React.Component {
    *   true : アイコンが選択されていないとエラー
    *   false: アイコンが選択されていないと初期状態に戻す
    */
-  _handleInputIcon() {
+  _validateIcon() {
     const icon = React.findDOMNode(this.refs.icon).children[0];
     if (icon.files.length == 0) {
       if (this.props.needIcon) {
@@ -173,7 +173,7 @@ class UserForm extends React.Component {
    * 4文字以上30文字以内
    * 使用可能文字：英数字, _, @, -
    */
-  _handleInputName() {
+  _validateName() {
     const name = React.findDOMNode(this.refs.name).children[0].value;
     var reg = /^[0-9a-zA-Z_@\-]{4,30}$/;
     if (reg.test(name)) {
@@ -198,7 +198,7 @@ class UserForm extends React.Component {
   /*
    * 入力ごとにメールのバリデーション
    */
-  _handleInputMail() {
+  _validateMail() {
     const mail = React.findDOMNode(this.refs.mail).children[0].value;
     var reg = /^([\w\-\+_]+\.?[\w\-\+_]+)+@([a-z0-9\-]+\.[a-z]+)+$/;
     if (reg.test(mail)) {
@@ -225,7 +225,7 @@ class UserForm extends React.Component {
    * 8文字以上
    * 英数字のみの文字列だと警告
    */
-  _handleInputPassword(e) {
+  _validatePassword(e) {
     const password = React.findDOMNode(this.refs.password).children[0].value;
     var reg = /^[0-9a-zA-Z]+$/;
     if(password.length < 8) {
@@ -253,14 +253,14 @@ class UserForm extends React.Component {
         disabled: this._checkResultOfValidation(this.state.icon.bsStyle, this.state.name.bsStyle, this.state.mail.bsStyle, 'success', this.state.passwordConfirmation.bsStyle)
       });
     }
-    this._handleInputPasswordConfirmation();
+    this._validatePasswordConfirmation();
   }
 
   /*
    * 入力ごとにバリデーション
    * passwordと一致するか
    */
-  _handleInputPasswordConfirmation() {
+  _validatePasswordConfirmation() {
     const passwordConfirmation = React.findDOMNode(this.refs.passwordConfirmation).children[0].value;
     if (passwordConfirmation == React.findDOMNode(this.refs.password).children[0].value) {
       this.setState({
@@ -322,10 +322,10 @@ class UserForm extends React.Component {
   render() {
     const passwordInputs = this.props.needPassword ?
     <div>
-      <Input type='password' placeholder='パスワード' onChange={this._handleInputPassword} defaultValue={this.props.password} bsStyle={this.state.password.bsStyle} ref='password' hasFeedback />
+      <Input type='password' placeholder='パスワード' onChange={this._validatePassword} defaultValue={this.props.password} bsStyle={this.state.password.bsStyle} ref='password' hasFeedback />
       <span style={styles.errSpan}>{this.state.password.msg}</span>
 
-      <Input type='password' placeholder='パスワード（確認）' onChange={this._handleInputPasswordConfirmation} defaultValue={this.props.passwordConfirmation} bsStyle={this.state.passwordConfirmation.bsStyle} ref='passwordConfirmation' hasFeedback />
+      <Input type='password' placeholder='パスワード（確認）' onChange={this._validatePasswordConfirmation} defaultValue={this.props.passwordConfirmation} bsStyle={this.state.passwordConfirmation.bsStyle} ref='passwordConfirmation' hasFeedback />
       <span style={styles.errSpan}>{this.state.passwordConfirmation.msg}</span>
     </div>
     :
@@ -336,13 +336,13 @@ class UserForm extends React.Component {
         <div>
           <img src={this.state.icon.src} style={styles.icon} /> 
         </div>
-        <Input type='file' help='jpg, jpeg, png(7M以下)' onChange={this._handleInputIcon} ref='icon' />
+        <Input type='file' help='jpg, jpeg, png(7M以下)' onChange={this._validateIcon} ref='icon' />
         <span style={styles.errSpan}>{this.state.icon.msg}</span>
 
-        <Input type='text' placeholder='ユーザ名' onChange={this._handleInputName} defaultValue={this.props.name} bsStyle={this.state.name.bsStyle} ref='name' hasFeedback />
+        <Input type='text' placeholder='ユーザ名' onChange={this._validateName} defaultValue={this.props.name} bsStyle={this.state.name.bsStyle} ref='name' hasFeedback />
         <span style={styles.errSpan}>{this.state.name.msg}</span>
 
-        <Input type='text' placeholder='メールアドレス' onChange={this._handleInputMail} defaultValue={this.props.mail} bsStyle={this.state.mail.bsStyle} ref='mail' hasFeedback />
+        <Input type='text' placeholder='メールアドレス' onChange={this._validateMail} defaultValue={this.props.mail} bsStyle={this.state.mail.bsStyle} ref='mail' hasFeedback />
         <span style={styles.errSpan}>{this.state.mail.msg}</span>
 
         {passwordInputs}
