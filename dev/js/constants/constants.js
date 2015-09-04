@@ -24,6 +24,9 @@ export default {
         CHANGE_MAIL: null,
         CHANGE_PASSWORD: null,
         CHANGE_PASSWORD_CONFIRMATION: null,
+      },
+
+      CREATE: {
         REQUEST: null,
         SUCCESS_RESPONSE: null,
         ERROR_RESPONSE: null
