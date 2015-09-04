@@ -13,15 +13,17 @@ export default {
     SERVER_ACTION: null
   }),
 
+  PAGE: {
+    TOP: 'Top',
+    DASHBOARD: 'Dashboard',
+    SETTINGS: 'Settings',
+    SIGN_UP: 'SignUp',
+    SIGN_OUT: 'SignOut',
+    LOADING: 'Loading',    
+  },
+
   ActionTypes: keyMirror({
     PAGE: {
-      TOP: 'Top',
-      DASHBOARD: 'Dashboard',
-      SETTINGS: 'Settings',
-      SIGN_UP: 'SignUp',
-      SIGN_OUT: 'SignOut',
-      LOADING: 'Loading',    
-
       CHANGE: null,
     },
     USER: {
