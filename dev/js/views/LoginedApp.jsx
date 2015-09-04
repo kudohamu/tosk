@@ -2,6 +2,7 @@ import React from 'react';
 import Radium from 'radium';
 import Vendor from 'react-vendor-prefix';
 
+import UserActionCreator from '../action_creators/UserActionCreator';
 import ChannelStore from '../stores/ChannelStore';
 import Header from './components/Header/Header';
 import Dashboard from './Dashboard';
@@ -26,6 +27,7 @@ class LoginedApp extends React.Component {
   constructor(props) {
     super(props);
 
+    UserActionCreator.show();
     ChannelStore.connect();
   }
 
