@@ -2,6 +2,7 @@ import React from 'react';
 import Radium from 'radium';
 import Vendor from 'react-vendor-prefix';
 
+import Constants from '../constants/Constants';
 import UserActionCreator from '../action_creators/UserActionCreator';
 import ChannelStore from '../stores/ChannelStore';
 import Header from './components/Header/Header';
@@ -40,9 +41,9 @@ class LoginedApp extends React.Component {
         {
           (() => {
             switch(this.props.current_page) {
-              case 'Dashboard':
+              case Constants.PAGE.DASHBOARD:
                 return (<Dashboard />);
-              case 'Settings':
+              case Constants.PAGE.SETTINGS:
                 return (<Settings />);
             }
           })()

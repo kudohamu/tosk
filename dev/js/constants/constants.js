@@ -15,6 +15,13 @@ export default {
 
   ActionTypes: keyMirror({
     PAGE: {
+      TOP: 'Top',
+      DASHBOARD: 'Dashboard',
+      SETTINGS: 'Settings',
+      SIGN_UP: 'SignUp',
+      SIGN_OUT: 'SignOut',
+      LOADING: 'Loading',    
+
       CHANGE: null,
     },
     USER: {

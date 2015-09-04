@@ -22,7 +22,7 @@ var styles = Vendor.prefix({
 
 var items = [
   {
-    title: 'Dashboard',
+    title: Constants.PAGE.DASHBOARD,
   },
   /*
   {
@@ -35,10 +35,10 @@ var items = [
   },
   */
   {
-    title: 'Settings',
+    title: Constants.PAGE.SETTINGS,
   },
   {
-    title: 'SignOut',
+    title: Constants.PAGE.SIGN_OUT,
   }
 ];
 
@@ -50,12 +50,12 @@ class Header extends React.Component {
   }
 
   _handleClick(next_page) {
-    if(next_page == 'SignOut') {
+    if(next_page == Constants.PAGE.SIGN_OUT) {
       Object.keys(BoardStore.getBoards()).map((id) => {
         DashboardActionCreator.removeActionListener(id);
       });
       UserActionCreator.signOut();
-      PageActionCreator.setPage('Top');
+      PageActionCreator.setPage(Constants.PAGE.TOP);
     }else {
       PageActionCreator.setPage(next_page);
     }

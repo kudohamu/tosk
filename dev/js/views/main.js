@@ -1,6 +1,7 @@
 import React from 'react';
 import Vendor from 'react-vendor-prefix';
 
+import Constants from '../constants/Constants';
 import UserStore from '../stores/UserStore';
 import PageStore from '../stores/PageStore';
 import PageActionCreator from '../action_creators/PageActionCreator';
@@ -41,9 +42,9 @@ class Main extends React.Component {
 
     checkAutoLogin().then((authData) => {
       if(authData.id && authData.token) {
-        PageActionCreator.setPage('Dashboard');
+        PageActionCreator.setPage(Constants.PAGE.DASHBOARD);
       }else {
-        PageActionCreator.setPage('Top');
+        PageActionCreator.setPage(Constants.PAGE.TOP);
       }
     });
   }
@@ -68,11 +69,11 @@ class Main extends React.Component {
         {
           (() => {
             switch(this.state.page) {
-              case 'Top':
+              case Constants.PAGE.TOP:
                 return (<Top />);
-              case 'loading':
+              case Constants.PAGE.LOADING:
                 return (<Loading />);
-              case 'SignUp':
+              case Constants.PAGE.SIGN_UP:
                 return (<SignUp />);
               default:
                 return (<LoginedApp current_page={this.state.page} />);
