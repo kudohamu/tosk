@@ -156,8 +156,8 @@ class UserForm extends React.Component {
    * 4文字以上30文字以内
    * 使用可能文字：英数字, _, @, -
    */
-  _handleInputName(e) {
-    const name = e.target.value;
+  _handleInputName() {
+    const name = React.findDOMNode(this.refs.name).children[0].value;
     var reg = /^[0-9a-zA-Z_@\-]{4,30}$/;
     if (reg.test(name)) {
       this.setState({
@@ -181,8 +181,8 @@ class UserForm extends React.Component {
   /*
    * 入力ごとにメールのバリデーション
    */
-  _handleInputMail(e) {
-    const mail = e.target.value;
+  _handleInputMail() {
+    const mail = React.findDOMNode(this.refs.mail).children[0].value;
     var reg = /^([\w\-\+_]+\.?[\w\-\+_]+)+@([a-z0-9\-]+\.[a-z]+)+$/;
     if (reg.test(mail)) {
       this.setState({
@@ -243,7 +243,7 @@ class UserForm extends React.Component {
    * 入力ごとにバリデーション
    * passwordと一致するか
    */
-  _handleInputPasswordConfirmation(e) {
+  _handleInputPasswordConfirmation() {
     const passwordConfirmation = React.findDOMNode(this.refs.passwordConfirmation).children[0].value;
     if (passwordConfirmation == React.findDOMNode(this.refs.password).children[0].value) {
       this.setState({
@@ -349,8 +349,9 @@ UserForm.propTypes = {
 };
 
 UserForm.defaultProps = {
-  needIcon    : true,
-  needPassword: true,
+  needIcon         : true,
+  needPassword     : true,
+  initialValidation: false,
 };
 
 export default Radium(UserForm);

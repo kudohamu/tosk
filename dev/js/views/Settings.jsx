@@ -106,6 +106,7 @@ class Settings extends React.Component {
 
                 needIcon={false}
                 needPassword={false}
+                initialValidation={true}
               />
             </div>
           </div>
