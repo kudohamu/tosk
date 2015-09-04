@@ -17,9 +17,9 @@ export default {
       },
       (res) => {
         if (res["body"]["result"] == "ok") {
-          UserActionCreator.signUpSuccess(res["body"]["id"], res["body"]["token"]);
+          UserActionCreator.createSuccess(res["body"]["id"], res["body"]["token"]);
+          PageActionCreator.setPage('Dashboard');
         }else {
-          UserActionCreator.signUpErr(res["body"]["msg"]);
         }
       }
     );
