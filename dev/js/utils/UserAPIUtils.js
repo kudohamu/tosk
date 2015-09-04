@@ -57,4 +57,18 @@ export default {
       }
     );
   },
+
+  update: (user) => {
+    APIUtils.authPut(
+      'user',
+      {
+        user: user
+      },
+      (res) => {
+        if (res['body']['result'] == 'ok') {
+          UserActionCreator.updateSuccess(res['body']['user']);
+        }
+      }
+    );
+  }
 }
