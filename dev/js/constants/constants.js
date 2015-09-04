@@ -37,6 +37,9 @@ export default {
       SHOW: {
         SUCCESS_RESPONSE: null,
       },
+      UPDATE: {
+        SUCCESS_RESPONSE: null,
+      },
     },
     BOARDS: {
       CHANGE_CURRENT: null,
