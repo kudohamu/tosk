@@ -3,6 +3,7 @@ import Radium from 'radium';
 import Vendor from 'react-vendor-prefix';
 import {XRegExp} from 'xregexp';
 
+import Constants from '../../../constants/constants';
 import Item from './Item';
 
 var styles = Vendor.prefix({
