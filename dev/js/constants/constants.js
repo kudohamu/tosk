@@ -22,6 +22,14 @@ export default {
     LOADING: 'Loading',    
   },
 
+  SIDEBAR: {
+    ACTIVES  : 'Actives',
+    TEMPLATES: 'Templates',
+    MEMBERS  : 'Members',
+    SETTINGS : 'Settings',
+    LOGS     : 'Logs',
+  },
+
   ActionTypes: keyMirror({
     PAGE: {
       CHANGE: null,
