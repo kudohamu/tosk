@@ -68,7 +68,7 @@ class Dashboard extends React.Component {
     super(props);
     this.state = {
       currentBoard: BoardStore.getCurrentBoard(),
-      tab: 'Actives',
+      tab: Constants.SIDEBAR.ACTIVES,
       boards: BoardStore.getBoards(),
       boardsLoading: BoardStore.getBoardsLoading(),
     }
@@ -164,15 +164,15 @@ class Dashboard extends React.Component {
                 {
                   (() => {
                     switch(this.state.tab) {
-                      case 'Actives':
+                      case Constants.SIDEBAR.ACTIVES:
                         return (<Actives boardId={this.state.currentBoard.id} createPane={this._createPane} deletePane={this._deletePane} />);
-                      case 'Templates':
+                      case Constants.SIDEBAR.TEMPLATES:
                         return (<Templates boardId={this.state.currentBoard.id} createPane={this._createPane} deletePane={this._deletePane} activatePane={this._activatePane} />);
-                      case 'Members':
+                      case Constants.SIDEBAR.MEMBERS:
                         return (<Members />);
-                      case 'Settings':
+                      case Constants.SIDEBAR.SETTINGS:
                         return (<Settings boardId={this.state.currentBoard.id} boardName={this.state.currentBoard.name} />);
-                      case 'Logs':
+                      case Constants.SIDEBAR.LOGS:
                         return (<Logs />);
                     }
                   })()

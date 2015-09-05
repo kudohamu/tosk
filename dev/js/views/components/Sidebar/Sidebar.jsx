@@ -16,31 +16,31 @@ var items = [
   {
     icon: 'certificate',
     iconColor: 'rgba(246,54,65,1)',
-    title: 'Actives',
+    title: Constants.SIDEBAR.ACTIVES,
   },
   {
     icon: 'bookmark',
     iconColor: 'rgba(85,76,210,1)',
-    title: 'Templates',
+    title: Constants.SIDEBAR.TEMPLATES,
   },
   /*
   {
     icon: 'user',
     iconColor: 'rgba(111,223,95,1)',
-    title: 'Members',
+    title: Constants.SIDEBAR.MEMBERS,
   },
   */
   {
     icon: 'cog',
     iconColor: 'rgba(236,228,209,1)',
-    title: 'Settings',
+    title: Constants.SIDEBAR.SETTINGS,
   }
   /*
   ,
   {
     icon: 'align-left',
     iconColor: 'rgba(255,255,69,1)',
-    title: 'Logs',
+    title: Constants.SIDEBAR.LOGS,
   }
   */
 ];
