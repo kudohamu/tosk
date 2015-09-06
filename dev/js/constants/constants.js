@@ -95,5 +95,9 @@ export default {
         SUCCESS_RESPONSE: null,
       }
     },
+    NOTIFICATIONS: {
+      PUSH: null,
+      ERASE: null,
+    },
   })
 }
