@@ -6,7 +6,6 @@ import UserStore from '../stores/UserStore';
 import PageStore from '../stores/PageStore';
 import PageActionCreator from '../action_creators/PageActionCreator';
 
-import App from './App';
 import LoginedApp from './LoginedApp';
 import Top from './Top';
 import SignUp from './SignUp';
