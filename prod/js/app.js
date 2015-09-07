@@ -19,6 +19,10 @@ var _utilsBoardAPIUtils = require('../utils/BoardAPIUtils');
 
 var _utilsBoardAPIUtils2 = _interopRequireDefault(_utilsBoardAPIUtils);
 
+var _NotificationActionCreator = require('./NotificationActionCreator');
+
+var _NotificationActionCreator2 = _interopRequireDefault(_NotificationActionCreator);
+
 var _TODOActionCreator = require('./TODOActionCreator');
 
 var _TODOActionCreator2 = _interopRequireDefault(_TODOActionCreator);
@@ -60,10 +64,12 @@ var DashboardActionCreator = {
 
     _utilsBoardAPIUtils2['default'].on(boardId, 'updated', function (payload) {
       DashboardActionCreator.updateBoardSuccess(payload['board']);
+      _NotificationActionCreator2['default'].pushInfo('ボード名が変更されました。');
     });
 
     _utilsBoardAPIUtils2['default'].on(boardId, 'deleted', function (payload) {
       DashboardActionCreator.deleteBoardSuccess(payload['id']);
+      _NotificationActionCreator2['default'].pushInfo('ボードが削除されました。');
     });
 
     _TODOActionCreator2['default'].addActionListener(boardId);
@@ -91,6 +97,7 @@ var DashboardActionCreator = {
       type: _constantsConstants2['default'].ActionTypes.BOARDS.CREATE.SUCCESS_RESPONSE,
       board: board
     });
+    _NotificationActionCreator2['default'].pushSuccess('ボードを作成しました。');
   },
 
   updateBoard: function updateBoard(boardId, name) {
@@ -124,7 +131,7 @@ var DashboardActionCreator = {
 exports['default'] = DashboardActionCreator;
 module.exports = exports['default'];
 
-},{"../constants/Constants":7,"../dispatcher/Dispatcher":9,"../utils/BoardAPIUtils":19,"./TODOActionCreator":4}],2:[function(require,module,exports){
+},{"../constants/Constants":7,"../dispatcher/Dispatcher":9,"../utils/BoardAPIUtils":19,"./NotificationActionCreator":2,"./TODOActionCreator":4}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -141,6 +148,8 @@ var _dispatcherDispatcher = require('../dispatcher/Dispatcher');
 
 var _dispatcherDispatcher2 = _interopRequireDefault(_dispatcherDispatcher);
 
+var AUTO_ERASING_TIME = 3000;
+
 var NotificationActionCreator = {
   pushSuccess: function pushSuccess(content) {
     _dispatcherDispatcher2['default'].handleViewAction({
@@ -148,6 +157,7 @@ var NotificationActionCreator = {
       category: _constantsConstants2['default'].NOTIFICATION.SUCCESS,
       content: content
     });
+    NotificationActionCreator.setAutoErasing();
   },
   pushInfo: function pushInfo(content) {
     _dispatcherDispatcher2['default'].handleViewAction({
@@ -155,6 +165,7 @@ var NotificationActionCreator = {
       category: _constantsConstants2['default'].NOTIFICATION.INFO,
       content: content
     });
+    NotificationActionCreator.setAutoErasing();
   },
   pushError: function pushError(content) {
     _dispatcherDispatcher2['default'].handleViewAction({
@@ -162,11 +173,20 @@ var NotificationActionCreator = {
       category: _constantsConstants2['default'].NOTIFICATION.ERROR,
       content: content
     });
+    NotificationActionCreator.setAutoErasing();
   },
   erase: function erase(id) {
     _dispatcherDispatcher2['default'].handleViewAction({
       type: _constantsConstants2['default'].ActionTypes.NOTIFICATIONS.ERASE,
       id: id
+    });
+  },
+  setAutoErasing: function setAutoErasing() {
+    _dispatcherDispatcher2['default'].handleViewAction({
+      type: _constantsConstants2['default'].ActionTypes.NOTIFICATIONS.SET_AUTO_ERASING,
+      id: setTimeout(function () {
+        NotificationActionCreator.erase();
+      }, AUTO_ERASING_TIME)
     });
   }
 };
@@ -564,7 +584,8 @@ exports['default'] = {
     },
     NOTIFICATIONS: {
       PUSH: null,
-      ERASE: null
+      ERASE: null,
+      SET_AUTO_ERASING: null
     }
   })
 };
@@ -686,7 +707,8 @@ exports['default'] = {
     },
     NOTIFICATIONS: {
       PUSH: null,
-      ERASE: null
+      ERASE: null,
+      SET_AUTO_ERASING: null
     }
   })
 };
@@ -1041,6 +1063,7 @@ var CHANGE_EVENT = 'change';
 
 var _frontPane = true;
 var _notification = { content: '', frontPane: _frontPane };
+var _auto_erasing_id = '';
 
 var NotificationStore = (function (_EventEmitter) {
   function NotificationStore() {
@@ -1087,10 +1110,25 @@ _dispatcherDispatcher2['default'].register(function (payload) {
     case ActionTypes.NOTIFICATIONS.PUSH:
       _frontPane = !_frontPane;
       _notification = { content: action.content, frontPane: _frontPane, category: action.category };
+
+      //前の通知の自動削除をキャンセル
+      if (_auto_erasing_id != '') {
+        clearTimeout(_auto_erasing_id);
+      }
+
       _NotificationStore.emitChange();
       break;
     case ActionTypes.NOTIFICATIONS.ERASE:
+      //キャンセルされていなければ自動削除をキャンセル
+      if (_auto_erasing_id != '') {
+        clearTimeout(_auto_erasing_id);
+      }
       _notification.content = '';
+      _auto_erasing_id = '';
+      _NotificationStore.emitChange();
+      break;
+    case ActionTypes.NOTIFICATIONS.SET_AUTO_ERASING:
+      _auto_erasing_id = action.id;
       _NotificationStore.emitChange();
       break;
   }
@@ -4151,7 +4189,7 @@ var styles = _reactVendorPrefix2['default'].prefix({
     borderRadius: '4px',
     border: 'solid 1px rgba(44,44,44,0.2)',
 
-    backgroundColor: '#99ccff'
+    backgroundColor: '#c1c1ff'
   },
   successContainer: {
     backgroundColor: '#c1ffc1'
