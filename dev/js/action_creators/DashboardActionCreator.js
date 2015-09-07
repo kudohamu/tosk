@@ -46,6 +46,7 @@ const DashboardActionCreator = {
 
     BoardAPIUtils.on(boardId, "deleted", (payload) => {
       DashboardActionCreator.deleteBoardSuccess(payload["id"]);
+      NotificationActionCreator.pushInfo('ボードが削除されました。');
     });
 
     TODOActionCreator.addActionListener(boardId);
