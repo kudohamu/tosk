@@ -14,7 +14,7 @@ var styles = Vendor.prefix({
     borderRadius: '4px',
     border:"solid 1px rgba(44,44,44,0.2)",
 
-    backgroundColor: '#99ccff',
+    backgroundColor: '#c1c1ff',
   },
   successContainer: {
     backgroundColor: '#c1ffc1',
