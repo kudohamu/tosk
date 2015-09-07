@@ -19,3 +19,44 @@ body {
   height:100%;
   width:100%;
 }
+
+/**
+ * Notificationのアニメーション用
+ */
+
+.frontNotification-enter {
+  bottom:-300px;
+  transition: bottom .2s ease-in;
+}
+
+.frontNotification-enter.frontNotification-enter-active {
+  bottom:0px;
+}
+
+.frontNotification-leave {
+  bottom:0px;
+}
+
+.frontNotification-leave.frontNotification-leave-active {
+  bottom:-300px;
+  transition: bottom .2s ease-in;
+}
+
+.backNotification-enter {
+  bottom:-300px;
+  transition: bottom .2s ease-in;
+}
+
+.backNotification-enter.backNotification-enter-active {
+  bottom:0px;
+}
+
+.backNotification-leave {
+  bottom:0px;
+}
+
+.backNotification-leave.backNotification-leave-active {
+  bottom:-300px;
+  transition: bottom .2s ease-in;
+}
+
