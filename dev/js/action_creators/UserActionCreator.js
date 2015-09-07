@@ -27,10 +27,24 @@ export default {
       errMsg: errMsg
     });
   },
+
+  signIn: (mail, password, autoLogin) => {
+    UserAPIUtils.signIn(mail, password, autoLogin);
+  },
+
+  signInSuccess: (id, token) => {
+    AppDispatcher.handleServerAction({
+      type: Constants.ActionTypes.USER.SIGN_IN.SUCCESS_RESPONSE,
+      id: id,
+      token: token,
+    });
+    NotificationActionCreator.pushSuccess('サインインしました。');
+  },
+
   signOut: () => {
     AppDispatcher.handleViewAction({
       type: Constants.ActionTypes.USER.SIGN_OUT,
-    })
+    });
     NotificationActionCreator.pushSuccess('サインアウトしました。');
   },
 

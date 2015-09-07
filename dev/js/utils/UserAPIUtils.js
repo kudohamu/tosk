@@ -2,7 +2,7 @@ import request from 'superagent';
 import Constants from '../constants/Constants';
 import AppDispatcher from '../dispatcher/Dispatcher';
 
-import SignInActionCreator from '../action_creators/users/SignInActionCreator';
+import NotificationActionCreator from '../action_creators/NotificationActionCreator';
 import UserActionCreator from '../action_creators/UserActionCreator';
 import PageActionCreator from '../action_creators/PageActionCreator';
 import APIUtils from './APIUtils';
@@ -38,9 +38,9 @@ export default {
             document.cookie = `id=${encodeURIComponent(res["body"]["id"])}`;
             document.cookie = `token=${encodeURIComponent(res["body"]["token"])}`;
           }
-          SignInActionCreator.signInSuccess(res["body"]["id"], res["body"]["token"]);
+          UserActionCreator.signInSuccess(res["body"]["id"], res["body"]["token"]);
         }else {
-          SignInActionCreator.signInErr(res["body"]["msg"]);
+          NotificationActionCreator.pushError('メールアドレスかパスワードが違います。');
         }
       }
     );
