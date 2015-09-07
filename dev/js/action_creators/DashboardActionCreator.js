@@ -71,6 +71,7 @@ const DashboardActionCreator = {
       type: Constants.ActionTypes.BOARDS.CREATE.SUCCESS_RESPONSE,
       board: board
     });
+    NotificationActionCreator.pushSuccess('ボードを作成しました。');
   },
 
   updateBoard: (boardId, name) => {
