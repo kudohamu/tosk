@@ -1,6 +1,7 @@
 import Constants from '../constants/Constants';
 import AppDispatcher from '../dispatcher/Dispatcher';
 import BoardAPIUtils from '../utils/BoardAPIUtils';
+import NotificationActionCreator from './NotificationActionCreator';
 import TODOActionCreator from './TODOActionCreator';
 
 const DashboardActionCreator = {
@@ -40,6 +41,7 @@ const DashboardActionCreator = {
 
     BoardAPIUtils.on(boardId, "updated", (payload) => {
       DashboardActionCreator.updateBoardSuccess(payload["board"]);
+      NotificationActionCreator.pushInfo('ボード名が変更されました。');
     });
 
     BoardAPIUtils.on(boardId, "deleted", (payload) => {
