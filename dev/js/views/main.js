@@ -12,6 +12,7 @@ import Top from './Top';
 import SignUp from './SignUp';
 import Dashboard from './Dashboard';
 import Loading from './components/Loading';
+import NotificationPusher from './components/Notification/Pusher';
 
 var styles = Vendor.prefix({
   app: {
@@ -80,6 +81,7 @@ class Main extends React.Component {
             }
           })()
         }
+        <NotificationPusher/>
       </div>
     );
   }
