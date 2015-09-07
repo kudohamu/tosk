@@ -30,6 +30,12 @@ export default {
     LOGS     : 'Logs',
   },
 
+  NOTIFICATION: keyMirror({
+    SUCCESS: null,
+    INFO   : null,
+    ERROR  : null,
+  }),
+
   ActionTypes: keyMirror({
     PAGE: {
       CHANGE: null,
