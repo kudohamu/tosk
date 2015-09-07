@@ -122,6 +122,8 @@ AppDispatcher.register((payload) => {
       errMsg = action.errMsg;
       break;
     case ActionTypes.USER.SIGN_OUT:
+      account.id = '';
+      account.token = '';
       _UserStore.deleteAuthData();
       break;
   }
