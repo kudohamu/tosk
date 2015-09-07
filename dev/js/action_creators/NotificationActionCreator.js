@@ -10,6 +10,7 @@ const NotificationActionCreator = {
       category: Constants.NOTIFICATION.SUCCESS,
       content: content
     });
+    NotificationActionCreator.setAutoErasing();
   },
   pushInfo: (content) => {
     AppDispatcher.handleViewAction({
@@ -17,6 +18,7 @@ const NotificationActionCreator = {
       category: Constants.NOTIFICATION.INFO,
       content: content
     });
+    NotificationActionCreator.setAutoErasing();
   },
   pushError: (content) => {
     AppDispatcher.handleViewAction({
@@ -24,6 +26,7 @@ const NotificationActionCreator = {
       category: Constants.NOTIFICATION.ERROR,
       content: content
     });
+    NotificationActionCreator.setAutoErasing();
   },
   erase: (id) => {
     AppDispatcher.handleViewAction({
