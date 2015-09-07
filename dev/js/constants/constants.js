@@ -104,6 +104,7 @@ export default {
     NOTIFICATIONS: {
       PUSH: null,
       ERASE: null,
+      SET_AUTO_ERASING: null,
     },
   })
 }
