@@ -2,6 +2,7 @@ import Constants from '../constants/Constants';
 import AppDispatcher from '../dispatcher/Dispatcher';
 
 import UserAPIUtils from '../utils/UserAPIUtils';
+import NotificationActionCreator from './NotificationActionCreator';
 
 export default {
   changeInput: (data, actionType) => {
@@ -30,6 +31,7 @@ export default {
     AppDispatcher.handleViewAction({
       type: Constants.ActionTypes.USER.SIGN_OUT,
     })
+    NotificationActionCreator.pushSuccess('サインアウトしました。');
   },
 
   show: () => {
