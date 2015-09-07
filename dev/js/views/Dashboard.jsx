@@ -2,9 +2,11 @@ import React from 'react/addons';
 import Radium from 'radium';
 import Vendor from 'react-vendor-prefix';
 
+import Constants from '../constants/Constants';
 import BoardStore from '../stores/BoardStore';
 import ChannelStore from '../stores/ChannelStore';
 import TODOActionCreator from '../action_creators/TODOActionCreator';
+import NotificationActionCreator from '../action_creators/NotificationActionCreator';
 import DashboardActionCreator from '../action_creators/DashboardActionCreator';
 
 import TabHeader from './components/Tab/Header';
@@ -130,14 +132,18 @@ class Dashboard extends React.Component {
    **/
   _createPane(title, active = true) {
     TODOActionCreator.createTODO(this.state.currentBoard.id, title, active);
+    const kind = active ? 'TODO' : 'テンプレート';
+    NotificationActionCreator.pushSuccess(`${kind}を作成しました。`);
   }
 
   _deletePane(id) {
     TODOActionCreator.deleteTODO(this.state.currentBoard.id, id);
+    NotificationActionCreator.pushSuccess('削除しました。');
   }
 
   _activatePane(template) {
     TODOActionCreator.activateTemplate(this.state.currentBoard.id, template);
+    NotificationActionCreator.pushSuccess('テンプレートをインスタンス化しました。');
   }
 
   render() {
