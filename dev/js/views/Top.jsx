@@ -128,10 +128,6 @@ class Top extends React.Component {
             <Input type='checkbox' label='次回から自動でログインする' style={styles.autoLoginCheckbox} checkedLink={this.linkState('autoLogin')} />
             <Button bsStyle='success' style={styles.submit} onClick={this._handleSubmit}>ログイン</Button>
             <a style={styles.createAccountLink} onClick={(() => {PageActionCreator.setPage(Constants.PAGE.SIGN_UP)})}>アカウントを作成</a>
-            <br />
-            <br />
-            <br />
-            <a href='' style={styles.twitter}><img src='../images/twitter_button.png' style={styles.twitter_icon} /></a>
           </div>
         </div>
         <div style={styles.padding}></div>
