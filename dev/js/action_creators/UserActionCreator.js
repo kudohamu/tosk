@@ -68,6 +68,7 @@ export default {
       type: Constants.ActionTypes.USER.UPDATE.SUCCESS_RESPONSE,
       user: user,
     });
+    NotificationActionCreator.pushSuccess('プロフィールを更新しました。');
   },
 };
 
