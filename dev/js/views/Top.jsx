@@ -6,7 +6,7 @@ import FormStyle from '../styles/form';
 
 import Constants from '../constants/Constants';
 import UserStore from '../stores/UserStore';
-import UserAPIUtils from '../utils/UserAPIUtils';
+import UserActionCreator from '../action_creators/UserActionCreator';
 import PageActionCreator from '../action_creators/PageActionCreator';
 
 import { Button, Input } from 'react-bootstrap';
@@ -103,7 +103,7 @@ class Top extends React.Component {
   _handleSubmit() {
     let mail = React.findDOMNode(this.refs.mail).value;
     let password = React.findDOMNode(this.refs.password).value;
-    UserAPIUtils.signIn(mail, password, this.state.autoLogin);
+    UserActionCreator.signIn(mail, password, this.state.autoLogin);
   }
 
   _handleAlertDismiss() {
