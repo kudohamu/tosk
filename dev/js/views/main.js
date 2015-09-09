@@ -41,7 +41,7 @@ class Main extends React.Component {
     }
 
     checkAutoLogin().then((authData) => {
-      if(authData.id && authData.token) {
+      if(authData.id != '' && authData.token != '') {
         PageActionCreator.setPage(Constants.PAGE.DASHBOARD);
       }else {
         PageActionCreator.setPage(Constants.PAGE.TOP);
