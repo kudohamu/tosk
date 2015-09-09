@@ -18,7 +18,7 @@ export default {
       (res) => {
         if (res["body"]["result"] == "ok") {
           UserActionCreator.createSuccess(res["body"]["id"], res["body"]["token"]);
-          PageActionCreator.setPage('Dashboard');
+          PageActionCreator.setPage(Constants.PAGE.DASHBOARD);
         }else {
         }
       }
@@ -39,6 +39,7 @@ export default {
             document.cookie = `token=${encodeURIComponent(res["body"]["token"])}`;
           }
           UserActionCreator.signInSuccess(res["body"]["id"], res["body"]["token"]);
+          PageActionCreator.setPage(Constants.PAGE.DASHBOARD);
         }else {
           NotificationActionCreator.pushError('メールアドレスかパスワードが違います。');
         }
