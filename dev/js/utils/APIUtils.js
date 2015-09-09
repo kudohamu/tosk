@@ -1,6 +1,10 @@
 import request from 'superagent';
 import Constants from '../constants/Constants';
 import AppDispatcher from '../dispatcher/Dispatcher';
+
+import NotificationActionCreator from '../action_creators/NotificationActionCreator';
+import UserActionCreator from '../action_creators/UserActionCreator';
+import APIUtils from './APIUtils';
 import UserStore from '../stores/UserStore';
 
 export default {
@@ -11,8 +15,7 @@ export default {
         if(err == null) {
           success(res);
         }else {
-          console.log(err);
-          //TODO 500または404ページに飛ばす
+          APIUtils.errorAction(res);
         }
       }
     );
@@ -28,8 +31,7 @@ export default {
         if(err == null) {
           success(res);
         }else {
-          console.log(err);
-          //TODO 500または404ページに飛ばす
+          APIUtils.errorAction(res);
         }
       }
     );
@@ -43,8 +45,7 @@ export default {
         if(err == null) {
           success(res);
         }else {
-          console.log(err);
-          //TODO 500または404ページに飛ばす
+          APIUtils.errorAction(res);
         }
       }
     );
@@ -61,8 +62,7 @@ export default {
         if(err == null) {
           success(res);
         }else {
-          console.log(err);
-          //TODO 500または404ページに飛ばす
+          APIUtils.errorAction(res);
         }
       }
     );
@@ -78,8 +78,7 @@ export default {
         if(err == null) {
           success(res);
         }else {
-          console.log(err);
-          //TODO 500または404ページに飛ばす
+          APIUtils.errorAction(res);
         }
       }
     );
@@ -95,10 +94,34 @@ export default {
         if(err == null) {
           success(res);
         }else {
-          console.log(err);
-          //TODO 500または404ページに飛ばす
+          APIUtils.errorAction(res);
         }
       }
     );
+  },
+
+  errorAction: (res) => {
+    switch (res.status) {
+      case 400:
+      case 422:
+        NotificationActionCreator.pushError('不正なデータです。');
+        break;
+      case 401:
+        NotificationActionCreator.pushError('メールアドレスかパスワードが違います。');
+        break;
+      case 403:
+        NotificationActionCreator.pushError('認証に失敗しました。再度ログインしてください。');
+        UserActionCreator.signOut();
+        break;
+      case 500:
+        NotificationActionCreator.pushError('サーバでエラーが発生しました。一定期間置いてから再度ログインしてください。');
+        UserActionCreator.signOut();
+        break;
+      default:
+        console.info(res);
+        NotificationActionCreator.pushError('予期しないエラーが発生しました。一定期間置いてから再度ログインしてください。');
+        UserActionCreator.signOut();
+        break;
+    };
   },
 }
