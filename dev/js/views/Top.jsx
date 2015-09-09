@@ -84,20 +84,6 @@ class Top extends React.Component {
     }else {
       this.setState({ alertVisible: false });
     }
-
-    let checkAutoLogin = () => {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve(this.state.authData);
-        }, 500);
-      });
-    }
-
-    checkAutoLogin().then((authData) => {
-      if(authData.id && authData.token) {
-        PageActionCreator.setPage(Constants.PAGE.DASHBOARD);
-      }
-    });
   }
 
   _handleSubmit() {
