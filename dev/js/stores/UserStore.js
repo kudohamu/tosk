@@ -22,18 +22,18 @@ class UserStore extends EventEmitter {
   constructor() {
     super();
     let cookies = (() =>{
-      return document.cookie.split('; ').map((cookie) => {
+      var obj = {};
+      for (let cookie of document.cookie.split('; ')) {
         let kv = cookie.split('=');
-        var obj = {};
-        obj[kv[0]] = kv[1]; //仕様が...
-        return obj;
-      }).concat();
+        obj[kv[0]] = kv[1];
+      }
+      return obj;
     })();
-    if(cookies[0] && 'id' in cookies[0]) {
-      account.id = cookies[0]['id'];
+    if('id' in cookies) {
+      account.id = cookies['id'];
     }
-    if(cookies[1] && 'token' in cookies[1]) {
-      account.token = cookies[1]['token'];
+    if('token' in cookies) {
+      account.token = cookies['token'];
     }
   }
 
