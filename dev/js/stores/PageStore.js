@@ -5,7 +5,7 @@ import { EventEmitter } from 'events';
 var ActionTypes = Constants.ActionTypes;
 var CHANGE_EVENT = 'change';
 
-var page = 'loading';
+var page = Constants.PAGE.LOADING;
 
 class PageStore extends EventEmitter {
   constructor() {
