@@ -4,6 +4,7 @@ import AppDispatcher from '../dispatcher/Dispatcher';
 
 import NotificationActionCreator from '../action_creators/NotificationActionCreator';
 import UserActionCreator from '../action_creators/UserActionCreator';
+import PageActionCreator from '../action_creators/PageActionCreator';
 import APIUtils from './APIUtils';
 import UserStore from '../stores/UserStore';
 
@@ -112,15 +113,18 @@ export default {
       case 403:
         NotificationActionCreator.pushError('認証に失敗しました。再度ログインしてください。');
         UserActionCreator.signOut();
+        PageActionCreator.setPage(Constants.PAGE.TOP);
         break;
       case 500:
         NotificationActionCreator.pushError('サーバでエラーが発生しました。一定期間置いてから再度ログインしてください。');
         UserActionCreator.signOut();
+        PageActionCreator.setPage(Constants.PAGE.TOP);
         break;
       default:
         console.info(res);
         NotificationActionCreator.pushError('予期しないエラーが発生しました。一定期間置いてから再度ログインしてください。');
         UserActionCreator.signOut();
+        PageActionCreator.setPage(Constants.PAGE.TOP);
         break;
     };
   },
