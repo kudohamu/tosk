@@ -24,7 +24,6 @@ export default {
 
   authGet: (url, success) => {
     let authData = UserStore.getAuthData();
-    console.log("auth:" + authData.id);
     request
       .get(`${Constants.RootUrl.SERVER}/${url}`)
       .set('Authorization', `${authData.id}:${authData.token}`)
@@ -54,7 +53,6 @@ export default {
 
   authPost: (url, params, success) => {
     let authData = UserStore.getAuthData();
-    console.log("auth:" + authData.id);
     request
       .post(`${Constants.RootUrl.SERVER}/${url}`)
       .send(params)
